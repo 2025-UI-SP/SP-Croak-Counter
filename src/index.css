@@ -1,33 +1,166 @@
-:root {
+  :root {
+  color-scheme: light;
+  color: #050316;
+  background-color: #fbfbfe;
+
+  /* Core palette */
+  --bs-body-color: #050316;
+  --bs-body-bg: #fbfbfe;
+  --bs-primary: #455e3b;
+  --bs-secondary: #ebe7d6;
+  --bs-accent: #85ae75;
+
+  /* RGB variants for effects */
+  --bs-body-color-rgb: 5, 3, 22;
+  --bs-body-bg-rgb: 251, 251, 254;
+  --bs-primary-rgb: 69, 94, 59;
+  --bs-secondary-rgb: 235, 231, 214;
+  --bs-accent-rgb: 133, 174, 117;
+
+  /* Bootstrap mappings */
+  --bs-success: var(--bs-accent);
+  --bs-success-rgb: var(--bs-accent-rgb);
+  --bs-link-color: var(--bs-primary);
+  --bs-link-hover-color: var(--bs-accent);
+  --bs-border-color: var(--bs-secondary);
+
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+/* Bootstrap theme overrides */
+.btn-primary {
+  background-color: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+  color: #fff !important;
 }
-a:hover {
-  color: #535bf2;
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--bs-accent) !important;
+  border-color: var(--bs-accent) !important;
 }
 
+.btn-success {
+  background-color: var(--bs-accent) !important;
+  border-color: var(--bs-accent) !important;
+  color: #fff !important;
+}
+.btn-success:hover,
+.btn-success:focus {
+  background-color: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+}
+
+.btn-secondary {
+  background-color: var(--bs-secondary) !important;
+  border-color: var(--bs-secondary) !important;
+  color: var(--bs-body-color) !important;
+}
+.btn-secondary:hover,
+.btn-secondary:focus {
+  background-color: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+  color: #fff !important;
+}
+
+/* Outline light buttons aligned to theme */
+.btn-outline-light {
+  color: var(--bs-secondary) !important;
+  border-color: var(--bs-secondary) !important;
+}
+.btn-outline-light:hover,
+.btn-outline-light:focus {
+  background-color: var(--bs-secondary) !important;
+  color: var(--bs-body-color) !important;
+  border-color: var(--bs-secondary) !important;
+}
+
+/* Link and colors */
+a,
+.btn-link {
+  font-weight: 500;
+  color: var(--bs-link-color);
+  text-decoration: inherit;
+}
+a:hover,
+.btn-link:hover {
+  color: var(--bs-link-hover-color);
+}
+
+/* Navbar hover accents */
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-brand:hover {
+  color: var(--bs-accent) !important;
+}
+
+/* Background and text helpers */
+.bg-light {
+  background-color: var(--bs-body-bg) !important;
+}
+.bg-dark {
+  background-color: var(--bs-body-bg) !important;
+}
+.text-primary { color: var(--bs-primary) !important; }
+.text-secondary { color: var(--bs-secondary) !important; }
+.text-accent { color: var(--bs-accent) !important; }
+
+/* Forms */
+.form-control,
+.form-select {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  border-color: var(--bs-border-color);
+}
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--bs-accent);
+  box-shadow: 0 0 0 .2rem rgba(var(--bs-accent-rgb), .25);
+}
+.form-check-input:checked {
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+}
+
+/* Cards and surfaces */
+.card,
+.modal-content,
+.list-group-item {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  border-color: var(--bs-border-color);
+}
+.dropdown-menu {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  border-color: var(--bs-border-color);
+}
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: var(--bs-secondary);
+  color: var(--bs-body-color);
+}
+
+/* Tables */
+.table {
+  --bs-table-bg: var(--bs-body-bg);
+  --bs-table-color: var(--bs-body-color);
+  --bs-table-border-color: var(--bs-border-color);
+}
+
+/* Typography and layout */
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  justify-content: center;
+  align-items: center;
   min-width: 320px;
   min-height: 100vh;
+  padding-top: 56px;
 }
 
 h1 {
@@ -35,6 +168,7 @@ h1 {
   line-height: 1.1;
 }
 
+/* Default button styles */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -42,27 +176,11 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--bs-secondary);
+  color: var(--bs-body-color);
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
-  border-color: #646cff;
-}
+button:hover { border-color: var(--bs-primary); }
 button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
+button:focus-visible { outline: 4px auto -webkit-focus-ring-color; }

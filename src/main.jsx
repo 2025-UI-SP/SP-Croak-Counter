@@ -1,10 +1,21 @@
-import { StrictMode } from 'react'
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './index.css'  
+import App from './pages/App.jsx'
+import AppNavbar from './components/navbar.jsx';
+import Help from './pages/Help.jsx';
+import Survey from './pages/Survey.jsx';
+
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+  <BrowserRouter>
+    <AppNavbar />
+    <Routes>
+      <Route path="/" element={<App />} />
+      <Route path="/help" element={<Help />} />
+      <Route path="/survey" element={<Survey />} />
+    </Routes>
+  </BrowserRouter>
+);

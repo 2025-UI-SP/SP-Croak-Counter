@@ -155,9 +155,6 @@ a:hover,
 /* Typography and layout */
 body {
   margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-width: 320px;
   min-height: 100vh;
   padding-top: 56px;
@@ -184,3 +181,49 @@ button {
 button:hover { border-color: var(--bs-primary); }
 button:focus,
 button:focus-visible { outline: 4px auto -webkit-focus-ring-color; }
+
+/* Ensure app container spans the full width */
+#root { width: 100%; min-height: 100%; display: flex; flex-direction: column; }
+
+/* Sticky footer layout helpers */
+html, body, #root { height: 100%; }
+.app-footer {
+  border-top: 1px solid var(--bs-border-color);
+  background-color: rgba(var(--bs-secondary-rgb), 0.35);
+}
+.app-footer a { color: var(--bs-link-color); }
+.app-footer a:hover { color: var(--bs-link-hover-color); }
+.app-content { flex: 1 0 auto; display: flex; flex-direction: column; }
+
+/* Landing page enhancements */
+.landing-hero {
+  background: linear-gradient(
+      rgba(var(--bs-secondary-rgb), 0.45),
+      rgba(var(--bs-secondary-rgb), 0.45)
+    ),
+    radial-gradient(1200px 600px at 10% -20%, rgba(var(--bs-accent-rgb), 0.18), transparent 60%),
+    radial-gradient(1200px 600px at 110% 120%, rgba(var(--bs-primary-rgb), 0.12), transparent 60%);
+  border: 1px solid var(--bs-border-color);
+}
+
+.soft-shadow {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.chip {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background-color: rgba(var(--bs-primary-rgb), 0.08);
+  color: var(--bs-primary);
+  border: 1px solid rgba(var(--bs-primary-rgb), 0.2);
+  font-size: 0.95rem;
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid var(--bs-border-color);
+  opacity: 1;
+}
+
+.btn-pill { border-radius: 999px; }

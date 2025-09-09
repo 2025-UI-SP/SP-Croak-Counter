@@ -1,41 +1,145 @@
 
+import React from 'react';
+import { 
+  Container, 
+  Box, 
+  Typography, 
+  Paper, 
+  Button, 
+  List, 
+  ListItem, 
+  ListItemText, 
+  Chip,
+  Divider,
+  Stack
+} from '@mui/material';
 import { Link } from 'react-router-dom';
+import { usePageTitle } from '../hooks/usePageTitle.js';
 
 function App() {
+  usePageTitle();
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-12 col-md-11 col-lg-10">
-          <div className="landing-hero p-5 rounded-4 soft-shadow mx-3 mx-md-5 text-center">
-            <h1 className="display-4 mb-3">🐸 Croak Counter</h1>
-            <div className="d-flex justify-content-center flex-wrap gap-2 mb-3">
-              <span className="chip">Michigan Technology University</span>
-            </div>
-            <p className="lead mx-auto" style={{maxWidth: '60ch'}}>
+    <Container maxWidth="lg" sx={{ mt: 12, mb: 4 }}>
+      <Box display="flex" justifyContent="center">
+        <Box sx={{ width: { xs: '100%', md: '90%', lg: '80%' } }}>
+          <Paper 
+            elevation={3}
+            sx={{ 
+              p: 5, 
+              textAlign: 'center',
+              borderRadius: 4,
+              mx: { xs: 2, md: 4 }
+            }}
+          >
+            <Typography 
+              variant="h2" 
+              component="h1" 
+              gutterBottom
+              sx={{
+                fontSize: { xs: '2rem', sm: '3rem', md: '3.75rem' }
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+                🐸
+                Croak Counter
+              </Box>
+            </Typography>
+            
+            <Box display="flex" justifyContent="center" mb={3}>
+              <Chip 
+                label="Michigan Technology University" 
+                color="primary" 
+                variant="outlined"
+              />
+            </Box>
+            
+            <Typography 
+              variant="h5" 
+              component="p" 
+              sx={{ 
+                maxWidth: '60ch', 
+                mx: 'auto', 
+                mb: 4,
+                color: 'text.secondary'
+              }}
+            >
               Help the Keweenaw Bay Indian Community track frog populations using
               quick call index surveys.
-            </p>
+            </Typography>
 
-            <hr className="my-4 divider" />
-            <h3 className="mb-3">Useful Equipment to Bring</h3>
-            <ul className="mb-4 list-unstyled">
-              <li>Thermometer <strong>(Required)</strong></li>
-              <li>Flashlight</li>
-              <li>Map</li>
-            </ul>
+            <Divider sx={{ my: 4 }} />
+            
+            <Typography 
+              variant="h4" 
+              component="h3" 
+              gutterBottom
+              sx={{
+                fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' }
+              }}
+            >
+              Useful Equipment to Bring
+            </Typography>
+            
+            <List sx={{ mb: 4, maxWidth: 400, mx: 'auto' }}>
+              <ListItem sx={{ justifyContent: 'center', py: 0.5 }}>
+                <ListItemText 
+                  sx={{ textAlign: 'center' }}
+                  primary={
+                    <Box>
+                      Thermometer <strong>(Required)</strong>
+                    </Box>
+                  }
+                />
+              </ListItem>
+              <ListItem sx={{ justifyContent: 'center', py: 0.5 }}>
+                <ListItemText sx={{ textAlign: 'center' }} primary="Flashlight" />
+              </ListItem>
+              <ListItem sx={{ justifyContent: 'center', py: 0.5 }}>
+                <ListItemText sx={{ textAlign: 'center' }} primary="Map" />
+              </ListItem>
+            </List>
 
-            <div className="d-flex justify-content-center gap-3">
-              <Link to="/help">
-                <button className="btn btn-primary btn-lg btn-pill">Beginner Survey</button>
-              </Link>
-              <Link to="/survey">
-                <button className="btn btn-success btn-lg btn-pill">Advanced Survey</button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            <Stack 
+              direction={{ xs: 'column', sm: 'row' }} 
+              spacing={3} 
+              justifyContent="center"
+            >
+              <Button 
+                component={Link}
+                to="/beginner-survey"
+                variant="contained"
+                size="large"
+                sx={{ 
+                  borderRadius: 6, 
+                  px: 4,
+                  '&:hover': {
+                    color: 'white'
+                  }
+                }}
+              >
+                Beginner Survey
+              </Button>
+              <Button 
+                component={Link}
+                to="/survey"
+                variant="contained"
+                color="success"
+                size="large"
+                sx={{ 
+                  borderRadius: 6, 
+                  px: 4,
+                  '&:hover': {
+                    color: 'white'
+                  }
+                }}
+              >
+                Advanced Survey
+              </Button>
+            </Stack>
+          </Paper>
+        </Box>
+      </Box>
+    </Container>
   );
 }
 

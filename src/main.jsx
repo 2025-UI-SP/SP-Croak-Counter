@@ -1,7 +1,9 @@
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createRoot } from 'react-dom/client'
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { Box } from '@mui/material';
+import CssBaseline from '@mui/material/CssBaseline';
+import { CustomThemeProvider } from './contexts/ThemeContext.jsx';
 import './index.css'  
 // Pages
 import App from './pages/App.jsx'
@@ -18,16 +20,34 @@ import AppFooter from './components/Footer.jsx';
   All routes must first be imported
 */
 createRoot(document.getElementById('root')).render(
-  <BrowserRouter>
-    <AppNavbar />
-    <div className="app-content">
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/help" element={<Help />} />
-        <Route path="/survey" element={<Survey />} />
-        <Route path="/beginner-survey" element={<BeginnerSurvey />} />
-      </Routes>
-    </div>
-    <AppFooter />
-  </BrowserRouter>
+  <CustomThemeProvider>
+    <CssBaseline />
+    <BrowserRouter>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh',
+        }}
+      >
+        <AppNavbar />
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="/help" element={<Help />} />
+            <Route path="/survey" element={<Survey />} />
+            <Route path="/beginner-survey" element={<BeginnerSurvey />} />
+          </Routes>
+        </Box>
+        <AppFooter />
+      </Box>
+    </BrowserRouter>
+  </CustomThemeProvider>
 );

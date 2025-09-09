@@ -1,28 +1,15 @@
-  :root {
+:root {
   color-scheme: light;
   color: #050316;
   background-color: #fbfbfe;
 
-  /* Core palette */
-  --bs-body-color: #050316;
-  --bs-body-bg: #fbfbfe;
-  --bs-primary: #455e3b;
-  --bs-secondary: #ebe7d6;
-  --bs-accent: #85ae75;
-
-  /* RGB variants for effects */
-  --bs-body-color-rgb: 5, 3, 22;
-  --bs-body-bg-rgb: 251, 251, 254;
-  --bs-primary-rgb: 69, 94, 59;
-  --bs-secondary-rgb: 235, 231, 214;
-  --bs-accent-rgb: 133, 174, 117;
-
-  /* Bootstrap mappings */
-  --bs-success: var(--bs-accent);
-  --bs-success-rgb: var(--bs-accent-rgb);
-  --bs-link-color: var(--bs-primary);
-  --bs-link-hover-color: var(--bs-accent);
-  --bs-border-color: var(--bs-secondary);
+  /* Core palette - these will work with Material-UI theme */
+  --primary-color: #455e3b;
+  --secondary-color: #ebe7d6;
+  --accent-color: #85ae75;
+  --body-color: #050316;
+  --body-bg: #fbfbfe;
+  --border-color: #ebe7d6;
 
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -33,197 +20,55 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Bootstrap theme overrides */
-.btn-primary {
-  background-color: var(--bs-primary) !important;
-  border-color: var(--bs-primary) !important;
-  color: #fff !important;
-}
-.btn-primary:hover,
-.btn-primary:focus {
-  background-color: var(--bs-accent) !important;
-  border-color: var(--bs-accent) !important;
-}
-
-.btn-success {
-  background-color: var(--bs-accent) !important;
-  border-color: var(--bs-accent) !important;
-  color: #fff !important;
-}
-.btn-success:hover,
-.btn-success:focus {
-  background-color: var(--bs-primary) !important;
-  border-color: var(--bs-primary) !important;
-}
-
-.btn-secondary {
-  background-color: var(--bs-secondary) !important;
-  border-color: var(--bs-secondary) !important;
-  color: var(--bs-body-color) !important;
-}
-.btn-secondary:hover,
-.btn-secondary:focus {
-  background-color: var(--bs-primary) !important;
-  border-color: var(--bs-primary) !important;
-  color: #fff !important;
-}
-
-/* Outline light buttons aligned to theme */
-.btn-outline-light {
-  color: var(--bs-secondary) !important;
-  border-color: var(--bs-secondary) !important;
-}
-.btn-outline-light:hover,
-.btn-outline-light:focus {
-  background-color: var(--bs-secondary) !important;
-  color: var(--bs-body-color) !important;
-  border-color: var(--bs-secondary) !important;
-}
-
-/* Link and colors */
-a,
-.btn-link {
-  font-weight: 500;
-  color: var(--bs-link-color);
-  text-decoration: inherit;
-}
-a:hover,
-.btn-link:hover {
-  color: var(--bs-link-hover-color);
-}
-
-/* Navbar hover accents */
-.navbar-dark .navbar-nav .nav-link:hover,
-.navbar-dark .navbar-brand:hover {
-  color: var(--bs-accent) !important;
-}
-
-/* Background and text helpers */
-.bg-light {
-  background-color: var(--bs-body-bg) !important;
-}
-.bg-dark {
-  background-color: var(--bs-body-bg) !important;
-}
-.text-primary { color: var(--bs-primary) !important; }
-.text-secondary { color: var(--bs-secondary) !important; }
-.text-accent { color: var(--bs-accent) !important; }
-
-/* Forms */
-.form-control,
-.form-select {
-  background-color: var(--bs-body-bg);
-  color: var(--bs-body-color);
-  border-color: var(--bs-border-color);
-}
-.form-control:focus,
-.form-select:focus {
-  border-color: var(--bs-accent);
-  box-shadow: 0 0 0 .2rem rgba(var(--bs-accent-rgb), .25);
-}
-.form-check-input:checked {
-  background-color: var(--bs-primary);
-  border-color: var(--bs-primary);
-}
-
-/* Cards and surfaces */
-.card,
-.modal-content,
-.list-group-item {
-  background-color: var(--bs-body-bg);
-  color: var(--bs-body-color);
-  border-color: var(--bs-border-color);
-}
-.dropdown-menu {
-  background-color: var(--bs-body-bg);
-  color: var(--bs-body-color);
-  border-color: var(--bs-border-color);
-}
-.dropdown-item:hover,
-.dropdown-item:focus {
-  background-color: var(--bs-secondary);
-  color: var(--bs-body-color);
-}
-
-/* Tables */
-.table {
-  --bs-table-bg: var(--bs-body-bg);
-  --bs-table-color: var(--bs-body-color);
-  --bs-table-border-color: var(--bs-border-color);
-}
-
-/* Typography and layout */
+/* Base layout */
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  padding-top: 56px;
 }
 
+#root { 
+  width: 100%; 
+  min-height: 100%; 
+  display: flex; 
+  flex-direction: column; 
+}
+
+/* App content area */
+.app-content { 
+  flex: 1 0 auto; 
+  display: flex; 
+  flex-direction: column; 
+}
+
+/* Typography */
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
 
-/* Default button styles */
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+/* Link styles */
+a {
   font-weight: 500;
-  font-family: inherit;
-  background-color: var(--bs-secondary);
-  color: var(--bs-body-color);
-  cursor: pointer;
-  transition: border-color 0.25s;
+  color: var(--primary-color);
+  text-decoration: inherit;
 }
-button:hover { border-color: var(--bs-primary); }
-button:focus,
-button:focus-visible { outline: 4px auto -webkit-focus-ring-color; }
-
-/* Ensure app container spans the full width */
-#root { width: 100%; min-height: 100%; display: flex; flex-direction: column; }
-
-/* Sticky footer layout helpers */
-html, body, #root { height: 100%; }
-.app-footer {
-  border-top: 1px solid var(--bs-border-color);
-  background-color: rgba(var(--bs-secondary-rgb), 0.35);
-}
-.app-footer a { color: var(--bs-link-color); }
-.app-footer a:hover { color: var(--bs-link-hover-color); }
-.app-content { flex: 1 0 auto; display: flex; flex-direction: column; }
-
-/* Landing page enhancements */
-.landing-hero {
-  background: linear-gradient(
-      rgba(var(--bs-secondary-rgb), 0.45),
-      rgba(var(--bs-secondary-rgb), 0.45)
-    ),
-    radial-gradient(1200px 600px at 10% -20%, rgba(var(--bs-accent-rgb), 0.18), transparent 60%),
-    radial-gradient(1200px 600px at 110% 120%, rgba(var(--bs-primary-rgb), 0.12), transparent 60%);
-  border: 1px solid var(--bs-border-color);
+a:hover {
+  color: var(--accent-color);
 }
 
+/* Custom utilities that can work alongside Material-UI */
 .soft-shadow {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-.chip {
-  display: inline-block;
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
-  background-color: rgba(var(--bs-primary-rgb), 0.08);
-  color: var(--bs-primary);
-  border: 1px solid rgba(var(--bs-primary-rgb), 0.2);
-  font-size: 0.95rem;
+/* Any custom styles that don't conflict with Material-UI can remain */
+.landing-hero {
+  background: linear-gradient(
+      rgba(235, 231, 214, 0.45),
+      rgba(235, 231, 214, 0.45)
+    ),
+    radial-gradient(1200px 600px at 10% -20%, rgba(133, 174, 117, 0.18), transparent 60%),
+    radial-gradient(1200px 600px at 110% 120%, rgba(69, 94, 59, 0.12), transparent 60%);
+  border: 1px solid var(--border-color);
 }
-
-.divider {
-  border: 0;
-  border-top: 1px solid var(--bs-border-color);
-  opacity: 1;
-}
-
-.btn-pill { border-radius: 999px; }

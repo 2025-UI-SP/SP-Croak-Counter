@@ -74,7 +74,7 @@ function App() {
               component="h3" 
               gutterBottom
               sx={{
-                fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' }
+                fontSize: { xs: '1.25rem', sm: '1.5rem', md: '1.75rem' }
               }}
             >
               Useful Equipment to Bring

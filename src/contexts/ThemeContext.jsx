@@ -43,7 +43,7 @@ export const CustomThemeProvider = ({ children }) => {
       },
       background: {
         default: darkMode ? '#121512' : '#fbfbfe', 
-        paper: darkMode ? '#1e211e' : '#fbfbfe',
+        paper: darkMode ? '#1e211e' : '#f4f2ec',
       },
       text: {
         primary: darkMode ? '#f0f5f0' : '#050316',

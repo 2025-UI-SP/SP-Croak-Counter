@@ -1,24 +1,116 @@
 
 import React from 'react';
-import { Navbar, Nav, Container } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { 
+  AppBar, 
+  Toolbar, 
+  Typography, 
+  Button, 
+  Box, 
+  IconButton,
+  Menu,
+  MenuItem,
+  useMediaQuery,
+  useTheme
+} from '@mui/material';
+import { 
+  Menu as MenuIcon, 
+  Home as HomeIcon, 
+  Help as HelpIcon, 
+  Assignment as SurveyIcon 
+} from '@mui/icons-material';
+import { Link, useLocation } from 'react-router-dom';
 
+const AppNavbar = () => {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const location = useLocation();
 
-const AppNavbar = () => (
-	<Navbar bg="primary" variant="dark" expand="lg" fixed="top">
-		<Container fluid>
-			<Navbar.Brand as={Link} to="/">Croak Counter</Navbar.Brand>
-			<Navbar.Toggle aria-controls="basic-navbar-nav" />
-			<Navbar.Collapse id="basic-navbar-nav">
-				<Nav className="me-auto">
-					<Nav.Link as={Link} to="/">Home</Nav.Link>
-					<Nav.Link as={Link} to="/help">Help</Nav.Link>
-					<Nav.Link as={Link} to="/survey">Survey</Nav.Link>
-				</Nav>
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-			</Navbar.Collapse>
-		</Container>
-	</Navbar>
-);
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const navItems = [
+    { label: 'Home', path: '/', icon: HomeIcon },
+    { label: 'Help', path: '/help', icon: HelpIcon },
+    { label: 'Survey', path: '/survey', icon: SurveyIcon }
+  ];
+
+  return (
+    <AppBar position="fixed">
+      <Toolbar>
+        {!isMobile && (
+          <>
+            <Typography 
+              variant="h6" 
+              component={Link} 
+              to="/" 
+              sx={{ 
+                textDecoration: 'none', 
+                color: 'inherit',
+                mr: 3,
+                px: 1,
+                py: 0.5,
+                borderRadius: 1,
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                  color: 'white'
+                }
+              }}
+            >
+              Croak Counter
+            </Typography>
+            <Box sx={{ display: 'flex' }}>
+              {navItems.map((item) => (
+                <Button 
+                  key={item.path}
+                  color="inherit" 
+                  component={Link} 
+                  to={item.path}
+                  sx={{ 
+                    mx: 1,
+                    backgroundColor: location.pathname === item.path ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                      color: 'white'
+                    }
+                  }}
+                >
+                  {item.label}
+                </Button>
+              ))}
+            </Box>
+          </>
+        )}
+        
+        {isMobile ? (
+          <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-around' }}>
+            {navItems.map((item) => {
+              const IconComponent = item.icon;
+              return (
+                <IconButton
+                  key={item.path}
+                  color="inherit"
+                  component={Link}
+                  to={item.path}
+                  sx={{
+                    backgroundColor: location.pathname === item.path ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+                    borderRadius: 1
+                  }}
+                >
+                  <IconComponent />
+                </IconButton>
+              );
+            })}
+          </Box>
+        ) : null}
+      </Toolbar>
+    </AppBar>
+  );
+};
 
 export default AppNavbar;

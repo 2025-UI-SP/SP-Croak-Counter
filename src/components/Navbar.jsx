@@ -16,7 +16,8 @@ import {
   Menu as MenuIcon, 
   Home as HomeIcon, 
   Help as HelpIcon, 
-  Assignment as SurveyIcon 
+  Assignment as SurveyIcon,
+  Group as JoinIcon 
 } from '@mui/icons-material';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -37,7 +38,8 @@ const AppNavbar = () => {
   const navItems = [
     { label: 'Home', path: '/', icon: HomeIcon },
     { label: 'Help', path: '/help', icon: HelpIcon },
-    { label: 'Survey', path: '/survey', icon: SurveyIcon }
+    { label: 'Survey', path: '/survey', icon: SurveyIcon },
+    { label: 'Join', path: '/join', icon: JoinIcon }
   ];
 
   return (

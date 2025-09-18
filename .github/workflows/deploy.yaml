@@ -5,7 +5,9 @@ name: Deploy to GitHub Pages
 
 # Trigger the workflow on demand
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - master
 
 # Permissions required to publish to GitHub Pages
 permissions:

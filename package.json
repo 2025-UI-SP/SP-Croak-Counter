@@ -4,7 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "deploy": "gh workflow run 'Deploy to GitHub Pages' --ref main ",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",

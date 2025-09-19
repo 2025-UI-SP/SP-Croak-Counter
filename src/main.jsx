@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createRoot } from 'react-dom/client'
 import { Box } from '@mui/material';
@@ -14,6 +13,9 @@ import BeginnerSurvey from './pages/BeginnerSurvey.jsx';
 import AppNavbar from './components/Navbar.jsx';
 import AppFooter from './components/Footer.jsx';
 
+// Get base path from Vite config
+const basename = import.meta.env.MODE === 'gh-pages' ? '/SP-Croak-Counter' : '';
+
 /*
   This is the main entry point for the application.
   Routes should be defined in the <Routes> tag. e.g <Route path="/" element={<App />} />
@@ -22,7 +24,7 @@ import AppFooter from './components/Footer.jsx';
 createRoot(document.getElementById('root')).render(
   <CustomThemeProvider>
     <CssBaseline />
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <Box
         sx={{
           display: 'flex',

@@ -1,0 +1,40 @@
+# deploy.yml
+
+# Name of the workflow
+name: Deploy to GitHub Pages
+
+# Trigger the workflow on demand
+on:
+  push:
+    branches:
+      - master
+
+# Permissions required to publish to GitHub Pages
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# Jobs to be executed
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install and build
+        run: |
+          npm ci
+          npm run build -- --mode gh-pages
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist

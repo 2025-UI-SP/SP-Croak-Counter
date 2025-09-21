@@ -17,7 +17,7 @@ import {
   Home as HomeIcon, 
   Help as HelpIcon, 
   Assignment as SurveyIcon,
-  Group as JoinIcon 
+  GroupAdd as JoinIcon 
 } from '@mui/icons-material';
 import { Link, useLocation } from 'react-router-dom';
 

@@ -72,3 +72,56 @@ a:hover {
     radial-gradient(1200px 600px at 110% 120%, rgba(69, 94, 59, 0.12), transparent 60%);
   border: 1px solid var(--border-color);
 }
+
+/* Join Page styles */
+
+/* Step cards: consistent sizing + soft shadow */
+.join-step-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%; /* ensures equal height across grid */
+  border-radius: 1rem;
+  background-color: #fff;
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.join-step-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08), 0 6px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Number circle styling */
+.join-step-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Step text hierarchy */
+.join-step-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: var(--primary-color);
+}
+.join-step-text {
+  color: var(--body-color);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Join container background */
+.join-container {
+  background-color: var(--secondary-color); /* tan from palette */
+  border: 1px solid var(--border-color);
+  border-radius: 1.5rem;
+}

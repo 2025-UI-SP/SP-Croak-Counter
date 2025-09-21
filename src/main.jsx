@@ -1,5 +1,5 @@
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import { createRoot } from 'react-dom/client'
 import { Box } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -22,7 +22,7 @@ import AppFooter from './components/Footer.jsx';
 createRoot(document.getElementById('root')).render(
   <CustomThemeProvider>
     <CssBaseline />
-    <BrowserRouter>
+    <HashRouter>
       <Box
         sx={{
           display: 'flex',
@@ -48,6 +48,6 @@ createRoot(document.getElementById('root')).render(
         </Box>
         <AppFooter />
       </Box>
-    </BrowserRouter>
+    </HashRouter>
   </CustomThemeProvider>
 );

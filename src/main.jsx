@@ -9,6 +9,7 @@ import App from './pages/App.jsx'
 import Help from './pages/Help.jsx';
 import Survey from './pages/Survey.jsx';
 import BeginnerSurvey from './pages/BeginnerSurvey.jsx';
+import Join from './pages/Join.jsx';
 // Components
 import AppNavbar from './components/Navbar.jsx';
 import AppFooter from './components/Footer.jsx';
@@ -46,6 +47,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="/help" element={<Help />} />
             <Route path="/survey" element={<Survey />} />
             <Route path="/beginner-survey" element={<BeginnerSurvey />} />
+            <Route path="/join" element={<Join />} />
           </Routes>
         </Box>
         <AppFooter />

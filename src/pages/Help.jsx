@@ -165,12 +165,13 @@ function Help() {
             <Typography variant="h5"><strong>Frog Identification</strong></Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Typography>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed
-              diam eget risus varius blandit sit amet non magna. Etiam porta sem
-              malesuada magna mollis euismod. Donec ullamcorper nulla non metus
-              auctor fringilla.
+            <Typography variant='h5' justifyItems={'center'}>
+              1. Bullfrog
             </Typography>
+            <audio controls>
+              <source src="/01_Bullfrog.mp3" type="audio/mpeg" class="audio-player"/>
+            </audio>
+            <img src="Bullfrog.png"></img>
           </AccordionDetails>
         </Accordion>
       </Box>

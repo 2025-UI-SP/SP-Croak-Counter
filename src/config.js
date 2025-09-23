@@ -18,3 +18,9 @@ export const joinPageContent = {
   websiteLabel: "Visit the KBIC NRD website for more details",
   websiteUrl: "https://nrd.kbic-nsn.gov/get-involved/"
 };
+
+export const frogContent = {
+
+  //image info and audio info
+
+}

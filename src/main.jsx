@@ -10,6 +10,7 @@ import Help from './pages/Help.jsx';
 import Survey from './pages/Survey.jsx';
 import BeginnerSurvey from './pages/BeginnerSurvey.jsx';
 import Join from './pages/Join.jsx';
+import FrogIdentification from './pages/FrogIdentification.jsx';
 // Components
 import AppNavbar from './components/Navbar.jsx';
 import AppFooter from './components/Footer.jsx';
@@ -48,6 +49,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="/survey" element={<Survey />} />
             <Route path="/beginner-survey" element={<BeginnerSurvey />} />
             <Route path="/join" element={<Join />} />
+            <Route path="/frog-identification" element={<FrogIdentification />} />
           </Routes>
         </Box>
         <AppFooter />

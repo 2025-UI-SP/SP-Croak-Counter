@@ -165,13 +165,10 @@ function Help() {
             <Typography variant="h5"><strong>Frog Identification</strong></Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Typography variant='h5' justifyItems={'center'}>
-              1. Bullfrog
+            <Typography sx={{fontSize: {xs: '1.125rem', sm: '1.25rem', md: '1.35rem'} }}>
+              All of the frog species that you may encounter in the Keweenaw area are listed in the Frog Identification page.
+              Each species has a description, image, and audio clip of their call to help with identification.
             </Typography>
-            <audio controls>
-              <source src="/01_Bullfrog.mp3" type="audio/mpeg" class="audio-player"/>
-            </audio>
-            <img src="Bullfrog.png"></img>
           </AccordionDetails>
         </Accordion>
       </Box>

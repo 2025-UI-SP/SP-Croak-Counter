@@ -20,7 +20,8 @@ import { useLocalStorageForm } from '../hooks/useLocalStorageForm.js';
 function BeginnerSurvey() {
   usePageTitle('Call Index Survey');
 
-  const initialState = {
+  //What we're storing for each survey
+  const initialFormState = {
     location: '',
     latitude: '',
     longitude: '',
@@ -44,7 +45,7 @@ function BeginnerSurvey() {
   ];
 
   const { formData, lastSaved, errors, updateField, setFieldErrors, clearForm } =
-    useLocalStorageForm('beginnerSurveyDraft', initialState);
+    useLocalStorageForm('beginnerSurveyDraft', initialFormState);
 
   // GPS state
   const [gpsLoading, setGpsLoading] = useState(false);
@@ -115,7 +116,7 @@ function BeginnerSurvey() {
       return;
     }
 
-    alert('Form is valid! (Submit functionality will be added later)');
+    alert('Submit functionality added later');
   };
 
   const handleClear = () => {

@@ -18,3 +18,81 @@ export const joinPageContent = {
   websiteLabel: "Visit the KBIC NRD website for more details",
   websiteUrl: "https://nrd.kbic-nsn.gov/get-involved/"
 };
+
+export const frogContent = {
+
+  frogs: [
+    {
+      name: "American Toad",
+      description: " Size: 2\" to 4 3/8\". Large bumpy brown to greenish colored toad. Sound: A long, high-pitched trill that lasts about 15-30 seconds. ",
+      audio: "/audio/33 American Toad.mp3",
+      image: "/frogs/AmericanToad.jpg"
+    },
+    {
+      name: "Bullfrog",
+      description: " Size: 3 1/2\" to 8\". Our largest frog in Michigan but not very common locally. Greenish yellow with random mottling. Cream colored belly with lighter gray spots. Sound: A deep 'juga-rum' or 'drum'. ",
+      audio: "/audio/01_Bullfrog.mp3",
+      image: "/frogs/Bullfrog.png"
+    },
+    {
+      name: "Cope's Gray Treefrog",
+      description: " Size: 1 1/4\" to 2 3/8\". Rarely venture from the trees. Bright green to grey usually with splotches of grey. Sticky texture. Bright yellow patches underside of hind legs. Sound: Similar to Eastern Gray Treefrog but faster, higher pitched trill with more buzzy quality. ",
+      audio: "/audio/21 Cope_s Gray Treefrog.mp3",
+      image: "/frogs/Cope_sGrayTreefrog.jpg"
+    },
+    {
+      name: "Eastern Gray Treefrog",
+      description: " Size: 1 1/4\" to 2 3/8\". Rarely venture from the trees. Bright green to gray usually with splotches of gray. Sticky texture. Bright yellow patches underside of hind legs. Sound: A short trill that sounds like a raccoon. ",
+      audio: "/audio/20 Gray Treefrog.mp3",
+      image: "/frogs/EasternGrayTreefrog.jpg"
+    },
+    {
+      name: "Fowler's Toad",
+      description: " Size: 2\" to 3 1/2\". Large bumpy brown-colored toad. Lighter belly and more warts than American Toads. Sound: Short bleeting lamb cry 'wuh'. ",
+      audio: "/audio/36 Fowler_s Toad.mp3",
+      image: "/frogs/Fowler_sToad.jpg"
+    },
+    {
+      name: "Green Frog",
+      description: " Size: 2 1/8\" to 4\". Green or brownish colored frog with green upper lip. Large eardrum. White belly with black spots. Sounds like banjo strings. ",
+      audio: "/audio/03 Green Frog.mp3",
+      image: "/frogs/GreenFrog.jpg"
+    },
+    {
+      name: "Mink Frog",
+      description: " Size: 1 7/8\" to 3\". Olive to brown in color with uniform mottling along sides and legs. Pungent mink-like odor. Yellowish colored belly. Sound: Like knocking on wood or like popcorn popping when in full chorus. ",
+      audio: "/audio/05 Mink Frog.mp3",
+      image: "/frogs/MinkFrog.jpg"
+    },
+    {
+      name: "Northern Cricket Frog",
+      description: " Size: 5/8\" to 1 1/2\". Very rare tiny tree frog that looks almost black. Has a dark triangle between eyes. Sound: Tapping stones together. ",
+      audio: "/audio/31 Northern Cricket Frog.mp3",
+      image: "/frogs/NorthernCricketFrog.jpg"
+    },
+    {
+      name: "Pickerel Frog",
+      description: " Size: 1 3/4\" to 3 1/2\". Slender green or tan frog with parallel rows of square- shaped spots down its back. Yellow belly patch by inner thigh. Sound: Soft and low snore-like croak similar to leopard frog only softer and shorter. ",
+      audio: "/audio/11 Pickerel Frog.mp3",
+      image: "/frogs/PickerelFrog.jpg"
+    },
+    {
+      name: "Spring Peeper",
+      description: " Size: 3/4\" to 1 3/8\". One of our smallest and most abundant tree frogs. Note the brown color and X mark on its back. Sound: Loud peeping. ",
+      audio: "/audio/23 Spring Peeper.mp3",
+      image: "/frogs/SpringPeeper.jpg"
+    },
+    {
+      name: "Western Chorus Frog",
+      description: " Size: 3/4\" to 1 1/2\". Breeds very early, often while snow remains. A tree frog with long black mask and three dark stripes down its back. Sound: Stumming a comb with your thumb.",
+      audio: "/audio/27 Western Chorus Frog.mp3",
+      image: "/frogs/WesternChorusFrog.jpg"
+    },
+    {
+      name: "Wood Frog",
+      description: " Size: 1 3/8\" to 3 1/4\". Breeds early in spring then disappears into moist woodlands. Note short black mask. Sound: Like rubbing finger on wet balloon. ",
+      audio: "/audio/04 Wood Frog.mp3",
+      image: "/frogs/WoodFrog.jpg"
+    },
+  ]
+}

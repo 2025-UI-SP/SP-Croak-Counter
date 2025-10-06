@@ -165,11 +165,9 @@ function Help() {
             <Typography variant="h5"><strong>Frog Identification</strong></Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Typography>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed
-              diam eget risus varius blandit sit amet non magna. Etiam porta sem
-              malesuada magna mollis euismod. Donec ullamcorper nulla non metus
-              auctor fringilla.
+            <Typography sx={{fontSize: {xs: '1.125rem', sm: '1.25rem', md: '1.35rem'} }}>
+              All of the frog species that you may encounter in the Keweenaw area are listed in the Frog Identification page.
+              Each species has a description, image, and audio clip of their call to help with identification.
             </Typography>
           </AccordionDetails>
         </Accordion>

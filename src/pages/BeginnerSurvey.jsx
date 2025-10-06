@@ -1,10 +1,10 @@
-import React from 'react';
-import { 
-  Container, 
-  Typography, 
-  Paper, 
-  Box, 
-  TextField, 
+import React, { useState } from 'react';
+import {
+  Container,
+  Typography,
+  Paper,
+  Box,
+  TextField,
   FormControl,
   InputLabel,
   Select,
@@ -13,82 +13,121 @@ import {
   Button,
   Stack
 } from '@mui/material';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { usePageTitle } from '../hooks/usePageTitle.js';
 import { useLocalStorageForm } from '../hooks/useLocalStorageForm.js';
 
 function BeginnerSurvey() {
   usePageTitle('Call Index Survey');
 
-  // What we're storing for each survey
+  //What we're storing for each survey
   const initialFormState = {
     location: '',
+    latitude: '',
+    longitude: '',
     waterTemp: '',
     startingAirTemp: '',
     endingAirTemp: '',
     skyCondition: '',
     windSpeed: '',
     frogCallDensity: '',
-    notes: ''
+    comments: ''
   };
 
-  // This hook handles saving to localStorage and loading so we can navigate away and keep info
-  const {
-    formData,
-    lastSaved,
-    errors,
-    updateField,
-    setFieldErrors,
-    clearForm
-  } = useLocalStorageForm('beginnerSurveyDraft', initialFormState);
-
-  // List of required fields, can change as needed by adding/removing elments to the array
+  // Required Fields
   const requiredFields = [
     { name: 'location', label: 'location' },
-    { name: 'startingAirTemp', label: 'starting temperature' },
-    { name: 'endingAirTemp', label: 'ending temperature' },
+    { name: 'latitude', label: 'latitude' },
+    { name: 'longitude', label: 'longitude' },
     { name: 'skyCondition', label: 'sky condition' },
     { name: 'windSpeed', label: 'wind speed' },
     { name: 'frogCallDensity', label: 'call density' }
   ];
 
-  // Check that required fields are filled out
+  const { formData, lastSaved, errors, updateField, setFieldErrors, clearForm } =
+    useLocalStorageForm('beginnerSurveyDraft', initialFormState);
+
+  // GPS state
+  const [gpsLoading, setGpsLoading] = useState(false);
+  const [gpsError, setGpsError] = useState('');
+
+  //Regex validation, so only numbers decimals and negatives can be put into the temperature and latitude/longitude fields
+  const isValidNumber = (value) => /^-?\d*\.?\d*$/.test(value);
+
   const validateForm = () => {
     const newErrors = {};
-    
+
     requiredFields.forEach(field => {
       const value = formData[field.name];
       if (!value || !value.toString().trim()) {
         newErrors[field.name] = `Please enter ${field.label}`;
       }
     });
-    
+
     setFieldErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // When user clicks submit, needs functionality still
+  // Get current GPS location
+  const handleGetLocation = () => {
+
+    setGpsLoading(true);
+    setGpsError('');
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+
+        // Auto fill the latitude longitude fields
+        updateField('latitude', latitude.toFixed(4));
+        updateField('longitude', longitude.toFixed(4));
+
+        setGpsLoading(false);
+        setGpsError('');
+      },
+      (error) => {
+        let errorMessage = 'Can not get user location';
+
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = 'Location access denied, please allow access';
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = 'Location information unavailable';
+            break;
+        }
+
+        setGpsError(errorMessage);
+        setGpsLoading(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000
+      }
+    );
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       alert('Please fill out all required fields');
       return;
     }
-    
-    // For now, just show that validation passed
-    alert('functionality added later');
+
+    alert('Submit functionality added later');
   };
 
   const handleClear = () => {
     clearForm();
   };
-
-  //form contents
+{/*Form Content*/}
   return (
     <Container maxWidth="lg" sx={{ mt: 12, mb: 4 }}>
       <Box display="flex" justifyContent="center">
         <Box sx={{ width: { xs: '100%', md: '90%', lg: '80%' } }}>
-          
+
           <Box sx={{ textAlign: 'center', mb: 4 }}>
             <Typography
               variant="h2"
@@ -100,7 +139,7 @@ function BeginnerSurvey() {
             >
               Call Index Survey
             </Typography>
-            
+
             <Typography
               variant="h5"
               component="p"
@@ -113,11 +152,11 @@ function BeginnerSurvey() {
             >
               Fill out the fields below based on what you observed
             </Typography>
-            
+
             {lastSaved && (
-              <Alert 
-                severity="success" 
-                sx={{ 
+              <Alert
+                severity="success"
+                sx={{
                   borderRadius: 4,
                   maxWidth: '400px',
                   mx: 'auto',
@@ -129,16 +168,17 @@ function BeginnerSurvey() {
             )}
           </Box>
 
-          <Paper 
-            elevation={3} 
-            sx={{ 
+          <Paper
+            elevation={3}
+            sx={{
               p: 5,
               borderRadius: 4,
               mx: { xs: 2, md: 4 }
             }}
           >
             <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-              
+
+              {/*Location*/}
               <TextField
                 fullWidth
                 required
@@ -149,38 +189,100 @@ function BeginnerSurvey() {
                 error={!!errors.location}
                 helperText={errors.location}
               />
-              
+
+              {/*Get Location Button*/}
+              <Button
+                variant="outlined"
+                onClick={handleGetLocation}
+                disabled={gpsLoading}
+                fullWidth
+                startIcon={<LocationOnIcon />}
+                sx={{ height: '56px' }}
+              >
+                {gpsLoading ? 'Getting Location, wait one moment please' : 'Get GPS Location'}
+              </Button>
+
+              {/*Latitude field should autofill with the button*/}
+              <TextField
+                fullWidth
+                required
+                label="Latitude"
+                value={formData.latitude}
+                onChange={(e) => {
+                  if (isValidNumber(e.target.value) || e.target.value === '') {
+                    updateField('latitude', e.target.value);
+                  }
+                }}
+                error={!!errors.latitude}
+                helperText={errors.latitude}
+                inputMode="decimal"
+              />
+
+              {/*Longitude field, should autofill with the button*/}
+              <TextField
+                fullWidth
+                required
+                label="Longitude"
+                value={formData.longitude}
+                onChange={(e) => {
+                  if (isValidNumber(e.target.value) || e.target.value === '') {
+                    updateField('longitude', e.target.value);
+                  }
+                }}
+                error={!!errors.longitude}
+                helperText={errors.longitude}
+                inputMode="decimal"
+              />
+
+              {gpsError && (
+                <Alert severity="error">
+                  {gpsError}
+                </Alert>
+              )}
+
+              {/*Water temp*/}
               <TextField
                 fullWidth
                 label="Water Temp (°F)"
-                type="number"
                 value={formData.waterTemp}
-                onChange={(e) => updateField('waterTemp', e.target.value)}
-                helperText="Only if you have a thermometer"
+                onChange={(e) => {
+                  if (isValidNumber(e.target.value) || e.target.value === '') {
+                    updateField('waterTemp', e.target.value);
+                  }
+                }}
+                helperText="Optional - only if you have a thermometer"
+                inputMode="decimal"
               />
 
+              {/*Starting air temp*/}
               <TextField
                 fullWidth
-                required
                 label="Starting Air Temp (°F)"
-                type="number"
                 value={formData.startingAirTemp}
-                onChange={(e) => updateField('startingAirTemp', e.target.value)}
-                error={!!errors.startingAirTemp}
-                helperText={errors.startingAirTemp}
+                onChange={(e) => {
+                  if (isValidNumber(e.target.value) || e.target.value === '') {
+                    updateField('startingAirTemp', e.target.value);
+                  }
+                }}
+                helperText="Optional - air temperature when you started"
+                inputMode="decimal"
               />
 
+              {/*Ending Air Temp*/}
               <TextField
                 fullWidth
-                required
                 label="Ending Air Temp (°F)"
-                type="number"
                 value={formData.endingAirTemp}
-                onChange={(e) => updateField('endingAirTemp', e.target.value)}
-                error={!!errors.endingAirTemp}
-                helperText={errors.endingAirTemp}
+                onChange={(e) => {
+                  if (isValidNumber(e.target.value) || e.target.value === '') {
+                    updateField('endingAirTemp', e.target.value);
+                  }
+                }}
+                helperText="Optional - air temperature when you finished"
+                inputMode="decimal"
               />
 
+              {/*Sky Condition Dropdown*/}
               <FormControl fullWidth required error={!!errors.skyCondition}>
                 <InputLabel>Sky Condition</InputLabel>
                 <Select
@@ -203,6 +305,7 @@ function BeginnerSurvey() {
                 )}
               </FormControl>
 
+              {/*Wind Speed Form*/}
               <FormControl fullWidth required error={!!errors.windSpeed}>
                 <InputLabel>Wind Speed</InputLabel>
                 <Select
@@ -231,6 +334,7 @@ function BeginnerSurvey() {
                 )}
               </FormControl>
 
+              {/* Frog Call Density Drop Down */}
               <FormControl fullWidth required error={!!errors.frogCallDensity}>
                 <InputLabel>Frog Call Density</InputLabel>
                 <Select
@@ -250,16 +354,19 @@ function BeginnerSurvey() {
                 )}
               </FormControl>
 
+              {/*Comments Section*/}
               <TextField
                 fullWidth
                 multiline
                 rows={4}
-                label="Notes"
-                value={formData.notes}
-                onChange={(e) => updateField('notes', e.target.value)}
-                placeholder="Add any notes/comments here"
+                label="Comments"
+                value={formData.comments}
+                onChange={(e) => updateField('comments', e.target.value)}
+                placeholder="Final Comments"
+                helperText="Any other wildlife species encountered? Anything interesting or concerning at the site? Any additional frog information you want to include?"
               />
 
+              {/*Buttons*/}
               <Stack
                 direction={{ xs: 'column', sm: 'row' }}
                 spacing={3}
@@ -277,7 +384,7 @@ function BeginnerSurvey() {
                 >
                   Clear Form
                 </Button>
-                
+
                 <Button
                   variant="contained"
                   onClick={handleSubmit}

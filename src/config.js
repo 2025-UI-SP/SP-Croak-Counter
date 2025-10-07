@@ -102,3 +102,23 @@ export const frogContent = {
     },
   ]
 }
+
+export const observationsContent = {
+  title: 'Saved Observations',
+  intro: 'Observations currently stored on this device. Select surveys to upload when ready.',
+  labels: {
+    date: 'Date',
+    site: 'Site',
+    callDensity: 'Call Density',
+    wind: 'Wind',
+    waterTemp: 'Water Temp',
+    startAir: 'Start Air',
+    endAir: 'End Air',
+    status: 'Status',
+    actions: 'Actions',
+    uploadButton: 'Upload'
+  },
+  entries: [
+  
+  ]
+};

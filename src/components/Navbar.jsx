@@ -18,7 +18,8 @@ import {
   Help as HelpIcon, 
   Assignment as SurveyIcon,
   GroupAdd as JoinIcon,
-  GraphicEq as EQIcon
+  GraphicEq as EQIcon,
+  ListAlt as ObservationsIcon
 } from '@mui/icons-material';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -41,7 +42,8 @@ const AppNavbar = () => {
     { label: 'Help', path: '/help', icon: HelpIcon },
     { label: 'Survey', path: '/survey', icon: SurveyIcon },
     { label: 'Join', path: '/join', icon: JoinIcon },
-    { label: 'Frogs', path: '/frog-identification', icon: EQIcon }
+    { label: 'Frogs', path: '/frog-identification', icon: EQIcon },
+    { label: 'Observations', path: '/observations', icon: ObservationsIcon }
   ];
 
   return (

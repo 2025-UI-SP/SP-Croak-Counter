@@ -19,9 +19,10 @@ export const joinPageContent = {
   websiteUrl: "https://nrd.kbic-nsn.gov/get-involved/"
 };
 
-export const frogContent = {
+const BASE_URL = import.meta.env.BASE_URL || '/';
+const joinBase = (path) => `${BASE_URL}${(path || '').replace(/^\//, '')}`;
 
-  frogs: [
+const rawFrogs = [
     {
       name: "American Toad",
       description: " Size: 2\" to 4 3/8\". Large bumpy brown to greenish colored toad. Sound: A long, high-pitched trill that lasts about 15-30 seconds. ",
@@ -100,7 +101,14 @@ export const frogContent = {
       audio: "/audio/10 Northern Leopard Frog.mp3",
       image: "/frogs/NorthernLeopardFrog.png"
     },
-  ]
+];
+
+export const frogContent = {
+  frogs: rawFrogs.map((frog) => ({
+    ...frog,
+    audio: frog.audio ? joinBase(frog.audio) : undefined,
+    image: frog.image ? joinBase(frog.image) : undefined,
+  })),
 }
 
 export const observationsContent = {

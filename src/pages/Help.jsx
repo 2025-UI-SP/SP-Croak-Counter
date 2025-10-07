@@ -140,6 +140,9 @@ function Help() {
               <br/>
               <strong>5. </strong>
               You may record any birds or other wildlife detected in the Comments section, along with any comments or anything you think may have disturbed the survey.
+              <br/><br/>
+              <strong>Location Privacy Note: </strong>
+              Upon opening the survey, your phone will ask for permission to access your current location. This is to ensure that we record the correct coordinates for the survey site. 
 
               <br/><br/><br/>
             </Typography>

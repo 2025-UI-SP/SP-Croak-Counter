@@ -96,7 +96,7 @@ export const frogContent = {
     },
     {
       name: "Northern Leopard Frog",
-      description: "der brown or green frog with light edges around irregularly shaped spots. Sound: Low croaking snore that lasts for several seconds.",
+      description: "Size: 2\" to 5\". Slender brown or green frog with light edges around irregularly shaped spots. Sound: Low croaking snore that lasts for several seconds.",
       audio: "/audio/10 Northern Leopard Frog.mp3",
       image: "/frogs/NorthernLeopardFrog.png"
     },

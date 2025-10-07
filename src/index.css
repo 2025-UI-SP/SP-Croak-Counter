@@ -10,6 +10,7 @@
   --body-color: #050316;
   --body-bg: #fbfbfe;
   --border-color: #ebe7d6;
+  --card-radius: 1.5rem;
 
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -124,4 +125,40 @@ a:hover {
   background-color: var(--secondary-color); /* tan from palette */
   border: 1px solid var(--border-color);
   border-radius: 1.5rem;
+}
+
+/* Observations page styles - lightweight, reuse existing variables */
+.observations-container {
+  margin-top: 6rem; /* match other pages' top spacing (mt:12) */
+  margin-bottom: 1.5rem;
+}
+.observations-paper {
+  border-radius: var(--card-radius); /* match other pages */
+  overflow: hidden;
+  padding: 2.5rem; /* match Paper p:5 (5*8px = 40px -> 2.5rem)
+                    placed here so inner toolbar can be flush */
+  background: #fff;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+.observations-toolbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 0; /* toolbar sits inside Paper padding */
+  margin-bottom: 1rem;
+}
+.observations-table td,
+.observations-table th {
+  padding: 0.75rem 1rem;
+}
+.observations-table tr:hover {
+  background-color: rgba(69, 94, 59, 0.03);
+}
+
+@media (max-width: 600px) {
+  .observations-toolbar {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
 }

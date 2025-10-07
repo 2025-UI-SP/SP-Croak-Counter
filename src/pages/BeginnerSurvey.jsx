@@ -16,6 +16,8 @@ import {
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { usePageTitle } from '../hooks/usePageTitle.js';
 import { useLocalStorageForm } from '../hooks/useLocalStorageForm.js';
+import { useNavigate } from 'react-router-dom';
+import { Snackbar, Alert as MuiAlert } from '@mui/material';
 
 function BeginnerSurvey() {
   usePageTitle('Call Index Survey');
@@ -46,6 +48,9 @@ function BeginnerSurvey() {
 
   const { formData, lastSaved, errors, updateField, setFieldErrors, clearForm } =
     useLocalStorageForm('beginnerSurveyDraft', initialFormState);
+  const navigate = useNavigate();
+  const [showValidation, setShowValidation] = React.useState(false);
+  const [showSuccess, setShowSuccess] = React.useState(false);
 
   // GPS state
   const [gpsLoading, setGpsLoading] = useState(false);
@@ -112,11 +117,34 @@ function BeginnerSurvey() {
     e.preventDefault();
 
     if (!validateForm()) {
-      alert('Please fill out all required fields');
+      // show a UI warning instead
+      setShowValidation(true);
       return;
     }
-
-    alert('Submit functionality added later');
+    // Build an observation entry and save to localStorage
+    try {
+      const existing = JSON.parse(localStorage.getItem('observations') || '[]');
+      const entry = {
+        id: Date.now().toString(),
+        date: new Date().toISOString(),
+        site: formData.location || 'Unknown location',
+        latitude: formData.latitude,
+        longitude: formData.longitude,
+        data: formData
+      };
+      existing.unshift(entry);
+      localStorage.setItem('observations', JSON.stringify(existing));
+      // clear draft without prompting the user, show success, then navigate
+      clearForm(false);
+      setShowSuccess(true);
+      // wait briefly so user sees confirmation, then navigate
+      setTimeout(() => {
+        setShowSuccess(false);
+        navigate('/observations');
+      }, 1100);
+    } catch (err) {
+      console.error('Failed to save observation', err);
+    }
   };
 
   const handleClear = () => {
@@ -403,6 +431,24 @@ function BeginnerSurvey() {
           </Paper>
         </Box>
       </Box>
+      <Snackbar
+        open={showValidation}
+        autoHideDuration={4000}
+        onClose={() => setShowValidation(false)}
+      >
+        <MuiAlert severity="warning" onClose={() => setShowValidation(false)}>
+          Please fill out all required fields before saving.
+        </MuiAlert>
+      </Snackbar>
+      <Snackbar
+        open={showSuccess}
+        autoHideDuration={1000}
+        onClose={() => setShowSuccess(false)}
+      >
+        <MuiAlert severity="success" onClose={() => setShowSuccess(false)}>
+          Survey submitted — saving to Observations
+        </MuiAlert>
+      </Snackbar>
     </Container>
   );
 }

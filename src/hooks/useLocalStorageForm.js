@@ -40,15 +40,18 @@ export const useLocalStorageForm = (key, initialState) => {
     setErrors(newErrors);
   };
 
-  const clearForm = (message = 'Clear form?') => {
-    if (window.confirm(message)) {
-      localStorage.removeItem(key);
-      setFormData(initialState);
-      setLastSaved(null);
-      setErrors({});
-      return true;
+  const clearForm = (shouldConfirm = true, message = 'Clear form?') => {
+    if (shouldConfirm) {
+      if (!window.confirm(message)) {
+        return false;
+      }
     }
-    return false;
+
+    localStorage.removeItem(key);
+    setFormData(initialState);
+    setLastSaved(null);
+    setErrors({});
+    return true;
   };
 
   return {

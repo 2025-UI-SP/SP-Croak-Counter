@@ -11,6 +11,7 @@ import Survey from './pages/Survey.jsx';
 import BeginnerSurvey from './pages/BeginnerSurvey.jsx';
 import Join from './pages/Join.jsx';
 import FrogIdentification from './pages/FrogIdentification.jsx';
+import About from './pages/About';
 // Components
 import AppNavbar from './components/Navbar.jsx';
 import AppFooter from './components/Footer.jsx';
@@ -50,6 +51,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="/beginner-survey" element={<BeginnerSurvey />} />
             <Route path="/join" element={<Join />} />
             <Route path="/frog-identification" element={<FrogIdentification />} />
+            <Route path="/about" element={<About/>} />
           </Routes>
         </Box>
         <AppFooter />

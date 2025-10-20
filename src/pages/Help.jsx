@@ -21,7 +21,9 @@ function Help() {
         gutterBottom
         sx={{
           fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
-          textAlign: 'center'
+          textAlign: 'center',
+          color: 'primary.main',
+          fontWeight: 700
         }}
       >
         Croak Counter Help Page
@@ -33,7 +35,8 @@ function Help() {
         gutterBottom
         sx={{
           fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' },
-          textAlign: 'center'
+          textAlign: 'center',
+          mb: 2
         }}
       >
         Please refer to the resources below

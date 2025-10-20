@@ -7,11 +7,14 @@ function Survey() {
   return (
     <Container maxWidth="md" sx={{ mt: 12, mb: 4 }}>
       <Typography 
-        variant="h3" 
-        component="h2" 
+        variant="h3"
+        component="h1"
         gutterBottom
         sx={{
-          fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' }
+          fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
+          textAlign: 'center',
+          color: 'primary.main',
+          fontWeight: 700
         }}
       >
         Survey
@@ -22,7 +25,9 @@ function Survey() {
         color="text.secondary" 
         gutterBottom
         sx={{
-          fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' }
+          fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' },
+          textAlign: 'center',
+          mb: 2
         }}
       >
         Lorem Ipsum

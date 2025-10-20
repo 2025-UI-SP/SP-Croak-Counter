@@ -36,12 +36,14 @@ const Join = () => {
           >
             {/* Page Title */}
             <Typography
-              variant="h2"
+              variant="h3"
               component="h1"
               gutterBottom
               sx={{
-                fontSize: { xs: "2rem", sm: "3rem", md: "3.25rem" },
-                mb: 3,
+                fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
+                textAlign: 'center',
+                color: 'primary.main',
+                fontWeight: 700
               }}
             >
               {joinPageContent.title}
@@ -49,13 +51,14 @@ const Join = () => {
 
             {/* Introductory Text */}
             <Typography
-              variant="h6"
+              variant="h5"
               component="p"
+              color="text.secondary"
+              gutterBottom
               sx={{
-                maxWidth: "65ch",
-                mx: "auto",
-                mb: 4,
-                color: "text.secondary",
+                fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' },
+                textAlign: 'center',
+                mb: 2
               }}
             >
               {joinPageContent.intro}

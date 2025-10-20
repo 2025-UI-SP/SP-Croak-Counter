@@ -72,6 +72,12 @@ const rawFrogs = [
       image: "/frogs/NorthernCricketFrog.jpg"
     },
     {
+      name: "Northern Leopard Frog",
+      description: "Size: 2\" to 5\". Slender brown or green frog with light edges around irregularly shaped spots. Sound: Low croaking snore that lasts for several seconds.",
+      audio: "/audio/10 Northern Leopard Frog.mp3",
+      image: "/frogs/NorthernLeopardFrog.png"
+    },
+    {
       name: "Pickerel Frog",
       description: " Size: 1 3/4\" to 3 1/2\". Slender green or tan frog with parallel rows of square- shaped spots down its back. Yellow belly patch by inner thigh. Sound: Soft and low snore-like croak similar to leopard frog only softer and shorter. ",
       audio: "/audio/11 Pickerel Frog.mp3",
@@ -94,12 +100,6 @@ const rawFrogs = [
       description: " Size: 1 3/8\" to 3 1/4\". Breeds early in spring then disappears into moist woodlands. Note short black mask. Sound: Like rubbing finger on wet balloon. ",
       audio: "/audio/04 Wood Frog.mp3",
       image: "/frogs/WoodFrog.jpg"
-    },
-    {
-      name: "Northern Leopard Frog",
-      description: "Size: 2\" to 5\". Slender brown or green frog with light edges around irregularly shaped spots. Sound: Low croaking snore that lasts for several seconds.",
-      audio: "/audio/10 Northern Leopard Frog.mp3",
-      image: "/frogs/NorthernLeopardFrog.png"
     },
 ];
 

@@ -120,32 +120,37 @@ function Help() {
             </Typography>
             <br/>
             <Typography sx={{fontSize: {xs: '1.125rem', sm: '1.25rem', md: '1.35rem'} }}>
-              <strong>1. </strong>
+
+              <strong> 1. </strong>
+                Record survey location. Upon opening the survey, you'll notice a button labbeled "Get GPS Location". Please
+                select this button while at the survey site. Upon selection, your phone will ask for permission to access your current location. 
+                This is to ensure that we record the correct coordinates for the survey site. Please select "allow".
+                
+              <br/>
+              <strong>2. </strong>
                 Begin call surveys 30 minutes after sunset.
 
               <br/>
-              <strong>2. </strong>
+              <strong>3. </strong>
               At each call site, quietly wait 2-3 minutes after arriving at the listening post before starting the stopwatch for a 5-minute survey.
               During this time, expose the thermometer bulb to the air so it begins equalizing with the air temperature,
               and fill out the preliminary weather and time information on the data form. Start the survey, recording frogs heard.
               At the end of the 5 minutes, take the water temperature and fill in the remaining data.
 
               <br/>
-              <strong>3. </strong>
+              <strong>4. </strong>
               Listen to and record frogs from the wetland being monitored, but also record frogs heard in the distance as "distant" calls and note the direction.
               Distance calls are from other wetlands, not the one you are monitoring.
 
               <br/>
-              <strong>4. </strong>
+              <strong>5. </strong>
               Any time noise from passing vehicles, storms, etc. makes hearing impossible, elapsed time should be stopped on the stopwatch at the point of interruption
               and continued afterwards until the survey has been conducted for the full five minutes.
 
               <br/>
-              <strong>5. </strong>
+              <strong>6. </strong>
               You may record any birds or other wildlife detected in the Comments section, along with any comments or anything you think may have disturbed the survey.
               <br/><br/>
-              <strong>Location Privacy Note: </strong>
-              Upon opening the survey, your phone will ask for permission to access your current location. This is to ensure that we record the correct coordinates for the survey site. 
 
               <br/><br/><br/>
             </Typography>

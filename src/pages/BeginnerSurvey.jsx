@@ -49,15 +49,29 @@ function BeginnerSurvey() {
   const { formData, lastSaved, errors, updateField, setFieldErrors, clearForm } =
     useLocalStorageForm('beginnerSurveyDraft', initialFormState);
   const navigate = useNavigate();
-  const [showValidation, setShowValidation] = React.useState(false);
-  const [showSuccess, setShowSuccess] = React.useState(false);
+  const [showValidation, setShowValidation] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   // GPS state
   const [gpsLoading, setGpsLoading] = useState(false);
   const [gpsError, setGpsError] = useState('');
+  
+  // Track invalid input per field for responsive feedback
+  const [fieldError, setFieldError] = useState('');
 
   //Regex validation, so only numbers decimals and negatives can be put into the temperature and latitude/longitude fields
   const isValidNumber = (value) => /^-?\d*\.?\d*$/.test(value);
+  
+  // Handle number fields with responsive validation feedback
+  const handleNumberInput = (field, value) => {
+    if (isValidNumber(value) || value === '') {
+      updateField(field, value);
+      if (fieldError === field) setFieldError('');
+    } else {
+      setFieldError(field);
+      setTimeout(() => setFieldError(''), 2000);
+    }
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -75,7 +89,6 @@ function BeginnerSurvey() {
 
   // Get current GPS location
   const handleGetLocation = () => {
-
     setGpsLoading(true);
     setGpsError('');
 
@@ -150,6 +163,7 @@ function BeginnerSurvey() {
   const handleClear = () => {
     clearForm();
   };
+
 {/*Form Content*/}
   return (
     <Container maxWidth="lg" sx={{ mt: 12, mb: 4 }}>
@@ -236,15 +250,14 @@ function BeginnerSurvey() {
                 required
                 label="Latitude"
                 value={formData.latitude}
-                onChange={(e) => {
-                  if (isValidNumber(e.target.value) || e.target.value === '') {
-                    updateField('latitude', e.target.value);
-                  }
-                }}
+                onChange={(e) => handleNumberInput('latitude', e.target.value)}
                 error={!!errors.latitude}
                 helperText={errors.latitude}
                 inputMode="decimal"
               />
+              {fieldError === 'latitude' && (
+                <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
+              )}
 
               {/*Longitude field, should autofill with the button*/}
               <TextField
@@ -252,15 +265,14 @@ function BeginnerSurvey() {
                 required
                 label="Longitude"
                 value={formData.longitude}
-                onChange={(e) => {
-                  if (isValidNumber(e.target.value) || e.target.value === '') {
-                    updateField('longitude', e.target.value);
-                  }
-                }}
+                onChange={(e) => handleNumberInput('longitude', e.target.value)}
                 error={!!errors.longitude}
                 helperText={errors.longitude}
                 inputMode="decimal"
               />
+              {fieldError === 'longitude' && (
+                <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
+              )}
 
               {gpsError && (
                 <Alert severity="error">
@@ -273,42 +285,39 @@ function BeginnerSurvey() {
                 fullWidth
                 label="Water Temp (°F)"
                 value={formData.waterTemp}
-                onChange={(e) => {
-                  if (isValidNumber(e.target.value) || e.target.value === '') {
-                    updateField('waterTemp', e.target.value);
-                  }
-                }}
+                onChange={(e) => handleNumberInput('waterTemp', e.target.value)}
                 helperText="Optional - only if you have a thermometer"
                 inputMode="decimal"
               />
+              {fieldError === 'waterTemp' && (
+                <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
+              )}
 
               {/*Starting air temp*/}
               <TextField
                 fullWidth
                 label="Starting Air Temp (°F)"
                 value={formData.startingAirTemp}
-                onChange={(e) => {
-                  if (isValidNumber(e.target.value) || e.target.value === '') {
-                    updateField('startingAirTemp', e.target.value);
-                  }
-                }}
+                onChange={(e) => handleNumberInput('startingAirTemp', e.target.value)}
                 helperText="Optional - air temperature when you started"
                 inputMode="decimal"
               />
+              {fieldError === 'startingAirTemp' && (
+                <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
+              )}
 
               {/*Ending Air Temp*/}
               <TextField
                 fullWidth
                 label="Ending Air Temp (°F)"
                 value={formData.endingAirTemp}
-                onChange={(e) => {
-                  if (isValidNumber(e.target.value) || e.target.value === '') {
-                    updateField('endingAirTemp', e.target.value);
-                  }
-                }}
+                onChange={(e) => handleNumberInput('endingAirTemp', e.target.value)}
                 helperText="Optional - air temperature when you finished"
                 inputMode="decimal"
               />
+              {fieldError === 'endingAirTemp' && (
+                <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
+              )}
 
               {/*Sky Condition Dropdown*/}
               <FormControl fullWidth required error={!!errors.skyCondition}>

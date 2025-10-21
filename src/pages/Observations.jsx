@@ -221,7 +221,7 @@ export default function Observations() {
 
   // Render the page's user interface
   return (
-    <Container maxWidth="md" className="observations-container">
+    <Container maxWidth="lg" className="observations-container">
       {/* A centered container to hold the page content */}
       <Paper elevation={3} className="observations-paper">
         {/* A styled box (like a card) for the table and toolbar */}
@@ -252,13 +252,16 @@ export default function Observations() {
             <TableRow>
               {/* Checkbox to select/deselect all rows */}
               <TableCell padding="checkbox">
-                <Checkbox
-                  indeterminate={selected.size > 0 && !allSelected} /* Show a dash if some but not all rows are selected */
-                  checked={allSelected} /* Checked if all rows are selected */
-                  onChange={toggleAll} /* Call toggleAll when clicked */
-                  slotProps={{ 'aria-label': 'select all observations' }}
-                  label="Select All"
-                />
+                <div style={{whiteSpace: "nowrap"}}>
+                  <label htmlFor={"selectAll"}><strong>Select All</strong></label>
+                  <Checkbox
+                    indeterminate={selected.size > 0 && !allSelected} /* Show a dash if some but not all rows are selected */
+                    checked={allSelected} /* Checked if all rows are selected */
+                    onChange={toggleAll} /* Call toggleAll when clicked */
+                    slotProps={{ 'aria-label': 'select all observations' }}
+                    name={"selectAll"}
+                  />
+                </div>
               </TableCell>
               {/* Column headers from the config */}
               <TableCell>{observationsContent.labels.date}</TableCell>

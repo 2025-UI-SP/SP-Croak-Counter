@@ -35,7 +35,7 @@ import { observationsContent } from '../config.js';
 // Convert an ISO date string (like "2023-10-06T20:21:00Z") into a readable format (e.g., "10/6/2023, 8:21 PM")
 function formatDate(iso) {
   const d = new Date(iso);
-  return d.toLocaleString();
+  return d.toLocaleString([], {year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit"});
 }
 
 // Clean up frog call density value: show a dash ("—") if empty, otherwise extract the first number or keep the text
@@ -256,7 +256,8 @@ export default function Observations() {
                   indeterminate={selected.size > 0 && !allSelected} /* Show a dash if some but not all rows are selected */
                   checked={allSelected} /* Checked if all rows are selected */
                   onChange={toggleAll} /* Call toggleAll when clicked */
-                  inputProps={{ 'aria-label': 'select all observations' }}
+                  slotProps={{ 'aria-label': 'select all observations' }}
+                  label="Select All"
                 />
               </TableCell>
               {/* Column headers from the config */}

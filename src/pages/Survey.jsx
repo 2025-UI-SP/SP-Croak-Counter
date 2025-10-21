@@ -149,11 +149,14 @@ function AdvancedSurvey() {
 
           <Box sx={{ textAlign: 'center', mb: 4 }}>
             <Typography
-              variant="h2"
+              variant="h3"
               component="h1"
               gutterBottom
               sx={{
-                fontSize: { xs: '2rem', sm: '3rem', md: '3.75rem' }
+                fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
+                textAlign: 'center',
+                color: 'primary.main',
+                fontWeight: 700
               }}
             >
               Advanced Call Index Survey
@@ -162,11 +165,12 @@ function AdvancedSurvey() {
             <Typography
               variant="h5"
               component="p"
+              color="text.secondary"
+              gutterBottom
               sx={{
-                maxWidth: '60ch',
-                mx: 'auto',
-                mb: 3,
-                color: 'text.secondary'
+                fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' },
+                textAlign: 'center',
+                mb: 2
               }}
             >
               Fill out the fields below based on what you observed

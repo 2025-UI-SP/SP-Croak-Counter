@@ -96,7 +96,7 @@ function About() {
               </Link>
               <br /><br />
               For questions, contact Erin at{" "}
-              <Link href="mailto:erin@nrd.kbic-nsn.gov">erin@nrd.kbic-nsn.gov</Link>.
+              <Link href="mailto:ejohnston@kbic-nsn.gov">ejohnston@kbic-nsn.gov</Link>.
             </Typography>
           </AccordionDetails>
         </Accordion>

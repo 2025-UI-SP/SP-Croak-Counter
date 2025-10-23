@@ -32,11 +32,14 @@ function App() {
             }}
           >
             <Typography 
-              variant="h2" 
-              component="h1" 
+              variant="h3"
+              component="h1"
               gutterBottom
               sx={{
-                fontSize: { xs: '2rem', sm: '3rem', md: '3.75rem' }
+                fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
+                textAlign: 'center',
+                color: 'primary.main',
+                fontWeight: 700
               }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
@@ -56,11 +59,12 @@ function App() {
             <Typography 
               variant="h5" 
               component="p" 
-              sx={{ 
-                maxWidth: '60ch', 
-                mx: 'auto', 
-                mb: 4,
-                color: 'text.secondary'
+              color="text.secondary" 
+              gutterBottom
+              sx={{
+                fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' },
+                textAlign: 'center',
+                mb: 2
               }}
             >
               Help the Keweenaw Bay Indian Community track frog populations using

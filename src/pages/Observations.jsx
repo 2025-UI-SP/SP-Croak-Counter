@@ -221,29 +221,55 @@ export default function Observations() {
 
   // Render the page's user interface
   return (
-    <Container maxWidth="lg" className="observations-container">
+    <Container maxWidth="md" sx={{ mt: 12, mb: 4 }}>
+      {/* Page Header */}
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Typography 
+          variant="h3"
+          component="h1"
+          gutterBottom
+          sx={{
+            fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
+            textAlign: 'center',
+            color: 'primary.main',
+            fontWeight: 700
+          }}
+        >
+          {observationsContent.title}
+        </Typography>
+        <Typography 
+          variant="h5" 
+          component="p" 
+          color="text.secondary" 
+          gutterBottom
+          sx={{
+            fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' },
+            textAlign: 'center',
+            mb: 2
+          }}
+        >
+          {observationsContent.intro}
+        </Typography>
+      </Box>
+
       {/* A centered container to hold the page content */}
       <Paper elevation={3} className="observations-paper">
         {/* A styled box (like a card) for the table and toolbar */}
         <Toolbar className="observations-toolbar">
           <Box>
-            {/* Show the page title from the config */}
-            <Typography variant="h6">{observationsContent.title}</Typography>
-            {/* Show the introductory text from the config */}
-            <Typography variant="body2" color="text.secondary">{observationsContent.intro}</Typography>
+            {/* Button to upload selected entries (not functional yet) */}
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                /* Upload not implemented yet — does nothing */
+              }}
+              title="Upload not implemented yet"
+            >
+              {/* Show the upload button label and number of selected rows */}
+              {observationsContent.labels.uploadButton} ({selected.size})
+            </Button>
           </Box>
-          {/* Button to upload selected entries (not functional yet) */}
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              /* Upload not implemented yet — does nothing */
-            }}
-            title="Upload not implemented yet"
-          >
-            {/* Show the upload button label and number of selected rows */}
-            {observationsContent.labels.uploadButton} ({selected.size})
-          </Button>
         </Toolbar>
 
         {/* The table to display survey data */}

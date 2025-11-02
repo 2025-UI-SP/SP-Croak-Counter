@@ -209,6 +209,7 @@ function AdvancedSurvey() {
               component="p"
               sx={{
                 maxWidth: '60ch',
+                mx: 'auto',
                 mb: 3,
                 color: 'text.secondary'
               }}
@@ -248,8 +249,12 @@ function AdvancedSurvey() {
                 type="time"
                 value={formData.startTime}
                 onChange={(e) => updateField('startTime', e.target.value)}
+                helperText="Time when survey started"
                 InputLabelProps={{
                   shrink: true,
+                }}
+              />
+
               {/* Site Name */}
               <TextField
                 fullWidth

@@ -11,13 +11,16 @@ import {
   MenuItem,
   Alert,
   Button,
-  Stack
+  Stack,
+  Divider
 } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { usePageTitle } from '../hooks/usePageTitle.js';
 import { useLocalStorageForm } from '../hooks/useLocalStorageForm.js';
 import { useNavigate } from 'react-router-dom';
 import { Snackbar, Alert as MuiAlert } from '@mui/material';
+import { frogContent } from '../config.js';
+import AudioPlayer from '../components/AudioPlayer.jsx';
 
 function AdvancedSurvey() {
   usePageTitle('Advanced Survey');
@@ -33,9 +36,23 @@ function AdvancedSurvey() {
     waterTemp: '',
     startingAirTemp: '',
     endingAirTemp: '',
+    startTime: '',
+    endTime: '',
     skyCondition: '',
     windSpeed: '',
-    americanToad: '0',  
+    americantoad: '0',
+    bullfrog: '0',
+    copesgraytreefrog: '0',
+    easterngraytreefrog: '0',
+    fowlerstoad: '0',
+    greenfrog: '0',
+    minkfrog: '0',
+    northerncricketfrog: '0',
+    pickerelfrog: '0',
+    springpeeper: '0',
+    westernchorusfrog: '0',
+    woodfrog: '0',
+    northernleopardfrog: '0',
     comments: ''
   };
 
@@ -134,8 +151,33 @@ function AdvancedSurvey() {
       return;
     }
 
-    // Submit functionality added later
-    alert('Form is valid! (Submit functionality will be added later)');
+    // Build an observation entry and save to localStorage
+    try {
+      const existing = JSON.parse(localStorage.getItem('observations') || '[]');
+      const entry = {
+        id: Date.now().toString(),
+        surveyType: 'advanced',
+        date: new Date().toISOString(),
+        site: formData.location || 'Unknown location',
+        latitude: formData.latitude,
+        longitude: formData.longitude,
+        data: formData
+      };
+      existing.unshift(entry);
+      localStorage.setItem('observations', JSON.stringify(existing));
+      
+      // Clear draft without prompting the user, show success, then navigate
+      clearForm(false);
+      setShowSuccess(true);
+      
+      // Wait briefly so user sees confirmation, then navigate
+      setTimeout(() => {
+        setShowSuccess(false);
+        navigate('/observations');
+      }, 1100);
+    } catch (err) {
+      console.error('Failed to save observation', err);
+    }
   };
 
   const handleClear = () => {
@@ -165,12 +207,10 @@ function AdvancedSurvey() {
             <Typography
               variant="h5"
               component="p"
-              color="text.secondary"
-              gutterBottom
               sx={{
-                fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' },
-                textAlign: 'center',
-                mb: 2
+                maxWidth: '60ch',
+                mb: 3,
+                color: 'text.secondary'
               }}
             >
               Fill out the fields below based on what you observed
@@ -201,6 +241,15 @@ function AdvancedSurvey() {
           >
             <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
 
+              {/* Start Time */}
+              <TextField
+                fullWidth
+                label="Start Time"
+                type="time"
+                value={formData.startTime}
+                onChange={(e) => updateField('startTime', e.target.value)}
+                InputLabelProps={{
+                  shrink: true,
               {/* Site Name */}
               <TextField
                 fullWidth
@@ -386,20 +435,60 @@ function AdvancedSurvey() {
                 )}
               </FormControl>
 
-              {/* American Toad Call Density */}
-              <FormControl fullWidth>
-                <InputLabel>American Toad - Call Density</InputLabel>
-                <Select
-                  value={formData.americanToad}
-                  onChange={(e) => updateField('americanToad', e.target.value)}
-                  label="American Toad - Call Density"
+              {/* Frog Species Section */}
+              <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, color: 'primary.main' }}>
+                Frog Species Observations
+              </Typography>
+              <Typography variant="body2" color="text.secondary" paragraph>
+                Rate call density from 0-3 for each species observed. Listen to the audio to help with identification.
+              </Typography>
+
+              {/* Loop through all frogs from config */}
+              {frogContent.frogs.map((frog) => (
+                <Paper
+                  key={frog.name}
+                  sx={{ p: 2, border: 1, borderColor: 'divider', borderRadius: 1}}
                 >
-                  <MenuItem value="0">0 - None heard</MenuItem>
-                  <MenuItem value="1">1 - Individual calls, no overlapping</MenuItem>
-                  <MenuItem value="2">2 - Individual calls, some overlapping</MenuItem>
-                  <MenuItem value="3">3 - Full chorus, constant calling</MenuItem>
-                </Select>
-              </FormControl>
+                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                    {frog.name}
+                  </Typography>
+
+                  {/* Audio Player */}
+                  {frog.audio && (
+                    <Box sx={{ mb: 2 }}>
+                      <AudioPlayer src={frog.audio} />
+                    </Box>
+                  )}
+
+                  {/* Call Density Selector */}
+                  <FormControl fullWidth>
+                    <InputLabel>Call Density</InputLabel>
+                    <Select
+                      value={formData[frog.fieldName] || '0'}
+                      onChange={(e) => updateField(frog.fieldName, e.target.value)}
+                      label="Call Density"
+                    >
+                      <MenuItem value="0">0 - None heard</MenuItem>
+                      <MenuItem value="1">1 - Individual calls, no overlapping</MenuItem>
+                      <MenuItem value="2">2 - Individual calls, some overlapping</MenuItem>
+                      <MenuItem value="3">3 - Full chorus, constant calling</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Paper>
+              ))}
+
+              {/* End Time */}
+              <TextField
+                fullWidth
+                label="End Time"
+                type="time"
+                value={formData.endTime}
+                onChange={(e) => updateField('endTime', e.target.value)}
+                helperText="Time when survey ended"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
 
               {/* Comments */}
               <TextField

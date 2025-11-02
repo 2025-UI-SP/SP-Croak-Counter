@@ -30,6 +30,8 @@ function BeginnerSurvey() {
     waterTemp: '',
     startingAirTemp: '',
     endingAirTemp: '',
+    startTime: '',
+    endTime: '',
     skyCondition: '',
     windSpeed: '',
     frogCallDensity: '',
@@ -172,7 +174,7 @@ function BeginnerSurvey() {
 
           <Box sx={{ textAlign: 'center', mb: 4 }}>
             <Typography
-              variant="h3"
+              variant="h2"
               component="h1"
               gutterBottom
               sx={{
@@ -188,12 +190,11 @@ function BeginnerSurvey() {
             <Typography
               variant="h5"
               component="p"
-              color="text.secondary"
-              gutterBottom
               sx={{
-                fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' },
-                textAlign: 'center',
-                mb: 2
+                maxWidth: '60ch',
+                mx: 'auto',
+                mb: 3,
+                color: 'text.secondary'
               }}
             >
               Fill out the fields below based on what you observed
@@ -223,7 +224,18 @@ function BeginnerSurvey() {
             }}
           >
             <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-
+              {/* Start Time */}
+              <TextField
+                fullWidth
+                label="Start Time"
+                type="time"
+                value={formData.startTime}
+                onChange={(e) => updateField('startTime', e.target.value)}
+                helperText="Time when survey started"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
               {/*Location*/}
               <TextField
                 fullWidth
@@ -395,6 +407,19 @@ function BeginnerSurvey() {
                 )}
               </FormControl>
 
+
+              {/* End Time */}
+              <TextField
+                fullWidth
+                label="End Time"
+                type="time"
+                value={formData.endTime}
+                onChange={(e) => updateField('endTime', e.target.value)}
+                helperText="Time when survey ended"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
               {/*Comments Section*/}
               <TextField
                 fullWidth

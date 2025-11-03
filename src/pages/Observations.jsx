@@ -221,7 +221,7 @@ export default function Observations() {
 
   // Render the page's user interface
   return (
-    <Container maxWidth="md" sx={{ mt: 12, mb: 4 }}>
+    <Container maxWidth="lg" sx={{ mt: 12, mb: 4 }}>
       {/* Page Header */}
       <Box sx={{ textAlign: 'center', mb: 4 }}>
         <Typography 

@@ -1,11 +1,14 @@
 import React from 'react';
-import { Box, Typography, Container, Link as MuiLink, IconButton, Tooltip } from '@mui/material';
+import { Box, Typography, Container, IconButton, Tooltip, Chip } from '@mui/material';
 import { Brightness4, Brightness7 } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CloudOffIcon from '@mui/icons-material/CloudOff';
 import { useThemeMode } from '../contexts/ThemeContext.jsx';
+import useOnlineStatus from '../hooks/useOnlineStatus';
 
 function AppFooter() {
   const { darkMode, toggleDarkMode } = useThemeMode();
+  const online = useOnlineStatus();
 
   return (
     <Box
@@ -24,6 +27,12 @@ function AppFooter() {
           <Typography variant="body2" color="text.secondary">
             Croak Counter · Senior Software Project · 2025
           </Typography>
+          <Chip
+            icon={online ? <CheckCircleIcon /> : <CloudOffIcon />}
+            label={online ? 'Online' : 'Offline'}
+            color={online ? 'success' : 'default'}
+            size="small"
+          />
           <Tooltip title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
             <IconButton 
               onClick={toggleDarkMode} 
@@ -40,5 +49,3 @@ function AppFooter() {
 }
 
 export default AppFooter;
-
-

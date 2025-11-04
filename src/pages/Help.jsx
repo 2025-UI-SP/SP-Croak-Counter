@@ -52,7 +52,7 @@ function Help() {
                 sx={{fontSize: {xs: '1.125rem', sm: '1.25rem', md: '1.35rem'} }}
             >
               Here you can view the breeding periods of frogs in order to better narrow down what frog species you should be hearing during the given month.
-              The Keweenaw area is located within Zone 4.
+              The Western Upper Peninsula area is located within Zone 4.
             </Typography>
             <br/>
 
@@ -94,20 +94,20 @@ function Help() {
               e.g., if there are 5 sites, survey 1-2-3-4-5 first, then 2-3-4-5-1, then 3-4-5-1-2, etc. If you intend to survey long-term,
               do not vary from initially selected sampling sites - monitor the same sites year after year.
 
-              <br/>
+              <br/><br/>
               <strong>2. Survey effort. </strong>
               Surveys should be conducted approximately once per week. Select an evening when weather conditions are met.
               It is okay to miss one survey per month, but if more are missed, false absences may increase.
 
-              <br/>
+              <br/><br/>
               <strong>3. Gas. </strong>
               Make sure any vehicles have enough gas to complete the routes.
 
-              <br/>
+              <br/><br/>
               <strong>4. Safety. </strong>
               Tell someone where you are going before heading out for the evening. Enlist a partner whenever possible for safety.
 
-              <br/>
+              <br/><br/>
               <strong>5. Equipment. </strong>
               Make sure you have all necessary equipment, including, but not limited to, a map, a flashlight,
               a stopwatch (or other time piece), a thermometer, a first aid kit, and proper clothing.
@@ -126,31 +126,30 @@ function Help() {
                 select this button while at the survey site. Upon selection, your phone will ask for permission to access your current location. 
                 This is to ensure that we record the correct coordinates for the survey site. Please select "allow".
                 
-              <br/>
+              <br/><br/>
               <strong>2. </strong>
                 Begin call surveys 30 minutes after sunset.
 
-              <br/>
+              <br/><br/>
               <strong>3. </strong>
               At each call site, quietly wait 2-3 minutes after arriving at the listening post before starting the stopwatch for a 5-minute survey.
               During this time, expose the thermometer bulb to the air so it begins equalizing with the air temperature,
               and fill out the preliminary weather and time information on the data form. Start the survey, recording frogs heard.
               At the end of the 5 minutes, take the water temperature and fill in the remaining data.
 
-              <br/>
+              <br/><br/>
               <strong>4. </strong>
               Listen to and record frogs from the wetland being monitored, but also record frogs heard in the distance as "distant" calls and note the direction.
               Distance calls are from other wetlands, not the one you are monitoring.
 
-              <br/>
+              <br/><br/>
               <strong>5. </strong>
               Any time noise from passing vehicles, storms, etc. makes hearing impossible, elapsed time should be stopped on the stopwatch at the point of interruption
               and continued afterwards until the survey has been conducted for the full five minutes.
 
-              <br/>
+              <br/><br/>
               <strong>6. </strong>
               You may record any birds or other wildlife detected in the Comments section, along with any comments or anything you think may have disturbed the survey.
-              <br/><br/>
 
               <br/><br/><br/>
             </Typography>
@@ -163,7 +162,7 @@ function Help() {
               <strong>1. </strong>
               Store equipment. Place all wet equipment in a place where it can dry.
 
-              <br/>
+              <br/><br/>
               <strong>2. </strong>
               Ensure the survey was successfully submitted. Congratulate yourself on a job well done!
             </Typography>

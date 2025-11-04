@@ -145,7 +145,8 @@ function BeginnerSurvey() {
         site: formData.location || 'Unknown location',
         latitude: formData.latitude,
         longitude: formData.longitude,
-        data: formData
+        data: formData,
+        formType: 'basic'
       };
       existing.unshift(entry);
       localStorage.setItem('observations', JSON.stringify(existing));

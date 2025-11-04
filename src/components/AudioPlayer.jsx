@@ -103,6 +103,8 @@ const AudioPlayer = ({ src }) => {
     setDuration(0);
     setIsPlaying(false);
 
+    // Set src and add event listeners
+    audio.src = src;
     audio.addEventListener('loadedmetadata', handleLoadedMetadata);
     audio.addEventListener('canplay', handleCanPlay);
     audio.addEventListener('canplaythrough', handleCanPlayThrough);
@@ -114,7 +116,20 @@ const AudioPlayer = ({ src }) => {
     audio.addEventListener('pause', handlePause);
     audio.addEventListener('error', handleError);
 
+    // Force load with a small delay
+    // Fix for audio not loading when switching tabs
+    const delay = Math.floor(Math.random() * 100);
+    const loadTimer = setTimeout(() => {
+      if (audio && audio.src === src) {
+        audio.load();
+      }
+    }, delay);
+
     return () => {
+      clearTimeout(loadTimer);
+      // Pause and reset audio when cleaning up
+      audio.pause();
+      audio.src = '';
       audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
       audio.removeEventListener('canplay', handleCanPlay);
       audio.removeEventListener('canplaythrough', handleCanPlayThrough);
@@ -145,7 +160,6 @@ const AudioPlayer = ({ src }) => {
       {/* Hidden audio element */}
       <audio
         ref={audioRef}
-        src={src}
         preload="metadata"
       />
 

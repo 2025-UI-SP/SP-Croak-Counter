@@ -137,10 +137,14 @@ function About() {
               CS 4760 Team Members:
               <br />
               <ul>
-                <li>Nolan Casey</li>
-                <li>Josiah Parrott</li>
+                <li>Josiah Parrot - Product Owner</li>
+                <li>Nolan Casey - Technical Lead</li>
+                <li>Evan Bradford</li>
+                <li>Hollis Aitkens</li>
+                <li>Kristen Love</li>
+                <li>Malakai Bundshuh</li>
                 <li>Nick Abraham</li>
-                <li>Kirsten Love</li>
+                <li>Tony Garnett (Consultant)</li>
               {/*We're missing people, but I don't have the full list. This is pulled from github*/}
               </ul>
 
@@ -155,8 +159,12 @@ function About() {
 
               <br /><br />
 
-              Special thanks to Tony Garnett for his significant contributions to the original project.
-              Tony is now a graduate student at Michigan Tech.
+              Special thanks to <Link
+              href="https://www.linkedin.com/in/tony-garnett/"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Tony Garnett</Link> for his significant contributions to the original project.
+              Tony is currently a graduate student at Michigan Tech.
 
             </Typography>
           </AccordionDetails>

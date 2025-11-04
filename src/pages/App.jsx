@@ -74,32 +74,37 @@ function App() {
             <Divider sx={{ my: 4 }} />
             
             <Typography 
-              variant="h4" 
-              component="h3" 
+              variant="h6" 
+              component="p" 
+              color="text.secondary" 
               gutterBottom
               sx={{
-                fontSize: { xs: '1.25rem', sm: '1.5rem', md: '1.75rem' }
+                fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' },
+                textAlign: 'center',
+                mb: 2
               }}
             >
               Useful Equipment to Bring
             </Typography>
-            
+
             <List sx={{ mb: 4, maxWidth: 400, mx: 'auto' }}>
               <ListItem sx={{ justifyContent: 'center', py: 0.5 }}>
                 <ListItemText 
                   sx={{ textAlign: 'center' }}
+                  color="text.secondary"
                   primary={
-                    <Box>
+                    <Box
+                    sx={{color: 'text.secondary'}}>
                       Thermometer <strong>(Required)</strong>
                     </Box>
                   }
                 />
               </ListItem>
               <ListItem sx={{ justifyContent: 'center', py: 0.5 }}>
-                <ListItemText sx={{ textAlign: 'center' }} primary="Flashlight" />
+                <ListItemText sx={{ textAlign: 'center', color: 'text.secondary' }} primary="Flashlight" />
               </ListItem>
               <ListItem sx={{ justifyContent: 'center', py: 0.5 }}>
-                <ListItemText sx={{ textAlign: 'center' }} primary="Map" />
+                <ListItemText sx={{ textAlign: 'center', color: 'text.secondary' }} primary="Map" />
               </ListItem>
             </List>
 

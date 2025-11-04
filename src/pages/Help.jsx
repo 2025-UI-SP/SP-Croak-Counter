@@ -52,7 +52,7 @@ function Help() {
                 sx={{fontSize: {xs: '1.125rem', sm: '1.25rem', md: '1.35rem'} }}
             >
               Here you can view the breeding periods of frogs in order to better narrow down what frog species you should be hearing during the given month.
-              The Western Upper Peninsula area is located within Zone 4.
+              The western upper peninsula is located within Zone 4.
             </Typography>
             <br/>
 

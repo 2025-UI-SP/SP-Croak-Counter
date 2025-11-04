@@ -11,6 +11,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { usePageTitle } from '../hooks/usePageTitle.js';
 import {frogContent} from '../config.js';
 import { TextField } from '@mui/material';
+import AudioPlayer from '../components/AudioPlayer';
 
 function Help() {
   usePageTitle('Frog Identification');
@@ -106,10 +107,8 @@ function Help() {
               </Box>
             )}
             {frog.audio && (
-              <Box sx={{ textAlign: 'center', mt: 'auto' }}>
-                <audio controls src={frog.audio} style={{ width: '100%' }}>
-                  Your browser does not support the audio element.
-                </audio>
+              <Box sx={{ mt: 'auto' }}>
+                <AudioPlayer src={frog.audio} />
               </Box>
             )}
           </Box>

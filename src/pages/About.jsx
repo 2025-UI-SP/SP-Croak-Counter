@@ -144,7 +144,7 @@ function About() {
                 <li>Kristen Love</li>
                 <li>Malakai Bundshuh</li>
                 <li>Nick Abraham</li>
-                <li>Tony Garnett (Consultant)</li>
+                <li>Tony Garnett (UX Consultant)</li>
               {/*We're missing people, but I don't have the full list. This is pulled from github*/}
               </ul>
 

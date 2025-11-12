@@ -1,5 +1,4 @@
 import React from 'react';
-// Import Material-UI components for building the user interface (like containers, tables, buttons, etc.)
 import {
   Container,
   Paper,
@@ -19,394 +18,518 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Snackbar,
   TextField,
   FormControl,
   InputLabel,
   Select,
   MenuItem
 } from '@mui/material';
-// Import icons for upload, delete, and status indicators
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-// Import configuration for text labels (like table headers and button text)
-import { observationsContent } from '../config.js';
 
-// Convert an ISO date string (like "2023-10-06T20:21:00Z") into a readable format (e.g., "10/6/2023, 8:21 PM")
-function formatDate(iso) {
-  const d = new Date(iso);
-  return d.toLocaleString([], {year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit"});
+import { observationsContent, frogContent } from '../config.js';
+
+/* ---------- helpers ---------- */
+function formatDateOnly(iso) {
+  if (!iso) return '—';
+  try {
+    const date = new Date(iso);
+    return isNaN(date) ? String(iso) : date.toLocaleDateString();
+  } catch {
+    return String(iso);
+  }
 }
 
-// Clean up frog call density value: show a dash ("—") if empty, otherwise extract the first number or keep the text
-function formatDensity(val) {
-  if (val === null || val === undefined || val === '') return '—';
-  const s = String(val);
-  const m = s.match(/\d+/);
-  return m ? m[0] : s;
+function formatTime(time) {
+  if (!time) return '—';
+  const str = String(time).trim();
+
+  try {
+    if (str.includes('T')) {
+      const date = new Date(str);
+      if (!isNaN(date)) {
+        return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+      }
+    }
+
+    const match = str.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+    if (match) {
+      const hours = Number(match[1]);
+      const minutes = Number(match[2]);
+      const date = new Date();
+      date.setHours(hours, minutes, 0, 0);
+      return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    }
+
+    return str;
+  } catch {
+    return String(time);
+  }
 }
 
-// Clean up a number value: show a dash ("—") if empty, otherwise extract a number (including decimals or negative) or keep the text
-function formatNumber(val) {
-  if (val === null || val === undefined || val === '') return '—';
-  const s = String(val);
-  const m = s.match(/-?\d+(?:\.\d+)?/);
-  return m ? m[0] : s;
-}
-
-// Clean up temperature value: show a dash ("—") if empty, keep ranges like "50-55", or extract the first number
-function formatTemp(val) {
-  if (val === null || val === undefined || val === '') return '—';
-  const s = String(val).trim();
-  /* Keep ranges like "50-55" intact */
-  const rangeMatch = s.match(/(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)/);
-  if (rangeMatch) return `${rangeMatch[1]}-${rangeMatch[2]}`;
-  /* Otherwise return the first number (including decimals or negative) */
-  const m = s.match(/-?\d+(?:\.\d+)?/);
-  return m ? m[0] : s;
-}
-
-// Clean up range value (like wind speed): show a dash ("—") if empty, keep ranges like "4-7", or extract the first number
-function formatRange(val) {
-  if (val === null || val === undefined || val === '') return '—';
-  const s = String(val).trim();
-  /* Preserve explicit ranges like "4-7" or "4 - 7" */
-  const rangeMatch = s.match(/(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)/);
-  if (rangeMatch) return `${rangeMatch[1]}-${rangeMatch[2]}`;
-  /* Otherwise return the first number (including decimals or negative) */
-  const m = s.match(/-?\d+(?:\.\d+)?/);
-  return m ? m[0] : s;
-}
-
-// Main component for the Observations page
+/* ---------- component ---------- */
 export default function Observations() {
-  // Load saved survey data from the browser's localStorage or start with an empty list
   const [entries, setEntries] = React.useState(() => {
     try {
-      // Get data from localStorage under the key 'observations'
-      const stored = JSON.parse(localStorage.getItem('observations') || 'null');
-      // If the data is a valid list with items, use it
-      if (Array.isArray(stored) && stored.length > 0) return stored;
-    } catch (e) {
-      // If there's an error (like bad data), do nothing
+      const stored = localStorage.getItem('observations');
+      const parsed = stored ? JSON.parse(stored) : null;
+      return Array.isArray(parsed) && parsed.length > 0 ? parsed : [];
+    } catch {
+      return [];
     }
-    // If no valid data, start with an empty list
-    return [];
   });
 
-  // Keep track of which rows are selected (using a Set to store IDs)
   const [selected, setSelected] = React.useState(new Set());
-
-  // Check if all rows are selected (true if the number of selected items equals the number of entries)
   const allSelected = selected.size === entries.length && entries.length > 0;
 
-  // When the page loads, check localStorage again to catch any new surveys (e.g., from another page)
   React.useEffect(() => {
     try {
-      // Get the latest data from localStorage
-      const stored = JSON.parse(localStorage.getItem('observations') || 'null');
-      // If it's a valid list, update the entries
-      if (Array.isArray(stored)) setEntries(stored);
-    } catch (e) {
-      // Ignore errors
+      const stored = localStorage.getItem('observations');
+      if (stored) setEntries(JSON.parse(stored));
+    } catch (error) {
+      console.error('Failed to load observations from localStorage', error);
     }
-  }, []); // Empty array means this runs only when the page loads
+  }, []);
 
-  // Save the updated list of entries to localStorage
-  function persistEntries(next) {
-    // Update the component's state with the new entries
-    setEntries(next);
+  const persistEntries = (nextEntries) => {
+    setEntries(nextEntries);
     try {
-      // Save the new entries to localStorage as a JSON string
-      localStorage.setItem('observations', JSON.stringify(next));
-    } catch (e) {
-      // If saving fails, log an error
-      console.error('Failed to persist observations', e);
+      localStorage.setItem('observations', JSON.stringify(nextEntries));
+    } catch (error) {
+      console.error('Failed to save observations', error);
     }
-  }
+  };
 
-  // details modal state
+  /* ---- detail modal ---- */
   const [detailEntry, setDetailEntry] = React.useState(null);
   const [detailForm, setDetailForm] = React.useState({});
 
-  function openDetails(obs) {
-    // Prefill the modal form with top-level and data fields
+  const openDetails = (obs) => {
     const data = obs.data || {};
-    setDetailEntry(obs);
-    setDetailForm({
+    const base = {
       site: obs.site || data.location || '',
       latitude: obs.latitude ?? data.latitude ?? '',
       longitude: obs.longitude ?? data.longitude ?? '',
       frogCallDensity: data.frogCallDensity ?? data.frog_call_density ?? '',
       windSpeed: data.windSpeed ?? data.wind_speed ?? '',
-        skyCondition: data.skyCondition ?? data.sky_condition ?? '',
+      skyCondition: data.skyCondition ?? data.sky_condition ?? '',
       waterTemp: data.waterTemp ?? data.water_temp ?? '',
       startingAirTemp: data.startingAirTemp ?? data.starting_air_temp ?? '',
       endingAirTemp: data.endingAirTemp ?? data.ending_air_temp ?? '',
-      comments: data.comments ?? ''
-    });
-  }
+      startTime: data.startTime ?? obs.startTime ?? '',
+      endTime: data.endTime ?? obs.endTime ?? '',
+      comments: data.comments ?? '',
+      observer: data.observer ?? obs.observer ?? '',
+      affiliation: data.affiliation ?? obs.affiliation ?? '',
+      county: data.county ?? obs.county ?? ''
+    };
 
-  function closeDetails() {
+    const speciesFields = Object.fromEntries(
+      (frogContent?.frogs || []).map(frog => [frog.fieldName, data[frog.fieldName] ?? ''])
+    );
+
+    setDetailEntry(obs);
+    setDetailForm({ ...base, ...speciesFields });
+  };
+
+  const closeDetails = () => {
     setDetailEntry(null);
     setDetailForm({});
-  }
+  };
 
-  function handleDetailChange(name, value) {
+  const handleDetailChange = (name, value) => {
     setDetailForm(prev => ({ ...prev, [name]: value }));
-  }
+  };
 
-  function handleSaveDetails() {
+  // Advanced modal required fields
+  const requiredFields = [
+    'startTime', 'endTime', 'site', 'latitude', 'longitude', 'county', 'observer', 'skyCondition', 'windSpeed'
+  ];
+
+  const isAdvancedModal = !!detailEntry && (detailEntry.surveyType ?? detailEntry.formType) === 'advanced';
+
+  const missingRequired = isAdvancedModal && requiredFields.some(field => !detailForm[field] || String(detailForm[field]).trim() === '');
+
+  // Beginner modal required fields
+  const beginnerRequiredFields = [
+    'startTime', 'endTime', 'latitude', 'longitude', 'site', 'skyCondition', 'windSpeed', 'frogCallDensity'
+  ];
+
+  const isBeginnerModal = !!detailEntry && !((detailEntry.surveyType ?? detailEntry.formType) === 'advanced');
+  const missingBeginnerRequired = isBeginnerModal && beginnerRequiredFields.some(field => !detailForm[field] || String(detailForm[field]).trim() === '');
+
+  const handleSaveDetails = () => {
     if (!detailEntry) return;
-    // Build data object (exclude site/latitude/longitude)
-    const dataFields = { ...detailForm };
-    delete dataFields.site;
-    delete dataFields.latitude;
-    delete dataFields.longitude;
+    if (isAdvancedModal && missingRequired) {
+      setUploadSnackbarMessage('Please fill out all required fields.');
+      setUploadSnackbarOpen(true);
+      return;
+    }
+    if (isBeginnerModal && missingBeginnerRequired) {
+      setUploadSnackbarMessage('Please fill out all required fields.');
+      setUploadSnackbarOpen(true);
+      return;
+    }
+    const { site, latitude, longitude, ...dataFields } = detailForm;
 
-    const updated = entries.map(e => {
-      if (e.id === detailEntry.id) {
-        return {
-          ...e,
-          site: detailForm.site || e.site,
-          latitude: detailForm.latitude ?? e.latitude,
-          longitude: detailForm.longitude ?? e.longitude,
-          // Merge with existing data so unspecified fields are preserved
-          data: { ...(e.data || {}), ...dataFields }
-        };
-      }
-      return e;
-    });
+    const updated = entries.map(e =>
+      e.id === detailEntry.id
+        ? {
+            ...e,
+            site: site || e.site,
+            latitude: latitude ?? e.latitude,
+            longitude: longitude ?? e.longitude,
+            data: { ...(e.data || {}), ...dataFields }
+          }
+        : e
+    );
 
     persistEntries(updated);
     closeDetails();
-  }
+  };
 
-  // Mark a survey entry as "uploaded" by updating its status and timestamp
-  function handleUpload(id) {
-    // Create a new list, updating the entry with the matching ID
-    const next = entries.map((e) => {
-      if (e.id === id) return { ...e, status: 'uploaded', uploadedAt: new Date().toISOString() };
-      return e;
-    });
-    // Save the updated list
+  /* ---- delete ---- */
+  const handleDelete = (id) => {
+    const next = entries.filter(e => e.id !== id);
     persistEntries(next);
-  }
+  };
 
-  // Delete a survey entry by its ID
-  function handleDelete(id) {
-    // Create a new list without the entry that matches the ID
-    const next = entries.filter((e) => e.id !== id);
-    // Save the updated list
-    persistEntries(next);
-  }
+  /* ---- upload placeholder ---- */
+  const performUpload = async (id) => {
+    console.log('Upload placeholder triggered for ID:', id);
+    setUploadSnackbarMessage('Upload functionality is not yet implemented.');
+    setUploadSnackbarOpen(true);
+    return { ok: false, message: 'not implemented' };
+  };
 
-  // Toggle the selection of a single row (select or deselect it)
-  function toggleOne(id) {
-    // Copy the current selected set
+  /* ---- dialogs / snackbar ---- */
+  const [confirmUploadId, setConfirmUploadId] = React.useState(null);
+  const [confirmDeleteId, setConfirmDeleteId] = React.useState(null);
+  const [confirmBulkUploadOpen, setConfirmBulkUploadOpen] = React.useState(false);
+  const [uploadSnackbarOpen, setUploadSnackbarOpen] = React.useState(false);
+  const [uploadSnackbarMessage, setUploadSnackbarMessage] = React.useState('');
+
+  /* ---- selection ---- */
+  const toggleOne = (id) => {
     const next = new Set(selected);
-    // If the ID is already selected, remove it; otherwise, add it
-    if (next.has(id)) next.delete(id);
-    else next.add(id);
-    // Update the selected state
+    next.has(id) ? next.delete(id) : next.add(id);
     setSelected(next);
-  }
+  };
 
-  // Select or deselect all rows
-  function toggleAll() {
-    // If all are selected, clear the selection; otherwise, select all rows
-    if (allSelected) setSelected(new Set());
-    else setSelected(new Set(entries.map((o) => o.id)));
-  }
+  const toggleAll = () => {
+    setSelected(allSelected ? new Set() : new Set(entries.map(o => o.id)));
+  };
 
-  // Render the page's user interface
+  /* ---------- render ---------- */
   return (
     <Container maxWidth="lg" sx={{ mt: 12, mb: 4 }}>
-      {/* Page Header */}
-      <Box sx={{ textAlign: 'center', mb: 4 }}>
-        <Typography 
+      <Box textAlign="center" mb={4}>
+        <Typography
           variant="h3"
           component="h1"
           gutterBottom
-          sx={{
-            fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
-            textAlign: 'center',
-            color: 'primary.main',
-            fontWeight: 700
-          }}
+          sx={{ fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' }, color: 'primary.main', fontWeight: 700 }}
         >
           {observationsContent.title}
         </Typography>
-        <Typography 
-          variant="h5" 
-          component="p" 
-          color="text.secondary" 
-          gutterBottom
-          sx={{
-            fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' },
-            textAlign: 'center',
-            mb: 2
-          }}
+        <Typography
+          variant="h5"
+          color="text.secondary"
+          sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' }, mb: 2 }}
         >
           {observationsContent.intro}
         </Typography>
       </Box>
 
-      {/* A centered container to hold the page content */}
       <Paper elevation={3} className="observations-paper">
-        {/* A styled box (like a card) for the table and toolbar */}
         <Toolbar className="observations-toolbar">
-          <Box>
-            {/* Button to upload selected entries (not functional yet) */}
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                /* Upload not implemented yet — does nothing */
-              }}
-              title="Upload not implemented yet"
-            >
-              {/* Show the upload button label and number of selected rows */}
-              {observationsContent.labels.uploadButton} ({selected.size})
-            </Button>
-          </Box>
+          <Button
+            variant="contained"
+            onClick={() => setConfirmBulkUploadOpen(true)}
+            disabled={selected.size === 0}
+          >
+            {observationsContent.labels.uploadButton} ({selected.size})
+          </Button>
         </Toolbar>
 
-        {/* The table to display survey data */}
-        <Table className="observations-table">
-          <TableHead>
-            <TableRow>
-              {/* Checkbox to select/deselect all rows */}
-              <TableCell padding="checkbox">
-                <div style={{whiteSpace: "nowrap"}}>
-                  <label htmlFor={"selectAll"}><strong>Select All</strong></label>
-                  <Checkbox
-                    indeterminate={selected.size > 0 && !allSelected} /* Show a dash if some but not all rows are selected */
-                    checked={allSelected} /* Checked if all rows are selected */
-                    onChange={toggleAll} /* Call toggleAll when clicked */
-                    slotProps={{ 'aria-label': 'select all observations' }}
-                    name={"selectAll"}
-                  />
-                </div>
-              </TableCell>
-              {/* Column headers from the config */}
-              <TableCell>{observationsContent.labels.date}</TableCell>
-              <TableCell>{observationsContent.labels.site}</TableCell>
-              <TableCell>{observationsContent.labels.callDensity}</TableCell>
-              <TableCell>{observationsContent.labels.wind}</TableCell>
-              <TableCell>{observationsContent.labels.waterTemp}</TableCell>
-              <TableCell>{observationsContent.labels.startAir}</TableCell>
-              <TableCell>{observationsContent.labels.endAir}</TableCell>
-              <TableCell>{observationsContent.labels.status}</TableCell>
-              <TableCell align="right">{observationsContent.labels.actions}</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {/* Loop through each survey entry to create a row */}
-            {entries.map((obs) => (
-              <TableRow key={obs.id} hover onClick={() => openDetails(obs)} sx={{ cursor: 'pointer' }}> {/* Hover effect and clickable row */}
-                {/* Checkbox for selecting this row */}
+        <Box sx={{ overflowX: 'auto' }}>
+          <Table size="small" className="observations-table">
+            <TableHead>
+              <TableRow>
                 <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selected.has(obs.id)} /* Checked if this row is selected */
-                    onClick={(e) => { e.stopPropagation(); toggleOne(obs.id); }} /* Stop row click and toggle selection */
-                    inputProps={{ 'aria-label': `select observation ${obs.id}` }}
-                  />
+                  <div style={{ whiteSpace: 'nowrap' }}>
+                    <label htmlFor="selectAll"><strong>{observationsContent.selectAllLabel}</strong></label>
+                    <Checkbox
+                      id="selectAll"
+                      indeterminate={selected.size > 0 && !allSelected}
+                      checked={allSelected}
+                      onChange={toggleAll}
+                      aria-label="select all observations"
+                    />
+                  </div>
                 </TableCell>
-                {/* Display formatted data for each column */}
-                <TableCell>{formatDate(obs.date)}</TableCell>
-                <TableCell>{obs.site}</TableCell>
-                {/* Use fallback (??) to handle different data structures */}
-                <TableCell>{formatDensity(obs.data?.frogCallDensity ?? obs.frogCallDensity)}</TableCell>
-                <TableCell>{formatRange(obs.data?.windSpeed ?? obs.windSpeed)}</TableCell>
-                <TableCell>{formatTemp(obs.data?.waterTemp ?? obs.waterTemp)}</TableCell>
-                <TableCell>{formatTemp(obs.data?.startingAirTemp ?? obs.startingAirTemp)}</TableCell>
-                <TableCell>{formatTemp(obs.data?.endingAirTemp ?? obs.endingAirTemp)}</TableCell>
-                {/* Show status as a colored chip */}
-                <TableCell>
-                  {obs.status === 'uploaded' ? (
-                    <Chip icon={<CheckCircleIcon />} label="Uploaded" color="success" size="small" />
-                  ) : (
-                    <Chip label="Saved" size="small" />
-                  )}
+
+                <TableCell>{observationsContent.labels.date}</TableCell>
+                <TableCell>{observationsContent.labels.time}</TableCell>
+                <TableCell sx={{ maxWidth: { xs: 120, sm: 240 }, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {observationsContent.labels.site}
                 </TableCell>
-                {/* Action buttons for upload and delete */}
-                <TableCell align="right">
-                  {/* Upload button (not functional yet) */}
-                  <IconButton aria-label="upload" size="small" onClick={(e) => { e.stopPropagation(); /* no-op for now */ }} title="Upload not implemented yet">
-                    <CloudUploadIcon />
-                  </IconButton>
-                  {/* Delete button to remove the entry */}
-                  <IconButton aria-label="delete" size="small" onClick={(e) => { e.stopPropagation(); handleDelete(obs.id); }}>
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
+                <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{observationsContent.table.type}</TableCell>
+                <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{observationsContent.labels.status}</TableCell>
+                <TableCell align="center" sx={{ width: 120 }}>{observationsContent.table.uploadColumn}</TableCell>
+                <TableCell align="center" sx={{ width: 120 }}>{observationsContent.table.deleteColumn}</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
 
-        
-        <Dialog open={!!detailEntry} onClose={closeDetails} fullWidth maxWidth="sm">
-          <DialogTitle>Observation Details</DialogTitle>
+            <TableBody>
+              {entries.map((obs) => {
+                const type = obs.surveyType ?? obs.formType;
+                const isAdvanced = type === 'advanced';
+                const isBeginner = ['basic', 'beginner'].includes(type); // PRESERVED
+
+                return (
+                  <TableRow
+                    key={obs.id}
+                    hover
+                    onClick={() => openDetails(obs)}
+                    sx={{ cursor: 'pointer' }}
+                  >
+                    <TableCell padding="checkbox" onClick={e => e.stopPropagation()}>
+                      <Checkbox
+                        checked={selected.has(obs.id)}
+                        onClick={e => { e.stopPropagation(); toggleOne(obs.id); }}
+                        aria-label={`select observation ${obs.id}`}
+                      />
+                    </TableCell>
+
+                    <TableCell>{formatDateOnly(obs.date ?? obs.data?.date ?? obs.startTime ?? '')}</TableCell>
+                    <TableCell>{formatTime(obs.date ?? obs.data?.date ?? obs.startTime ?? '')}</TableCell>
+
+                    <TableCell
+                      sx={{
+                        maxWidth: { xs: 120, sm: 240 },
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      {obs.site}
+                    </TableCell>
+
+                    <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
+                      {isAdvanced
+                        ? observationsContent.typeLabels.advanced
+                        : isBeginner
+                        ? observationsContent.typeLabels.beginner
+                        : observationsContent.typeLabels.unknown}
+                    </TableCell>
+
+                    <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
+                      {obs.status === 'uploaded' ? (
+                        <Chip icon={<CheckCircleIcon />} label={observationsContent.statusLabels.uploaded} color="success" size="small" />
+                      ) : (
+                        <Chip label={observationsContent.statusLabels.saved} size="small" />
+                      )}
+                    </TableCell>
+
+                    <TableCell align="center" sx={{ width: 120 }}>
+                      <IconButton
+                        size="small"
+                        onClick={(e) => { e.stopPropagation(); setConfirmUploadId(obs.id); }}
+                        title={observationsContent.labels.uploadButton}
+                        aria-label="upload"
+                      >
+                        <CloudUploadIcon />
+                      </IconButton>
+                    </TableCell>
+
+                    <TableCell align="center" sx={{ width: 120 }}>
+                      <IconButton
+                        size="small"
+                        onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(obs.id); }}
+                        title={observationsContent.table.deleteColumn}
+                        aria-label="delete"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </Box>
+
+
+
+
+        {/* dialogs and modals*/}
+        <Dialog open={!!confirmUploadId} onClose={() => setConfirmUploadId(null)}>
+          <DialogTitle>{observationsContent.dialogs.confirmUploadTitle}</DialogTitle>
+          <DialogContent dividers><Typography>{observationsContent.dialogs.confirmUploadMessage}</Typography></DialogContent>
+          <DialogActions>
+            <Button onClick={() => setConfirmUploadId(null)}>Cancel</Button>
+            <Button variant="contained" onClick={() => { performUpload(confirmUploadId); setConfirmUploadId(null); }}>
+              {observationsContent.labels.uploadButton}
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Snackbar open={uploadSnackbarOpen} autoHideDuration={4000} onClose={() => setUploadSnackbarOpen(false)} message={uploadSnackbarMessage} />
+
+        <Dialog open={!!confirmDeleteId} onClose={() => setConfirmDeleteId(null)}>
+          <DialogTitle>{observationsContent.dialogs.confirmDeleteTitle}</DialogTitle>
+          <DialogContent dividers><Typography>{observationsContent.dialogs.confirmDeleteMessage}</Typography></DialogContent>
+          <DialogActions>
+            <Button onClick={() => setConfirmDeleteId(null)}>Cancel</Button>
+            <Button variant="contained" color="error" onClick={() => { handleDelete(confirmDeleteId); setConfirmDeleteId(null); }}>
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog open={confirmBulkUploadOpen} onClose={() => setConfirmBulkUploadOpen(false)}>
+          <DialogTitle>{observationsContent.dialogs.bulkUploadTitle}</DialogTitle>
           <DialogContent dividers>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
-              <TextField label="Site" fullWidth value={detailForm.site ?? ''} onChange={(e) => handleDetailChange('site', e.target.value)} />
-              <TextField label="Latitude" fullWidth value={detailForm.latitude ?? ''} onChange={(e) => handleDetailChange('latitude', e.target.value)} />
-              <TextField label="Longitude" fullWidth value={detailForm.longitude ?? ''} onChange={(e) => handleDetailChange('longitude', e.target.value)} />
+            <Typography>{observationsContent.dialogs.bulkUploadMessage(selected.size)}</Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setConfirmBulkUploadOpen(false)}>Cancel</Button>
+            <Button variant="contained" onClick={() => {
+              Array.from(selected).forEach(id => performUpload(id));
+              setSelected(new Set());
+              setConfirmBulkUploadOpen(false);
+            }}>
+              {observationsContent.labels.uploadButton}
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-              <TextField label="Water Temp (°F)" fullWidth value={detailForm.waterTemp ?? ''} onChange={(e) => handleDetailChange('waterTemp', e.target.value)} />
-              <TextField label="Starting Air Temp (°F)" fullWidth value={detailForm.startingAirTemp ?? ''} onChange={(e) => handleDetailChange('startingAirTemp', e.target.value)} />
-              <TextField label="Ending Air Temp (°F)" fullWidth value={detailForm.endingAirTemp ?? ''} onChange={(e) => handleDetailChange('endingAirTemp', e.target.value)} />
 
-               <FormControl fullWidth>
-                <InputLabel>Sky Condition</InputLabel>
-                <Select value={detailForm.skyCondition ?? ''} label="Sky Condition" onChange={(e) => handleDetailChange('skyCondition', e.target.value)}>
-                  <MenuItem value="Clear or only a few clouds">Clear or only a few clouds</MenuItem>
-                  <MenuItem value="Partly cloudy or variable">Partly cloudy or variable</MenuItem>
-                  <MenuItem value="Broken clouds or overcast">Broken clouds or overcast</MenuItem>
-                  <MenuItem value="Fog">Fog</MenuItem>
-                  <MenuItem value="Drizzle or light rain (not affecting hearing)">Drizzle or light rain (not affecting hearing)</MenuItem>
-                  <MenuItem value="Snow">Snow</MenuItem>
-                  <MenuItem value="Showers (is affecting hearing ability)">Showers (is affecting hearing ability)</MenuItem>
+
+
+        {/* Beginner Modal */}
+        <Dialog
+          open={!!detailEntry && !((detailEntry.surveyType ?? detailEntry.formType) === 'advanced')}
+          onClose={closeDetails}
+          fullWidth
+          maxWidth="sm"
+        >
+          <DialogTitle>{observationsContent.dialogs.beginnerDetailsTitle}</DialogTitle>
+          <DialogContent dividers>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, mt: 1 }}>
+              <TextField label={observationsContent.fields.startTime} fullWidth type="time" required value={detailForm.startTime ?? ''} onChange={e => handleDetailChange('startTime', e.target.value)} InputLabelProps={{ shrink: true }} />
+              <TextField label={observationsContent.fields.site} fullWidth required value={detailForm.site ?? ''} onChange={e => handleDetailChange('site', e.target.value)} />
+              <TextField label={observationsContent.fields.latitude} fullWidth required value={detailForm.latitude ?? ''} onChange={e => handleDetailChange('latitude', e.target.value)} />
+              <TextField label={observationsContent.fields.longitude} fullWidth required value={detailForm.longitude ?? ''} onChange={e => handleDetailChange('longitude', e.target.value)} />
+              <TextField label={observationsContent.fields.waterTemp} fullWidth value={detailForm.waterTemp ?? ''} onChange={e => handleDetailChange('waterTemp', e.target.value)} />
+              <TextField label={observationsContent.fields.startingAirTemp} fullWidth value={detailForm.startingAirTemp ?? ''} onChange={e => handleDetailChange('startingAirTemp', e.target.value)} />
+              <TextField label={observationsContent.fields.endingAirTemp} fullWidth value={detailForm.endingAirTemp ?? ''} onChange={e => handleDetailChange('endingAirTemp', e.target.value)} />
+              <TextField label={observationsContent.fields.endTime} fullWidth type="time" required value={detailForm.endTime ?? ''} onChange={e => handleDetailChange('endTime', e.target.value)} InputLabelProps={{ shrink: true }} />
+
+              <FormControl fullWidth variant="outlined" required>
+                <InputLabel shrink={detailForm.skyCondition !== undefined && detailForm.skyCondition !== ''}>
+                  {observationsContent.fields.skyCondition}
+                </InputLabel>
+                <Select value={detailForm.skyCondition ?? ''} onChange={e => handleDetailChange('skyCondition', e.target.value)} label={observationsContent.fields.skyCondition} required>
+                  {observationsContent.options.skyConditions.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
                 </Select>
               </FormControl>
 
-              <FormControl fullWidth>
-                <InputLabel>Wind Speed</InputLabel>
-                <Select value={detailForm.windSpeed ?? ''} label="Wind Speed" onChange={(e) => handleDetailChange('windSpeed', e.target.value)}>
-                  <MenuItem value="Calm (<1 mph)">Calm (under 1 mph)</MenuItem>
-                  <MenuItem value="Light Air (1-3 mph)">Light Air (1-3 mph)</MenuItem>
-                  <MenuItem value="Light Breeze (4-7 mph)">Light Breeze (4-7 mph)</MenuItem>
-                  <MenuItem value="Gentle Breeze (8-12 mph)">Gentle Breeze (8-12 mph)</MenuItem>
-                  <MenuItem value="Moderate Breeze (13-18 mph)">Moderate Breeze (13-18 mph)</MenuItem>
-                  <MenuItem value="Fresh Breeze (19-24 mph)">Fresh Breeze (19-24 mph)</MenuItem>
-                  <MenuItem value="Strong Breeze (25-31 mph)">Strong Breeze (25-31 mph)</MenuItem>
-                  <MenuItem value="Moderate Gale (32-38 mph)">Moderate Gale (32-38 mph)</MenuItem>
-                  <MenuItem value="Fresh Gale (39-46 mph)">Fresh Gale (39-46 mph)</MenuItem>
-                  <MenuItem value="Strong Gale (47-54 mph)">Strong Gale (47-54 mph)</MenuItem>
-                  <MenuItem value="Whole Gale (55-63 mph)">Whole Gale (55-63 mph)</MenuItem>
-                  <MenuItem value="Storm (64-72 mph)">Storm (64-72 mph)</MenuItem>
-                  <MenuItem value="Hurricane (73+ mph)">Hurricane (73+ mph)</MenuItem>
+              <FormControl fullWidth variant="outlined" required>
+                <InputLabel shrink={detailForm.windSpeed !== undefined && detailForm.windSpeed !== ''}>
+                  {observationsContent.fields.windSpeed}
+                </InputLabel>
+                <Select value={detailForm.windSpeed ?? ''} onChange={e => handleDetailChange('windSpeed', e.target.value)} label={observationsContent.fields.windSpeed} required>
+                  {observationsContent.options.windSpeeds.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
                 </Select>
               </FormControl>
 
-              <FormControl fullWidth>
-                <InputLabel>Frog Call Density</InputLabel>
-                <Select value={detailForm.frogCallDensity ?? ''} label="Frog Call Density" onChange={(e) => handleDetailChange('frogCallDensity', e.target.value)}>
-                  <MenuItem value="0 - None">0 - No frogs heard</MenuItem>
-                  <MenuItem value="1 - Individual calls, no overlapping">1 - Individual calls, easy to count</MenuItem>
-                  <MenuItem value="2 - Individual calls, some overlapping">2 - Some calls overlapping</MenuItem>
-                  <MenuItem value="3 - Full chorus, constant, continuous">3 - Full chorus, constant calling</MenuItem>
+              <FormControl fullWidth variant="outlined" required>
+                <InputLabel shrink={detailForm.frogCallDensity !== undefined && detailForm.frogCallDensity !== ''}>
+                  {observationsContent.fields.frogCallDensity}
+                </InputLabel>
+                <Select value={detailForm.frogCallDensity ?? ''} onChange={e => handleDetailChange('frogCallDensity', e.target.value)} label={observationsContent.fields.frogCallDensity} required>
+                  {observationsContent.options.frogCallDensity.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
                 </Select>
               </FormControl>
 
-              <TextField label="Comments" fullWidth multiline rows={3} value={detailForm.comments ?? ''} onChange={(e) => handleDetailChange('comments', e.target.value)} />
+              <TextField label={observationsContent.fields.comments} fullWidth multiline rows={3} value={detailForm.comments ?? ''} onChange={e => handleDetailChange('comments', e.target.value)} />
             </Box>
           </DialogContent>
           <DialogActions>
             <Button onClick={closeDetails}>Cancel</Button>
-            <Button variant="contained" onClick={handleSaveDetails}>Save</Button>
+            <Button variant="contained" onClick={handleSaveDetails} disabled={missingBeginnerRequired}>Save</Button>
+          </DialogActions>
+        </Dialog>
+
+
+
+
+        {/* Advanced Modal */}
+        <Dialog
+          open={!!detailEntry && (detailEntry.surveyType ?? detailEntry.formType) === 'advanced'}
+          onClose={closeDetails}
+          fullWidth
+          maxWidth="sm"
+        >
+          <DialogTitle>{observationsContent.dialogs.advancedDetailsTitle}</DialogTitle>
+          <DialogContent dividers>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, mt: 1 }}>
+              <TextField label="Start Time" fullWidth type="time" required value={detailForm.startTime ?? ''} onChange={e => handleDetailChange('startTime', e.target.value)} InputLabelProps={{ shrink: true }} />
+              <TextField label={observationsContent.fields.site} fullWidth required value={detailForm.site ?? ''} onChange={e => handleDetailChange('site', e.target.value)} />
+              <TextField label={observationsContent.fields.latitude} fullWidth required value={detailForm.latitude ?? ''} onChange={e => handleDetailChange('latitude', e.target.value)} />
+              <TextField label={observationsContent.fields.longitude} fullWidth required value={detailForm.longitude ?? ''} onChange={e => handleDetailChange('longitude', e.target.value)} />
+              <TextField label={observationsContent.fields.county} fullWidth required value={detailForm.county ?? ''} onChange={e => handleDetailChange('county', e.target.value)} />
+              <TextField label={observationsContent.fields.observer} fullWidth required value={detailForm.observer ?? ''} onChange={e => handleDetailChange('observer', e.target.value)} />
+              <TextField label={observationsContent.fields.affiliation} fullWidth value={detailForm.affiliation ?? ''} onChange={e => handleDetailChange('affiliation', e.target.value)} />
+              <TextField label={observationsContent.fields.waterTemp} fullWidth value={detailForm.waterTemp ?? ''} onChange={e => handleDetailChange('waterTemp', e.target.value)} />
+              <TextField label={observationsContent.fields.startingAirTemp} fullWidth value={detailForm.startingAirTemp ?? ''} onChange={e => handleDetailChange('startingAirTemp', e.target.value)} />
+              <TextField label={observationsContent.fields.endingAirTemp} fullWidth value={detailForm.endingAirTemp ?? ''} onChange={e => handleDetailChange('endingAirTemp', e.target.value)} />
+
+              <FormControl fullWidth variant="outlined" required>
+                <InputLabel shrink={detailForm.skyCondition !== undefined && detailForm.skyCondition !== ''}>
+                  {observationsContent.fields.skyCondition}
+                </InputLabel>
+                <Select value={detailForm.skyCondition ?? ''} onChange={e => handleDetailChange('skyCondition', e.target.value)} label={observationsContent.fields.skyCondition} required>
+                  {observationsContent.options.skyConditions.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
+                </Select>
+              </FormControl>
+
+              <FormControl fullWidth variant="outlined" required>
+                <InputLabel shrink={detailForm.windSpeed !== undefined && detailForm.windSpeed !== ''}>
+                  {observationsContent.fields.windSpeed}
+                </InputLabel>
+                <Select value={detailForm.windSpeed ?? ''} onChange={e => handleDetailChange('windSpeed', e.target.value)} label={observationsContent.fields.windSpeed} required>
+                  {observationsContent.options.windSpeeds.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
+                </Select>
+              </FormControl>
+
+              <TextField label={observationsContent.fields.endTime} fullWidth type="time" required value={detailForm.endTime ?? ''} onChange={e => handleDetailChange('endTime', e.target.value)} InputLabelProps={{ shrink: true }} />
+
+              <Typography variant="h6" sx={{ mt: 1 }}>{observationsContent.frogSpeciesHeading}</Typography>
+
+              {(frogContent?.frogs || []).map(frog => (
+                <FormControl key={frog.fieldName} fullWidth variant="outlined">
+                  <InputLabel shrink={detailForm[frog.fieldName] !== undefined && detailForm[frog.fieldName] !== ''}>
+                    {frog.name}
+                  </InputLabel>
+                  <Select value={detailForm[frog.fieldName] ?? '0'} onChange={e => handleDetailChange(frog.fieldName, e.target.value)} label={frog.name}>
+                    {observationsContent.options.speciesDensityOptions.map((label, idx) => (
+                      <MenuItem key={label} value={String(idx)}>{label}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              ))}
+
+              <TextField label={observationsContent.fields.comments} fullWidth multiline rows={3} value={detailForm.comments ?? ''} onChange={e => handleDetailChange('comments', e.target.value)} />
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={closeDetails}>Cancel</Button>
+            <Button variant="contained" onClick={handleSaveDetails} disabled={missingRequired}>Save</Button>
           </DialogActions>
         </Dialog>
       </Paper>

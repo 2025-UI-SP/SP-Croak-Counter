@@ -124,22 +124,96 @@ export const frogContent = {
   })),
 }
 
-export const observationsContent = {
+  export const observationsContent = {
   title: 'Saved Observations',
   intro: 'Observations currently stored on this device. Select surveys to upload when ready.',
   labels: {
     date: 'Date',
+    time: 'Time',
     site: 'Site',
-    callDensity: 'Call Density',
-    wind: 'Wind',
-    waterTemp: 'Water Temp',
-    startAir: 'Start Air',
-    endAir: 'End Air',
     status: 'Status',
-    actions: 'Actions',
     uploadButton: 'Upload'
   },
-  entries: [
-  
-  ]
+  selectAllLabel: 'Select All',
+  table: {
+    type: 'Type',
+    uploadColumn: 'Upload',
+    deleteColumn: 'Delete'
+  },
+  statusLabels: {
+    uploaded: 'Uploaded',
+    saved: 'Saved'
+  },
+  typeLabels: {
+    advanced: 'Advanced',
+    beginner: 'Beginner',
+    unknown: '—'
+  },
+  dialogs: {
+    confirmUploadTitle: 'Confirm Upload',
+    confirmUploadMessage: 'Are you sure you want to upload this observation?',
+    confirmDeleteTitle: 'Confirm Delete',
+    confirmDeleteMessage: 'Are you sure you want to permanently delete this observation?',
+    bulkUploadTitle: 'Upload Selected Observations',
+    bulkUploadMessage: (count) => `Upload ${count} selected observation(s)?`,
+    beginnerDetailsTitle: 'Observation Details (Beginner)',
+    advancedDetailsTitle: 'Observation Details (Advanced)'
+  },
+  fields: {
+    site: 'Site',
+    latitude: 'Latitude',
+    longitude: 'Longitude',
+    startTime: 'Start Time',
+    endTime: 'End Time',
+    waterTemp: 'Water Temp (°F)',
+    startingAirTemp: 'Starting Air Temp (°F)',
+    endingAirTemp: 'Ending Air Temp (°F)',
+    skyCondition: 'Sky Condition',
+    windSpeed: 'Wind Speed',
+    frogCallDensity: 'Frog Call Density',
+    observer: 'Observer',
+    affiliation: 'Affiliation',
+    county: 'County',
+    comments: 'Comments'
+  },
+  options: {
+    skyConditions: [
+      'Clear or only a few clouds',
+      'Partly cloudy or variable',
+      'Broken clouds or overcast',
+      'Fog',
+      'Drizzle or light rain (not affecting hearing)',
+      'Snow',
+      'Showers (is affecting hearing ability)'
+    ],
+    windSpeeds: [
+      'Calm (<1 mph)',
+      'Light Air (1-3 mph)',
+      'Light Breeze (4-7 mph)',
+      'Gentle Breeze (8-12 mph)',
+      'Moderate Breeze (13-18 mph)',
+      'Fresh Breeze (19-24 mph)',
+      'Strong Breeze (25-31 mph)',
+      'Moderate Gale (32-38 mph)',
+      'Fresh Gale (39-46 mph)',
+      'Strong Gale (47-54 mph)',
+      'Whole Gale (55-63 mph)',
+      'Storm (64-72 mph)',
+      'Hurricane (73+ mph)'
+    ],
+    frogCallDensity: [
+      '0 - No frogs heard',
+      '1 - Individual calls, easy to count',
+      '2 - Some calls overlapping',
+      '3 - Full chorus, constant calling'
+    ],
+    speciesDensityOptions: [
+      '0 - None heard',
+      '1 - Individual calls, no overlapping',
+      '2 - Individual calls, some overlapping',
+      '3 - Full chorus, constant calling'
+    ]
+  },
+  frogSpeciesHeading: 'Frog Species Observations'
 };
+

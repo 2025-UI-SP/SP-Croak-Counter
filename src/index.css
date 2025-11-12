@@ -135,10 +135,9 @@ a:hover {
 .observations-paper {
   border-radius: var(--card-radius); /* match other pages */
   overflow: hidden;
-  padding: 2.5rem; /* match Paper p:5 (5*8px = 40px -> 2.5rem)
-                    placed here so inner toolbar can be flush */
-  background: #fff;
-  border: 1px solid var(--border-color);
+  padding: 2.5rem; /* match Paper p:5 (5*8px = 40px -> 2.5rem)*/
+  background: transparent;
+  border: none;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 .observations-toolbar {

@@ -23,25 +23,35 @@ function AppFooter() {
       }}
     >
       <Container>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 2 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: { xs: 1, sm: 2 }
+          }}
+        >
           <Typography variant="body2" color="text.secondary">
-            Croak Counter · Senior Software Project · 2025
+            Senior Software Project · 2025
           </Typography>
-          <Chip
-            icon={online ? <CheckCircleIcon /> : <CloudOffIcon />}
-            label={online ? 'Online' : 'Offline'}
-            color={online ? 'success' : 'default'}
-            size="small"
-          />
-          <Tooltip title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
-            <IconButton 
-              onClick={toggleDarkMode} 
-              color="primary"
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Chip
+              icon={online ? <CheckCircleIcon /> : <CloudOffIcon />}
+              label={online ? 'Online' : 'Offline'}
+              color={online ? 'success' : 'default'}
               size="small"
-            >
-              {darkMode ? <Brightness7 /> : <Brightness4 />}
-            </IconButton>
-          </Tooltip>
+            />
+            <Tooltip title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
+              <IconButton 
+                onClick={toggleDarkMode} 
+                color="primary"
+                size="small"
+              >
+                {darkMode ? <Brightness7 /> : <Brightness4 />}
+              </IconButton>
+            </Tooltip>
+          </Box>
         </Box>
       </Container>
     </Box>

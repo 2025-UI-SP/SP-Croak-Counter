@@ -6,12 +6,12 @@ import {
   Typography, 
   Paper, 
   Button, 
-  List, 
-  ListItem, 
-  ListItemText, 
   Chip,
   Divider,
-  Stack
+  Stack,
+  Card,
+  CardContent,
+  Tooltip
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { usePageTitle } from '../hooks/usePageTitle.js';
@@ -81,32 +81,120 @@ function App() {
               sx={{
                 fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' },
                 textAlign: 'center',
-                mb: 2
+                mb: 3
               }}
             >
               Useful Equipment to Bring
             </Typography>
 
-            <List sx={{ mb: 4, maxWidth: 400, mx: 'auto' }}>
-              <ListItem sx={{ justifyContent: 'center', py: 0.5 }}>
-                <ListItemText 
-                  sx={{ textAlign: 'center' }}
-                  color="text.secondary"
-                  primary={
-                    <Box
-                    sx={{color: 'text.secondary'}}>
-                      Thermometer <strong>(Required)</strong>
-                    </Box>
-                  }
-                />
-              </ListItem>
-              <ListItem sx={{ justifyContent: 'center', py: 0.5 }}>
-                <ListItemText sx={{ textAlign: 'center', color: 'text.secondary' }} primary="Flashlight" />
-              </ListItem>
-              <ListItem sx={{ justifyContent: 'center', py: 0.5 }}>
-                <ListItemText sx={{ textAlign: 'center', color: 'text.secondary' }} primary="Map" />
-              </ListItem>
-            </List>
+            <Box 
+              sx={{ 
+                mb: 4, 
+                maxWidth: 500, 
+                mx: 'auto', 
+                display: 'grid', 
+                gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' },
+                gap: 1.25
+              }}
+            >
+              <Box sx={{ display: 'flex' }}>
+                <Tooltip 
+                  title="A thermometer is essential for measuring water temperature during surveys. Temperature affects frog activity."
+                  arrow
+                  enterTouchDelay={0}
+                >
+                  <Card 
+                    sx={{ 
+                      display: 'flex',
+                      flexDirection: 'column',
+                      flex: 1,
+                      height: 110,
+                      width: '100%',
+                      textAlign: 'center',
+                      transition: 'transform 0.2s, box-shadow 0.2s',
+                      '&:hover': {
+                        transform: 'translateY(-4px)',
+                        boxShadow: 4
+                      }
+                    }}
+                  >
+                    <CardContent sx={{ py: 1.25, flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                      <Typography variant="h5" sx={{ mb: 0.25, fontSize: '2rem' }}>🌡️</Typography>
+                      <Typography variant="body2" fontWeight="medium" sx={{ mb: 0.25 }}>
+                        Thermometer
+                      </Typography>
+                      <Chip 
+                        label="Required" 
+                        size="small" 
+                        color="error" 
+                        variant="outlined"
+                        sx={{ mt: 0.25 }}
+                      />
+                    </CardContent>
+                  </Card>
+                </Tooltip>
+              </Box>
+              <Box sx={{ display: 'flex' }}>
+                <Tooltip 
+                  title="A flashlight helps you navigate survey sites in low-light conditions."
+                  arrow
+                  enterTouchDelay={0}
+                >
+                  <Card 
+                    sx={{ 
+                      display: 'flex',
+                      flexDirection: 'column',
+                      flex: 1,
+                      height: 110,
+                      width: '100%',
+                      textAlign: 'center',
+                      transition: 'transform 0.2s, box-shadow 0.2s',
+                      '&:hover': {
+                        transform: 'translateY(-4px)',
+                        boxShadow: 4
+                      }
+                    }}
+                  >
+                    <CardContent sx={{ py: 1.25, flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                      <Typography variant="h5" sx={{ mb: 0.25, fontSize: '2rem' }}>🔦</Typography>
+                      <Typography variant="body2" fontWeight="medium">
+                        Flashlight
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Tooltip>
+              </Box>
+              <Box sx={{ display: 'flex' }}>
+                <Tooltip 
+                  title="A GPS or mobile device helps you locate survey sites and mark your survey locations accurately."
+                  arrow
+                  enterTouchDelay={0}
+                >
+                  <Card 
+                    sx={{ 
+                      display: 'flex',
+                      flexDirection: 'column',
+                      flex: 1,
+                      height: 110,
+                      width: '100%',
+                      textAlign: 'center',
+                      transition: 'transform 0.2s, box-shadow 0.2s',
+                      '&:hover': {
+                        transform: 'translateY(-4px)',
+                        boxShadow: 4
+                      }
+                    }}
+                  >
+                    <CardContent sx={{ py: 1.25, flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                      <Typography variant="h5" sx={{ mb: 0.25, fontSize: '2rem' }}>🗺️</Typography>
+                      <Typography variant="body2" fontWeight="medium">
+                        Map
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Tooltip>
+              </Box>
+            </Box>
 
             <Stack 
               direction={{ xs: 'column', sm: 'row' }} 

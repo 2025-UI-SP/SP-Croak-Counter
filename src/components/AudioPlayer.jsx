@@ -12,7 +12,7 @@ import {
   Pause
 } from '@mui/icons-material';
 
-const AudioPlayer = ({ src }) => {
+const AudioPlayer = ({ src, startTime }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const audioRef = useRef(null);
@@ -59,6 +59,10 @@ const AudioPlayer = ({ src }) => {
     const handleLoadedMetadata = () => {
       setDuration(audio.duration);
       setIsLoading(false);
+      if (startTime !== undefined && startTime > 0) { 
+        audio.currentTime = startTime;
+        setCurrentTime(startTime);
+      }
     };
 
     const handleCanPlay = () => {

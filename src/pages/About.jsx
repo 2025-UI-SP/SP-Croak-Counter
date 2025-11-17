@@ -22,7 +22,9 @@ function About() {
         gutterBottom
         sx={{
           fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
-          textAlign: 'center'
+          textAlign: 'center',
+          color: 'primary.main',
+          fontWeight: 700
         }}
       >
         About This Project

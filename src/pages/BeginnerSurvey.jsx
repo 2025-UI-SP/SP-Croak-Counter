@@ -43,6 +43,8 @@ function BeginnerSurvey() {
     { name: 'location', label: 'location' },
     { name: 'latitude', label: 'latitude' },
     { name: 'longitude', label: 'longitude' },
+    { name: 'startTime', label: 'start time'},
+    { name: 'endTime', label: 'end time'},
     { name: 'skyCondition', label: 'sky condition' },
     { name: 'windSpeed', label: 'wind speed' },
     { name: 'frogCallDensity', label: 'call density' }
@@ -228,13 +230,20 @@ function BeginnerSurvey() {
               {/* Start Time */}
               <TextField
                 fullWidth
+                required
                 label="Start Time"
                 type="time"
                 value={formData.startTime}
                 onChange={(e) => updateField('startTime', e.target.value)}
                 helperText="Time when survey started"
+                error={!!errors.startTime}
                 InputLabelProps={{
                   shrink: true,
+                }}
+                sx={{
+                  '& input[type="time"]::-webkit-calendar-picker-indicator': {
+                    filter: (theme) => theme.palette.mode === 'dark' ? 'invert(1)' : 'none'
+                  }
                 }}
               />
               {/*Location*/}
@@ -270,6 +279,7 @@ function BeginnerSurvey() {
                 onChange={(e) => handleNumberInput('latitude', e.target.value)}
                 error={!!errors.latitude}
                 helperText={errors.latitude}
+                input type = "text"
                 inputMode="decimal"
               />
               {fieldError === 'latitude' && (
@@ -285,6 +295,7 @@ function BeginnerSurvey() {
                 onChange={(e) => handleNumberInput('longitude', e.target.value)}
                 error={!!errors.longitude}
                 helperText={errors.longitude}
+                input type = "text"
                 inputMode="decimal"
               />
               {fieldError === 'longitude' && (
@@ -304,6 +315,7 @@ function BeginnerSurvey() {
                 value={formData.waterTemp}
                 onChange={(e) => handleNumberInput('waterTemp', e.target.value)}
                 helperText="Optional - only if you have a thermometer"
+                input type = "text"
                 inputMode="decimal"
               />
               {fieldError === 'waterTemp' && (
@@ -317,6 +329,7 @@ function BeginnerSurvey() {
                 value={formData.startingAirTemp}
                 onChange={(e) => handleNumberInput('startingAirTemp', e.target.value)}
                 helperText="Optional - air temperature when you started"
+                input type = "text"
                 inputMode="decimal"
               />
               {fieldError === 'startingAirTemp' && (
@@ -330,6 +343,7 @@ function BeginnerSurvey() {
                 value={formData.endingAirTemp}
                 onChange={(e) => handleNumberInput('endingAirTemp', e.target.value)}
                 helperText="Optional - air temperature when you finished"
+                input type = "text"
                 inputMode="decimal"
               />
               {fieldError === 'endingAirTemp' && (
@@ -412,13 +426,20 @@ function BeginnerSurvey() {
               {/* End Time */}
               <TextField
                 fullWidth
+                required
                 label="End Time"
                 type="time"
                 value={formData.endTime}
                 onChange={(e) => updateField('endTime', e.target.value)}
                 helperText="Time when survey ended"
+                error={!!errors.endTime}
                 InputLabelProps={{
                   shrink: true,
+                }}
+                sx={{
+                  '& input[type="time"]::-webkit-calendar-picker-indicator': {
+                    filter: (theme) => theme.palette.mode === 'dark' ? 'invert(1)' : 'none'
+                  }
                 }}
               />
               {/*Comments Section*/}

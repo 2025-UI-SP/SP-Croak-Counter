@@ -61,6 +61,8 @@ function AdvancedSurvey() {
     { name: 'location', label: 'site name' },
     { name: 'latitude', label: 'latitude' },
     { name: 'longitude', label: 'longitude' },
+    { name: 'startTime', label: 'start time' },
+    { name: 'endTime', label: 'end time' },
     { name: 'county', label: 'county' },
     { name: 'observer', label: 'observer name' },
     { name: 'skyCondition', label: 'sky condition' },
@@ -245,13 +247,20 @@ function AdvancedSurvey() {
               {/* Start Time */}
               <TextField
                 fullWidth
+                required
                 label="Start Time"
                 type="time"
                 value={formData.startTime}
                 onChange={(e) => updateField('startTime', e.target.value)}
                 helperText="Time when survey started"
+                error={!!errors.startTime}
                 InputLabelProps={{
                   shrink: true,
+                }}
+                sx={{
+                  '& input[type="time"]::-webkit-calendar-picker-indicator': {
+                    filter: (theme) => theme.palette.mode === 'dark' ? 'invert(1)' : 'none'
+                  }
                 }}
               />
 
@@ -288,6 +297,7 @@ function AdvancedSurvey() {
                 onChange={(e) => handleNumberInput('latitude', e.target.value)}
                 error={!!errors.latitude}
                 helperText={errors.latitude}
+                input type = "text"
                 inputMode="decimal"
               />
               {fieldError === 'latitude' && (
@@ -303,6 +313,7 @@ function AdvancedSurvey() {
                 onChange={(e) => handleNumberInput('longitude', e.target.value)}
                 error={!!errors.longitude}
                 helperText={errors.longitude}
+                input type = "text"
                 inputMode="decimal"
               />
               {fieldError === 'longitude' && (
@@ -356,6 +367,7 @@ function AdvancedSurvey() {
                 value={formData.waterTemp}
                 onChange={(e) => handleNumberInput('waterTemp', e.target.value)}
                 helperText="Optional - only if you have a thermometer"
+                input type = "text"
                 inputMode="decimal"
               />
               {fieldError === 'waterTemp' && (
@@ -369,6 +381,7 @@ function AdvancedSurvey() {
                 value={formData.startingAirTemp}
                 onChange={(e) => handleNumberInput('startingAirTemp', e.target.value)}
                 helperText="Optional - air temperature when you started"
+                input type = "text"
                 inputMode="decimal"
               />
               {fieldError === 'startingAirTemp' && (
@@ -382,6 +395,7 @@ function AdvancedSurvey() {
                 value={formData.endingAirTemp}
                 onChange={(e) => handleNumberInput('endingAirTemp', e.target.value)}
                 helperText="Optional - air temperature when you finished"
+                input type = "text"
                 inputMode="decimal"
               />
               {fieldError === 'endingAirTemp' && (
@@ -452,16 +466,35 @@ function AdvancedSurvey() {
               {frogContent.frogs.map((frog) => (
                 <Paper
                   key={frog.name}
-                  sx={{ p: 2, border: 1, borderColor: 'divider', borderRadius: 1}}
+                  sx={{ 
+                    p: 2,
+                    border: 1,
+                    borderColor: 'text.secondary', 
+                    borderRadius: 1,
+                    mb: 3, 
+                    position: 'relative',
+                    boxShadow: 3
+                    
+                  }}
                 >
-                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top:12,
+                      right:12,
+                      fontSize: '1.5rem'
+                    }}
+                    >
+                      🐸
+                    </Box>
+                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: 'primary.main' }}>
                     {frog.name}
                   </Typography>
 
                   {/* Audio Player */}
                   {frog.audio && (
                     <Box sx={{ mb: 2 }}>
-                      <AudioPlayer src={frog.audio} />
+                      <AudioPlayer src={frog.audio} startTime={frog.startTime}/>
                     </Box>
                   )}
 
@@ -485,13 +518,20 @@ function AdvancedSurvey() {
               {/* End Time */}
               <TextField
                 fullWidth
+                required
                 label="End Time"
                 type="time"
                 value={formData.endTime}
                 onChange={(e) => updateField('endTime', e.target.value)}
                 helperText="Time when survey ended"
+                error={!!errors.endTime}
                 InputLabelProps={{
                   shrink: true,
+                }}
+                sx={{
+                  '& input[type="time"]::-webkit-calendar-picker-indicator': {
+                    filter: (theme) => theme.palette.mode === 'dark' ? 'invert(1)' : 'none'
+                  }
                 }}
               />
 

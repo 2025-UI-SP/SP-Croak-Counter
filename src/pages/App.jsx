@@ -1,11 +1,11 @@
 
 import React from 'react';
-import { 
-  Container, 
-  Box, 
-  Typography, 
-  Paper, 
-  Button, 
+import {
+  Container,
+  Box,
+  Typography,
+  Paper,
+  Button,
   Chip,
   Divider,
   Stack,
@@ -15,23 +15,26 @@ import {
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { usePageTitle } from '../hooks/usePageTitle.js';
+import { useTranslation } from '../hooks/useTranslation.js';
 
 function App() {
   usePageTitle();
+  const { t } = useTranslation();
+
   return (
     <Container maxWidth="lg" sx={{ mt: 12, mb: 4 }}>
       <Box display="flex" justifyContent="center">
         <Box sx={{ width: { xs: '100%', md: '90%', lg: '80%' } }}>
-          <Paper 
+          <Paper
             elevation={3}
-            sx={{ 
-              p: 5, 
+            sx={{
+              p: 5,
               textAlign: 'center',
               borderRadius: 4,
               mx: { xs: 2, md: 4 }
             }}
           >
-            <Typography 
+            <Typography
               variant="h3"
               component="h1"
               gutterBottom
@@ -44,22 +47,22 @@ function App() {
             >
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
                 🐸
-                Croak Counter
+                {t('app.title')}
               </Box>
             </Typography>
-            
+
             <Box display="flex" justifyContent="center" mb={3}>
-              <Chip 
-                label="Michigan Technology University" 
-                color="primary" 
+              <Chip
+                label={t('home.mtu')}
+                color="primary"
                 variant="outlined"
               />
             </Box>
-            
-            <Typography 
-              variant="h5" 
-              component="p" 
-              color="text.secondary" 
+
+            <Typography
+              variant="h5"
+              component="p"
+              color="text.secondary"
               gutterBottom
               sx={{
                 fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' },
@@ -67,16 +70,15 @@ function App() {
                 mb: 2
               }}
             >
-              Help the Keweenaw Bay Indian Community track frog populations using
-              quick call index surveys.
+              {t('home.description')}
             </Typography>
 
             <Divider sx={{ my: 4 }} />
-            
-            <Typography 
-              variant="h6" 
-              component="p" 
-              color="text.secondary" 
+
+            <Typography
+              variant="h6"
+              component="p"
+              color="text.secondary"
               gutterBottom
               sx={{
                 fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' },
@@ -84,27 +86,27 @@ function App() {
                 mb: 3
               }}
             >
-              Useful Equipment to Bring
+              {t('home.equipmentTitle')}
             </Typography>
 
-            <Box 
-              sx={{ 
-                mb: 4, 
-                maxWidth: 500, 
-                mx: 'auto', 
-                display: 'grid', 
+            <Box
+              sx={{
+                mb: 4,
+                maxWidth: 500,
+                mx: 'auto',
+                display: 'grid',
                 gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' },
                 gap: 1.25
               }}
             >
               <Box sx={{ display: 'flex' }}>
-                <Tooltip 
-                  title="A thermometer is essential for measuring water temperature during surveys. Temperature affects frog activity."
+                <Tooltip
+                  title={t('home.equipment.thermometer.tooltip')}
                   arrow
                   enterTouchDelay={0}
                 >
-                  <Card 
-                    sx={{ 
+                  <Card
+                    sx={{
                       display: 'flex',
                       flexDirection: 'column',
                       flex: 1,
@@ -121,12 +123,12 @@ function App() {
                     <CardContent sx={{ py: 1.25, flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                       <Typography variant="h5" sx={{ mb: 0.25, fontSize: '2rem' }}>🌡️</Typography>
                       <Typography variant="body2" fontWeight="medium" sx={{ mb: 0.25 }}>
-                        Thermometer
+                        {t('home.equipment.thermometer.title')}
                       </Typography>
-                      <Chip 
-                        label="Required" 
-                        size="small" 
-                        color="error" 
+                      <Chip
+                        label={t('home.equipment.thermometer.required')}
+                        size="small"
+                        color="error"
                         variant="outlined"
                         sx={{ mt: 0.25 }}
                       />
@@ -135,13 +137,13 @@ function App() {
                 </Tooltip>
               </Box>
               <Box sx={{ display: 'flex' }}>
-                <Tooltip 
-                  title="A flashlight helps you navigate survey sites in low-light conditions."
+                <Tooltip
+                  title={t('home.equipment.flashlight.tooltip')}
                   arrow
                   enterTouchDelay={0}
                 >
-                  <Card 
-                    sx={{ 
+                  <Card
+                    sx={{
                       display: 'flex',
                       flexDirection: 'column',
                       flex: 1,
@@ -158,20 +160,20 @@ function App() {
                     <CardContent sx={{ py: 1.25, flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                       <Typography variant="h5" sx={{ mb: 0.25, fontSize: '2rem' }}>🔦</Typography>
                       <Typography variant="body2" fontWeight="medium">
-                        Flashlight
+                        {t('home.equipment.flashlight.title')}
                       </Typography>
                     </CardContent>
                   </Card>
                 </Tooltip>
               </Box>
               <Box sx={{ display: 'flex' }}>
-                <Tooltip 
-                  title="A GPS or mobile device helps you locate survey sites and mark your survey locations accurately."
+                <Tooltip
+                  title={t('home.equipment.map.tooltip')}
                   arrow
                   enterTouchDelay={0}
                 >
-                  <Card 
-                    sx={{ 
+                  <Card
+                    sx={{
                       display: 'flex',
                       flexDirection: 'column',
                       flex: 1,
@@ -188,7 +190,7 @@ function App() {
                     <CardContent sx={{ py: 1.25, flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                       <Typography variant="h5" sx={{ mb: 0.25, fontSize: '2rem' }}>🗺️</Typography>
                       <Typography variant="body2" fontWeight="medium">
-                        Map
+                        {t('home.equipment.map.title')}
                       </Typography>
                     </CardContent>
                   </Card>
@@ -196,41 +198,41 @@ function App() {
               </Box>
             </Box>
 
-            <Stack 
-              direction={{ xs: 'column', sm: 'row' }} 
-              spacing={3} 
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={3}
               justifyContent="center"
             >
-              <Button 
+              <Button
                 component={Link}
                 to="/beginner-survey"
                 variant="contained"
                 size="large"
-                sx={{ 
-                  borderRadius: 6, 
+                sx={{
+                  borderRadius: 6,
                   px: 4,
                   '&:hover': {
                     color: 'white'
                   }
                 }}
               >
-                Beginner Survey
+                {t('home.buttons.beginner')}
               </Button>
-              <Button 
+              <Button
                 component={Link}
                 to="/survey"
                 variant="contained"
                 color="success"
                 size="large"
-                sx={{ 
-                  borderRadius: 6, 
+                sx={{
+                  borderRadius: 6,
                   px: 4,
                   '&:hover': {
                     color: 'white'
                   }
                 }}
               >
-                Advanced Survey
+                {t('home.buttons.advanced')}
               </Button>
             </Stack>
           </Paper>

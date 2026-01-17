@@ -1,0 +1,339 @@
+{
+    "app": {
+        "title": "Croak Counter"
+    },
+    "nav": {
+        "home": "Home",
+        "help": "Help",
+        "survey": "Survey",
+        "join": "Join",
+        "frogs": "Frogs",
+        "observations": "Observations",
+        "about": "About"
+    },
+    "home": {
+        "mtu": "Michigan Technology University",
+        "description": "Help the Keweenaw Bay Indian Community track frog populations using quick call index surveys.",
+        "equipmentTitle": "Useful Equipment to Bring",
+        "equipment": {
+            "thermometer": {
+                "title": "Thermometer",
+                "tooltip": "A thermometer is essential for measuring water temperature during surveys. Temperature affects frog activity.",
+                "required": "Required"
+            },
+            "flashlight": {
+                "title": "Flashlight",
+                "tooltip": "A flashlight helps you navigate survey sites in low-light conditions."
+            },
+            "map": {
+                "title": "Map",
+                "tooltip": "A GPS or mobile device helps you locate survey sites and mark your survey locations accurately."
+            }
+        },
+        "buttons": {
+            "beginner": "Beginner Survey",
+            "advanced": "Advanced Survey"
+        }
+    },
+    "about": {
+        "title": "About This Project",
+        "description": "Learn more about the Keweenaw Bay Indian Community, their Natural Resources Department, and the developers behind this project.",
+        "kbic": {
+            "title": "Keweenaw Bay Indian Community (KBIC)",
+            "p1": "The Keweenaw Bay Indian Community (KBIC) is a federally recognized Tribe and is signatory to the Treaties with the Chippewa of 1842 and 1854. The members and descendants of the Tribe retain their right to fish, hunt, and gather throughout the ceded territory under the Treaty of 1842. Established under the Treaty of 1854, the primary land base of the KBIC is the L'Anse Indian Reservation. KBIC also has land holdings in Ontonagon and Marquette Counties.",
+            "p2": "The L'Anse Indian Reservation consists of approximately 59,000 acres, which is heavily forested. This is a water-rich community, with approximately 23 miles of Lake Superior shoreline, over 200 miles of streams and rivers, and close to 5,000 acres of inland lakes and wetlands. These diverse habitats sustain a healthy population of fish, wildlife, and plant species. In addition to recognizing our Treaties with the Federal Government, we honor our First Treaty with all orders of creation, which includes our obligations and connections to the natural environment. It is our responsibility to speak for those that do not have a voice in the Council of Men.",
+            "moreInfo": "For more information, visit the official website:",
+            "link": "KBIC Website"
+        },
+        "nrd": {
+            "title": "KBIC Natural Resources Department",
+            "p1": "The KBIC Natural Resources Department manages, protects, and restores the natural resources within the KBIC reservation and surrounding areas. The NRD’s mission focuses on environmental protection, wildlife conservation, fisheries enhancement, and maintaining ecological balance for future generations.",
+            "visit": "Visit the NRD's website to learn more about their ongoing projects and programs:",
+            "link": "KBIC NRD Website",
+            "contact": "For questions, contact Erin at"
+        },
+        "developers": {
+            "title": "Developers",
+            "intro": "This website was developed by students at Michigan Technological University participating in Senior Project, led by Professor Robert Pastel.",
+            "membersTitle": "Project Members:",
+            "members": [
+                "Lucas Bohanon",
+                "Maci Dostaler",
+                "Peter Laakso",
+                "Steven Maki",
+                "Duncan McBride",
+                "Simon Novak"
+            ],
+            "previousWork": "This project was initally developed by students from Michigan Technological University’s CS4760 — Human-Computer Interaction course. The development team designed and implemented this system to enhance community engagement, promote environmental awareness, and improve accessibility to KBIC and DNR resources.",
+            "cs4760MembersTitle": "CS 4760 Team Members:",
+            "cs4760Members": [
+                "Josiah Parrot - Product Owner",
+                "Nolan Casey - Technical Lead",
+                "Evan Bradford",
+                "Hollis Aitkens",
+                "Kristen Love",
+                "Malakai Bundshuh",
+                "Nick Abraham",
+                "Tony Garnett (UX Consultant)"
+            ],
+            "courseInfo": "For more details about the course and student projects, visit:",
+            "courseLink": "CS4760 Course Website",
+            "specialThanks": "Special thanks to Tony Garnett for his significant contributions to the original project. Tony is currently a graduate student at Michigan Tech."
+        }
+    },
+    "help": {
+        "title": "Croak Counter Help Page",
+        "subtitle": "Please refer to the resources below",
+        "calendar": {
+            "title": "Calling Calendar",
+            "description": "Here you can view the breeding periods of frogs in order to better narrow down what frog species you should be hearing during the given month. The western upper peninsula is located within Zone 4.",
+            "altText": "Zone 4 Calling Calendar"
+        },
+        "environment": {
+            "title": "Ideal Environment",
+            "description": "The survey is best taken in swampy environments where frogs are commonly found. However, surveying should not occur on evenings with lightning, heavy rain (though mist and light rain that does not affect hearing is fine), or when wind speeds are consistently greater than 12 mph (19 kmh). Surveying also should not occur when air temperatures are less than 42 degrees Fahrenheit (5.6 degrees Celsius)."
+        },
+        "procedure": {
+            "title": "Standard Procedure",
+            "preSurvey": {
+                "title": "Pre-Survey",
+                "step1": "1. Scout the site. Obtain site maps and access instructions, including permission to enter private property. Select only sites with suitable habitat. Visit the site in the daytime prior to beginning surveys to familiarize yourself with the area. If you are surveying more than one site, change the order of the site visits with each survey, e.g., if there are 5 sites, survey 1-2-3-4-5 first, then 2-3-4-5-1, then 3-4-5-1-2, etc. If you intend to survey long-term, do not vary from initially selected sampling sites - monitor the same sites year after year.",
+                "step2": "2. Survey effort. Surveys should be conducted approximately once per week. Select an evening when weather conditions are met. It is okay to miss one survey per month, but if more are missed, false absences may increase.",
+                "step3": "3. Gas. Make sure any vehicles have enough gas to complete the routes.",
+                "step4": "4. Safety. Tell someone where you are going before heading out for the evening. Enlist a partner whenever possible for safety.",
+                "step5": "5. Equipment. Make sure you have all necessary equipment, including, but not limited to, a map, a flashlight, a stopwatch (or other time piece), a thermometer, a first aid kit, and proper clothing."
+            },
+            "surveyProcedure": {
+                "title": "Survey Procedure",
+                "step1": "1. Record survey location. Upon opening the survey, you'll notice a button labbeled \"Get GPS Location\". Please select this button while at the survey site. Upon selection, your phone will ask for permission to access your current location. This is to ensure that we record the correct coordinates for the survey site. Please select \"allow\".",
+                "step2": "2. Begin call surveys 30 minutes after sunset.",
+                "step3": "3. At each call site, quietly wait 2-3 minutes after arriving at the listening post before starting the stopwatch for a 5-minute survey. During this time, expose the thermometer bulb to the air so it begins equalizing with the air temperature, and fill out the preliminary weather and time information on the data form. Start the survey, recording frogs heard. At the end of the 5 minutes, take the water temperature and fill in the remaining data.",
+                "step4": "4. Listen to and record frogs from the wetland being monitored, but also record frogs heard in the distance as \"distant\" calls and note the direction. Distance calls are from other wetlands, not the one you are monitoring.",
+                "step5": "5. Any time noise from passing vehicles, storms, etc. makes hearing impossible, elapsed time should be stopped on the stopwatch at the point of interruption and continued afterwards until the survey has been conducted for the full five minutes.",
+                "step6": "6. You may record any birds or other wildlife detected in the Comments section, along with any comments or anything you think may have disturbed the survey."
+            },
+            "postSurvey": {
+                "title": "Post-Survey",
+                "step1": "1. Store equipment. Place all wet equipment in a place where it can dry.",
+                "step2": "2. Ensure the survey was successfully submitted. Congratulate yourself on a job well done!"
+            }
+        },
+        "identification": {
+            "title": "Frog Identification",
+            "description": "All of the frog species that you may encounter in the Keweenaw area are listed in the Frog Identification page. Each species has a description, image, and audio clip of their call to help with identification."
+        }
+    },
+    "join": {
+        "title": "Join the KBIC Citizen Science Community",
+        "intro": "Be a part of the Keweenaw Bay Indian Community's mission to protect and study our natural environment. By joining our Citizen Science Community, you can contribute to vital research on our lands, waters, and wildlife, helping to preserve our ecosystems for future generations.",
+        "steps": [
+            "Explore our ongoing citizen science projects, from wildlife monitoring to water quality studies.",
+            "Register as a volunteer to participate in projects that match your interests.",
+            "Join a training session to learn data collection techniques and project goals.",
+            "Start contributing by collecting and sharing data to support KBIC’s conservation efforts!"
+        ],
+        "stepsTitle": "Follow These Steps to Join",
+        "stepPrefix": "Step",
+        "contact": [
+            "For more information or to get involved, contact Erin Johnston at the KBIC Natural Resources Department: ejohnston@kbic-nsn.gov or call 906-524-5757 ext. 4227."
+        ],
+        "websiteLabel": "Visit the KBIC NRD website for more details"
+    },
+    "frogIdentification": {
+        "title": "Frog Identification",
+        "subtitle": "Resources to help with identification",
+        "filterLabel": "Filter frogs by name",
+        "noFrogs": "No frogs found."
+    },
+    "frogs": {
+        "americantoad": {
+            "name": "American Toad",
+            "description": "Size: 2\" to 4 3/8\". Large bumpy brown to greenish colored toad. Sound: A long, high-pitched trill that lasts about 15-30 seconds."
+        },
+        "bullfrog": {
+            "name": "Bullfrog",
+            "description": "Size: 3 1/2\" to 8\". Our largest frog in Michigan but not very common locally. Greenish yellow with random mottling. Cream colored belly with lighter gray spots. Sound: A deep 'juga-rum' or 'drum'."
+        },
+        "copesgraytreefrog": {
+            "name": "Cope's Gray Treefrog",
+            "description": "Size: 1 1/4\" to 2 3/8\". Rarely venture from the trees. Bright green to grey usually with splotches of grey. Sticky texture. Bright yellow patches underside of hind legs. Sound: Similar to Eastern Gray Treefrog but faster, higher pitched trill with more buzzy quality."
+        },
+        "easterngraytreefrog": {
+            "name": "Eastern Gray Treefrog",
+            "description": "Size: 1 1/4\" to 2 3/8\". Rarely venture from the trees. Bright green to gray usually with splotches of gray. Sticky texture. Bright yellow patches underside of hind legs. Sound: A short trill that sounds like a raccoon."
+        },
+        "fowlerstoad": {
+            "name": "Fowler's Toad",
+            "description": "Size: 2\" to 3 1/2\". Large bumpy brown-colored toad. Lighter belly and more warts than American Toads. Sound: Short bleeting lamb cry 'wuh'."
+        },
+        "greenfrog": {
+            "name": "Green Frog",
+            "description": "Size: 2 1/8\" to 4\". Green or brownish colored frog with green upper lip. Large eardrum. White belly with black spots. Sounds like banjo strings."
+        },
+        "minkfrog": {
+            "name": "Mink Frog",
+            "description": "Size: 1 7/8\" to 3\". Olive to brown in color with uniform mottling along sides and legs. Pungent mink-like odor. Yellowish colored belly. Sound: Like knocking on wood or like popcorn popping when in full chorus."
+        },
+        "northerncricketfrog": {
+            "name": "Northern Cricket Frog",
+            "description": "Size: 5/8\" to 1 1/2\". Very rare tiny tree frog that looks almost black. Has a dark triangle between eyes. Sound: Tapping stones together."
+        },
+        "northernleopardfrog": {
+            "name": "Northern Leopard Frog",
+            "description": "Size: 2\" to 5\". Slender brown or green frog with light edges around irregularly shaped spots. Sound: Low croaking snore that lasts for several seconds."
+        },
+        "pickerelfrog": {
+            "name": "Pickerel Frog",
+            "description": "Size: 1 3/4\" to 3 1/2\". Slender green or tan frog with parallel rows of square- shaped spots down its back. Yellow belly patch by inner thigh. Sound: Soft and low snore-like croak similar to leopard frog only softer and shorter."
+        },
+        "springpeeper": {
+            "name": "Spring Peeper",
+            "description": "Size: 3/4\" to 1 3/8\". One of our smallest and most abundant tree frogs. Note the brown color and X mark on its back. Sound: Loud peeping."
+        },
+        "westernchorusfrog": {
+            "name": "Western Chorus Frog",
+            "description": "Size: 3/4\" to 1 1/2\". Breeds very early, often while snow remains. A tree frog with long black mask and three dark stripes down its back. Sound: Stumming a comb with your thumb."
+        },
+        "woodfrog": {
+            "name": "Wood Frog",
+            "description": "Size: 1 3/8\" to 3 1/4\". Breeds early in spring then disappears into moist woodlands. Note short black mask. Sound: Like rubbing finger on wet balloon."
+        }
+    },
+    "observations": {
+        "title": "Saved Observations",
+        "intro": "Observations currently stored on this device. Select surveys to upload when ready.",
+        "labels": {
+            "date": "Date",
+            "time": "Time",
+            "site": "Site",
+            "status": "Status",
+            "uploadButton": "Upload"
+        },
+        "selectAllLabel": "Select All",
+        "table": {
+            "type": "Type",
+            "uploadColumn": "Upload",
+            "deleteColumn": "Delete"
+        },
+        "statusLabels": {
+            "uploaded": "Uploaded",
+            "saved": "Saved"
+        },
+        "typeLabels": {
+            "advanced": "Advanced",
+            "beginner": "Beginner",
+            "unknown": "—"
+        },
+        "dialogs": {
+            "confirmUploadTitle": "Confirm Upload",
+            "confirmUploadMessage": "Are you sure you want to upload this observation?",
+            "confirmDeleteTitle": "Confirm Delete",
+            "confirmDeleteMessage": "Are you sure you want to permanently delete this observation?",
+            "bulkUploadTitle": "Upload Selected Observations",
+            "bulkUploadMessage": "Upload {count} selected observation(s)?",
+            "beginnerDetailsTitle": "Observation Details (Beginner)",
+            "advancedDetailsTitle": "Observation Details (Advanced)"
+        },
+        "speciesHeading": "Frog Species Observations"
+    },
+    "survey": {
+        "beginnerTitle": "Call Index Survey",
+        "advancedTitle": "Advanced Call Index Survey",
+        "intro": "Fill out the fields below based on what you observed",
+        "savedAt": "Saved at",
+        "clearForm": "Clear Form",
+        "submit": "Submit Survey",
+        "messages": {
+            "validationWarning": "Please fill out all required fields before saving.",
+            "success": "Survey submitted — saving to Observations",
+            "gpsLoading": "Getting Location, wait one moment please",
+            "gpsButton": "Get GPS Location",
+            "gpsDenied": "Location access denied, please allow access",
+            "gpsUnavailable": "Location information unavailable",
+            "gpsError": "Cannot get user location",
+            "numbersOnly": "Numbers only",
+            "requiredError": "Please enter {field}"
+        },
+        "fields": {
+            "site": "Site Name",
+            "location": "Location",
+            "latitude": "Latitude",
+            "longitude": "Longitude",
+            "startTime": "Start Time",
+            "endTime": "End Time",
+            "waterTemp": "Water Temp (°F)",
+            "startingAirTemp": "Starting Air Temp (°F)",
+            "endingAirTemp": "Ending Air Temp (°F)",
+            "skyCondition": "Sky Condition",
+            "windSpeed": "Wind Speed",
+            "frogCallDensity": "Frog Call Density",
+            "observer": "Observer Name",
+            "affiliation": "Affiliation",
+            "county": "County",
+            "comments": "Comments"
+        },
+        "helpers": {
+            "startTime": "Time when survey started",
+            "endTime": "Time when survey ended",
+            "location": "Where did you do the survey?",
+            "site": "Name of the survey location",
+            "waterTemp": "Optional - only if you have a thermometer",
+            "startingAirTemp": "Optional - air temperature when you started",
+            "endingAirTemp": "Optional - air temperature when you finished",
+            "county": "e.g., Baraga",
+            "observer": "Name of person conducting survey",
+            "affiliation": "School, organization, or institution",
+            "affiliationOptional": "Optional - affiliated organization if applicable",
+            "comments": "Any other wildlife species encountered? Anything interesting or concerning at the site? Any additional frog information you want to include?"
+        },
+        "options": {
+            "skyConditions": [
+                "Clear or only a few clouds",
+                "Partly cloudy or variable",
+                "Broken clouds or overcast",
+                "Fog",
+                "Drizzle or light rain (not affecting hearing)",
+                "Snow",
+                "Showers (is affecting hearing ability)"
+            ],
+            "windSpeeds": [
+                "Calm (<1 mph)",
+                "Light Air (1-3 mph)",
+                "Light Breeze (4-7 mph)",
+                "Gentle Breeze (8-12 mph)",
+                "Moderate Breeze (13-18 mph)",
+                "Fresh Breeze (19-24 mph)",
+                "Strong Breeze (25-31 mph)",
+                "Moderate Gale (32-38 mph)",
+                "Fresh Gale (39-46 mph)",
+                "Strong Gale (47-54 mph)",
+                "Whole Gale (55-63 mph)",
+                "Storm (64-72 mph)",
+                "Hurricane (73+ mph)"
+            ],
+            "frogCallDensity": [
+                "0 - No frogs heard",
+                "1 - Individual calls, easy to count",
+                "2 - Some calls overlapping",
+                "3 - Full chorus, constant calling"
+            ],
+            "frogCallDensityFull": [
+                "0 - No frogs heard",
+                "1 - Individual calls, no overlapping",
+                "2 - Individual calls, some overlapping",
+                "3 - Full chorus, constant calling"
+            ]
+        },
+        "frogCallDensityLabel": "Rate call density from 0-3 for each species observed. Listen to the audio to help with identification."
+    },
+    "footer": {
+        "seniorProject": "Senior Software Project · 2025",
+        "online": "Online",
+        "offline": "Offline",
+        "lightMode": "Switch to light mode",
+        "darkMode": "Switch to dark mode"
+    },
+    "audioPlayer": {
+        "loading": "Loading audio..."
+    }
+}

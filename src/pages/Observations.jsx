@@ -28,8 +28,9 @@ import {
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { useTranslation } from '../hooks/useTranslation.js';
 
-import { observationsContent, frogContent } from '../config.js';
+import { frogContent } from '../config.js';
 
 /* ---------- helpers ---------- */
 function formatDateOnly(iso) {
@@ -71,6 +72,14 @@ function formatTime(time) {
 
 /* ---------- component ---------- */
 export default function Observations() {
+  const { t } = useTranslation();
+
+  // Fetch options from translation
+  const skyConditions = t('survey.options.skyConditions') || [];
+  const windSpeeds = t('survey.options.windSpeeds') || [];
+  const frogCallDensities = t('survey.options.frogCallDensity') || [];
+  const speciesDensityOptions = t('survey.options.frogCallDensityFull') || []; // Using frogCallDensityFull for species
+
   const [entries, setEntries] = React.useState(() => {
     try {
       const stored = localStorage.getItem('observations');
@@ -163,12 +172,12 @@ export default function Observations() {
   const handleSaveDetails = () => {
     if (!detailEntry) return;
     if (isAdvancedModal && missingRequired) {
-      setUploadSnackbarMessage('Please fill out all required fields.');
+      setUploadSnackbarMessage(t('survey.messages.validationWarning'));
       setUploadSnackbarOpen(true);
       return;
     }
     if (isBeginnerModal && missingBeginnerRequired) {
-      setUploadSnackbarMessage('Please fill out all required fields.');
+      setUploadSnackbarMessage(t('survey.messages.validationWarning'));
       setUploadSnackbarOpen(true);
       return;
     }
@@ -177,12 +186,12 @@ export default function Observations() {
     const updated = entries.map(e =>
       e.id === detailEntry.id
         ? {
-            ...e,
-            site: site || e.site,
-            latitude: latitude ?? e.latitude,
-            longitude: longitude ?? e.longitude,
-            data: { ...(e.data || {}), ...dataFields }
-          }
+          ...e,
+          site: site || e.site,
+          latitude: latitude ?? e.latitude,
+          longitude: longitude ?? e.longitude,
+          data: { ...(e.data || {}), ...dataFields }
+        }
         : e
     );
 
@@ -232,14 +241,14 @@ export default function Observations() {
           gutterBottom
           sx={{ fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' }, color: 'primary.main', fontWeight: 700 }}
         >
-          {observationsContent.title}
+          {t('observations.title')}
         </Typography>
         <Typography
           variant="h5"
           color="text.secondary"
           sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' }, mb: 2 }}
         >
-          {observationsContent.intro}
+          {t('observations.intro')}
         </Typography>
       </Box>
 
@@ -250,7 +259,7 @@ export default function Observations() {
             onClick={() => setConfirmBulkUploadOpen(true)}
             disabled={selected.size === 0}
           >
-            {observationsContent.labels.uploadButton} ({selected.size})
+            {t('observations.labels.uploadButton')} ({selected.size})
           </Button>
         </Toolbar>
 
@@ -260,7 +269,7 @@ export default function Observations() {
               <TableRow>
                 <TableCell padding="checkbox">
                   <div style={{ whiteSpace: 'nowrap' }}>
-                    <label htmlFor="selectAll"><strong>{observationsContent.selectAllLabel}</strong></label>
+                    <label htmlFor="selectAll"><strong>{t('observations.selectAllLabel')}</strong></label>
                     <Checkbox
                       id="selectAll"
                       indeterminate={selected.size > 0 && !allSelected}
@@ -271,15 +280,15 @@ export default function Observations() {
                   </div>
                 </TableCell>
 
-                <TableCell>{observationsContent.labels.date}</TableCell>
-                <TableCell>{observationsContent.labels.time}</TableCell>
+                <TableCell>{t('observations.labels.date')}</TableCell>
+                <TableCell>{t('observations.labels.time')}</TableCell>
                 <TableCell sx={{ maxWidth: { xs: 120, sm: 240 }, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {observationsContent.labels.site}
+                  {t('observations.labels.site')}
                 </TableCell>
-                <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{observationsContent.table.type}</TableCell>
-                <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{observationsContent.labels.status}</TableCell>
-                <TableCell align="center" sx={{ width: 120 }}>{observationsContent.table.uploadColumn}</TableCell>
-                <TableCell align="center" sx={{ width: 120 }}>{observationsContent.table.deleteColumn}</TableCell>
+                <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{t('observations.table.type')}</TableCell>
+                <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{t('observations.labels.status')}</TableCell>
+                <TableCell align="center" sx={{ width: 120 }}>{t('observations.table.uploadColumn')}</TableCell>
+                <TableCell align="center" sx={{ width: 120 }}>{t('observations.table.deleteColumn')}</TableCell>
               </TableRow>
             </TableHead>
 
@@ -320,17 +329,17 @@ export default function Observations() {
 
                     <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
                       {isAdvanced
-                        ? observationsContent.typeLabels.advanced
+                        ? t('observations.typeLabels.advanced')
                         : isBeginner
-                        ? observationsContent.typeLabels.beginner
-                        : observationsContent.typeLabels.unknown}
+                          ? t('observations.typeLabels.beginner')
+                          : t('observations.typeLabels.unknown')}
                     </TableCell>
 
                     <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
                       {obs.status === 'uploaded' ? (
-                        <Chip icon={<CheckCircleIcon />} label={observationsContent.statusLabels.uploaded} color="success" size="small" />
+                        <Chip icon={<CheckCircleIcon />} label={t('observations.statusLabels.uploaded')} color="success" size="small" />
                       ) : (
-                        <Chip label={observationsContent.statusLabels.saved} size="small" />
+                        <Chip label={t('observations.statusLabels.saved')} size="small" />
                       )}
                     </TableCell>
 
@@ -338,7 +347,7 @@ export default function Observations() {
                       <IconButton
                         size="small"
                         onClick={(e) => { e.stopPropagation(); setConfirmUploadId(obs.id); }}
-                        title={observationsContent.labels.uploadButton}
+                        title={t('observations.labels.uploadButton')}
                         aria-label="upload"
                       >
                         <CloudUploadIcon />
@@ -349,7 +358,7 @@ export default function Observations() {
                       <IconButton
                         size="small"
                         onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(obs.id); }}
-                        title={observationsContent.table.deleteColumn}
+                        title={t('observations.table.deleteColumn')}
                         aria-label="delete"
                       >
                         <DeleteIcon />
@@ -367,12 +376,12 @@ export default function Observations() {
 
         {/* dialogs and modals*/}
         <Dialog open={!!confirmUploadId} onClose={() => setConfirmUploadId(null)}>
-          <DialogTitle>{observationsContent.dialogs.confirmUploadTitle}</DialogTitle>
-          <DialogContent dividers><Typography>{observationsContent.dialogs.confirmUploadMessage}</Typography></DialogContent>
+          <DialogTitle>{t('observations.dialogs.confirmUploadTitle')}</DialogTitle>
+          <DialogContent dividers><Typography>{t('observations.dialogs.confirmUploadMessage')}</Typography></DialogContent>
           <DialogActions>
             <Button onClick={() => setConfirmUploadId(null)}>Cancel</Button>
             <Button variant="contained" onClick={() => { performUpload(confirmUploadId); setConfirmUploadId(null); }}>
-              {observationsContent.labels.uploadButton}
+              {t('observations.labels.uploadButton')}
             </Button>
           </DialogActions>
         </Dialog>
@@ -380,8 +389,8 @@ export default function Observations() {
         <Snackbar open={uploadSnackbarOpen} autoHideDuration={4000} onClose={() => setUploadSnackbarOpen(false)} message={uploadSnackbarMessage} />
 
         <Dialog open={!!confirmDeleteId} onClose={() => setConfirmDeleteId(null)}>
-          <DialogTitle>{observationsContent.dialogs.confirmDeleteTitle}</DialogTitle>
-          <DialogContent dividers><Typography>{observationsContent.dialogs.confirmDeleteMessage}</Typography></DialogContent>
+          <DialogTitle>{t('observations.dialogs.confirmDeleteTitle')}</DialogTitle>
+          <DialogContent dividers><Typography>{t('observations.dialogs.confirmDeleteMessage')}</Typography></DialogContent>
           <DialogActions>
             <Button onClick={() => setConfirmDeleteId(null)}>Cancel</Button>
             <Button variant="contained" color="error" onClick={() => { handleDelete(confirmDeleteId); setConfirmDeleteId(null); }}>
@@ -391,9 +400,9 @@ export default function Observations() {
         </Dialog>
 
         <Dialog open={confirmBulkUploadOpen} onClose={() => setConfirmBulkUploadOpen(false)}>
-          <DialogTitle>{observationsContent.dialogs.bulkUploadTitle}</DialogTitle>
+          <DialogTitle>{t('observations.dialogs.bulkUploadTitle')}</DialogTitle>
           <DialogContent dividers>
-            <Typography>{observationsContent.dialogs.bulkUploadMessage(selected.size)}</Typography>
+            <Typography>{t('observations.dialogs.bulkUploadMessage').replace('{count}', selected.size)}</Typography>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setConfirmBulkUploadOpen(false)}>Cancel</Button>
@@ -402,7 +411,7 @@ export default function Observations() {
               setSelected(new Set());
               setConfirmBulkUploadOpen(false);
             }}>
-              {observationsContent.labels.uploadButton}
+              {t('observations.labels.uploadButton')}
             </Button>
           </DialogActions>
         </Dialog>
@@ -417,46 +426,46 @@ export default function Observations() {
           fullWidth
           maxWidth="sm"
         >
-          <DialogTitle>{observationsContent.dialogs.beginnerDetailsTitle}</DialogTitle>
+          <DialogTitle>{t('observations.dialogs.beginnerDetailsTitle')}</DialogTitle>
           <DialogContent dividers>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, mt: 1 }}>
-              <TextField label={observationsContent.fields.startTime} fullWidth type="time" required value={detailForm.startTime ?? ''} onChange={e => handleDetailChange('startTime', e.target.value)} InputLabelProps={{ shrink: true }} />
-              <TextField label={observationsContent.fields.site} fullWidth required value={detailForm.site ?? ''} onChange={e => handleDetailChange('site', e.target.value)} />
-              <TextField label={observationsContent.fields.latitude} fullWidth required value={detailForm.latitude ?? ''} onChange={e => handleDetailChange('latitude', e.target.value)} />
-              <TextField label={observationsContent.fields.longitude} fullWidth required value={detailForm.longitude ?? ''} onChange={e => handleDetailChange('longitude', e.target.value)} />
-              <TextField label={observationsContent.fields.waterTemp} fullWidth value={detailForm.waterTemp ?? ''} onChange={e => handleDetailChange('waterTemp', e.target.value)} />
-              <TextField label={observationsContent.fields.startingAirTemp} fullWidth value={detailForm.startingAirTemp ?? ''} onChange={e => handleDetailChange('startingAirTemp', e.target.value)} />
-              <TextField label={observationsContent.fields.endingAirTemp} fullWidth value={detailForm.endingAirTemp ?? ''} onChange={e => handleDetailChange('endingAirTemp', e.target.value)} />
-              <TextField label={observationsContent.fields.endTime} fullWidth type="time" required value={detailForm.endTime ?? ''} onChange={e => handleDetailChange('endTime', e.target.value)} InputLabelProps={{ shrink: true }} />
+              <TextField label={t('survey.fields.startTime')} fullWidth type="time" required value={detailForm.startTime ?? ''} onChange={e => handleDetailChange('startTime', e.target.value)} InputLabelProps={{ shrink: true }} />
+              <TextField label={t('survey.fields.site')} fullWidth required value={detailForm.site ?? ''} onChange={e => handleDetailChange('site', e.target.value)} />
+              <TextField label={t('survey.fields.latitude')} fullWidth required value={detailForm.latitude ?? ''} onChange={e => handleDetailChange('latitude', e.target.value)} />
+              <TextField label={t('survey.fields.longitude')} fullWidth required value={detailForm.longitude ?? ''} onChange={e => handleDetailChange('longitude', e.target.value)} />
+              <TextField label={t('survey.fields.waterTemp')} fullWidth value={detailForm.waterTemp ?? ''} onChange={e => handleDetailChange('waterTemp', e.target.value)} />
+              <TextField label={t('survey.fields.startingAirTemp')} fullWidth value={detailForm.startingAirTemp ?? ''} onChange={e => handleDetailChange('startingAirTemp', e.target.value)} />
+              <TextField label={t('survey.fields.endingAirTemp')} fullWidth value={detailForm.endingAirTemp ?? ''} onChange={e => handleDetailChange('endingAirTemp', e.target.value)} />
+              <TextField label={t('survey.fields.endTime')} fullWidth type="time" required value={detailForm.endTime ?? ''} onChange={e => handleDetailChange('endTime', e.target.value)} InputLabelProps={{ shrink: true }} />
 
               <FormControl fullWidth variant="outlined" required>
                 <InputLabel shrink={detailForm.skyCondition !== undefined && detailForm.skyCondition !== ''}>
-                  {observationsContent.fields.skyCondition}
+                  {t('survey.fields.skyCondition')}
                 </InputLabel>
-                <Select value={detailForm.skyCondition ?? ''} onChange={e => handleDetailChange('skyCondition', e.target.value)} label={observationsContent.fields.skyCondition} required>
-                  {observationsContent.options.skyConditions.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
+                <Select value={detailForm.skyCondition ?? ''} onChange={e => handleDetailChange('skyCondition', e.target.value)} label={t('survey.fields.skyCondition')} required>
+                  {Array.isArray(skyConditions) && skyConditions.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
                 </Select>
               </FormControl>
 
               <FormControl fullWidth variant="outlined" required>
                 <InputLabel shrink={detailForm.windSpeed !== undefined && detailForm.windSpeed !== ''}>
-                  {observationsContent.fields.windSpeed}
+                  {t('survey.fields.windSpeed')}
                 </InputLabel>
-                <Select value={detailForm.windSpeed ?? ''} onChange={e => handleDetailChange('windSpeed', e.target.value)} label={observationsContent.fields.windSpeed} required>
-                  {observationsContent.options.windSpeeds.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
+                <Select value={detailForm.windSpeed ?? ''} onChange={e => handleDetailChange('windSpeed', e.target.value)} label={t('survey.fields.windSpeed')} required>
+                  {Array.isArray(windSpeeds) && windSpeeds.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
                 </Select>
               </FormControl>
 
               <FormControl fullWidth variant="outlined" required>
                 <InputLabel shrink={detailForm.frogCallDensity !== undefined && detailForm.frogCallDensity !== ''}>
-                  {observationsContent.fields.frogCallDensity}
+                  {t('survey.fields.frogCallDensity')}
                 </InputLabel>
-                <Select value={detailForm.frogCallDensity ?? ''} onChange={e => handleDetailChange('frogCallDensity', e.target.value)} label={observationsContent.fields.frogCallDensity} required>
-                  {observationsContent.options.frogCallDensity.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
+                <Select value={detailForm.frogCallDensity ?? ''} onChange={e => handleDetailChange('frogCallDensity', e.target.value)} label={t('survey.fields.frogCallDensity')} required>
+                  {Array.isArray(frogCallDensities) && frogCallDensities.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
                 </Select>
               </FormControl>
 
-              <TextField label={observationsContent.fields.comments} fullWidth multiline rows={3} value={detailForm.comments ?? ''} onChange={e => handleDetailChange('comments', e.target.value)} />
+              <TextField label={t('survey.fields.comments')} fullWidth multiline rows={3} value={detailForm.comments ?? ''} onChange={e => handleDetailChange('comments', e.target.value)} />
             </Box>
           </DialogContent>
           <DialogActions>
@@ -475,56 +484,56 @@ export default function Observations() {
           fullWidth
           maxWidth="sm"
         >
-          <DialogTitle>{observationsContent.dialogs.advancedDetailsTitle}</DialogTitle>
+          <DialogTitle>{t('observations.dialogs.advancedDetailsTitle')}</DialogTitle>
           <DialogContent dividers>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, mt: 1 }}>
-              <TextField label="Start Time" fullWidth type="time" required value={detailForm.startTime ?? ''} onChange={e => handleDetailChange('startTime', e.target.value)} InputLabelProps={{ shrink: true }} />
-              <TextField label={observationsContent.fields.site} fullWidth required value={detailForm.site ?? ''} onChange={e => handleDetailChange('site', e.target.value)} />
-              <TextField label={observationsContent.fields.latitude} fullWidth required value={detailForm.latitude ?? ''} onChange={e => handleDetailChange('latitude', e.target.value)} />
-              <TextField label={observationsContent.fields.longitude} fullWidth required value={detailForm.longitude ?? ''} onChange={e => handleDetailChange('longitude', e.target.value)} />
-              <TextField label={observationsContent.fields.county} fullWidth required value={detailForm.county ?? ''} onChange={e => handleDetailChange('county', e.target.value)} />
-              <TextField label={observationsContent.fields.observer} fullWidth required value={detailForm.observer ?? ''} onChange={e => handleDetailChange('observer', e.target.value)} />
-              <TextField label={observationsContent.fields.affiliation} fullWidth value={detailForm.affiliation ?? ''} onChange={e => handleDetailChange('affiliation', e.target.value)} />
-              <TextField label={observationsContent.fields.waterTemp} fullWidth value={detailForm.waterTemp ?? ''} onChange={e => handleDetailChange('waterTemp', e.target.value)} />
-              <TextField label={observationsContent.fields.startingAirTemp} fullWidth value={detailForm.startingAirTemp ?? ''} onChange={e => handleDetailChange('startingAirTemp', e.target.value)} />
-              <TextField label={observationsContent.fields.endingAirTemp} fullWidth value={detailForm.endingAirTemp ?? ''} onChange={e => handleDetailChange('endingAirTemp', e.target.value)} />
+              <TextField label={t('survey.fields.startTime')} fullWidth type="time" required value={detailForm.startTime ?? ''} onChange={e => handleDetailChange('startTime', e.target.value)} InputLabelProps={{ shrink: true }} />
+              <TextField label={t('survey.fields.site')} fullWidth required value={detailForm.site ?? ''} onChange={e => handleDetailChange('site', e.target.value)} />
+              <TextField label={t('survey.fields.latitude')} fullWidth required value={detailForm.latitude ?? ''} onChange={e => handleDetailChange('latitude', e.target.value)} />
+              <TextField label={t('survey.fields.longitude')} fullWidth required value={detailForm.longitude ?? ''} onChange={e => handleDetailChange('longitude', e.target.value)} />
+              <TextField label={t('survey.fields.county')} fullWidth required value={detailForm.county ?? ''} onChange={e => handleDetailChange('county', e.target.value)} />
+              <TextField label={t('survey.fields.observer')} fullWidth required value={detailForm.observer ?? ''} onChange={e => handleDetailChange('observer', e.target.value)} />
+              <TextField label={t('survey.fields.affiliation')} fullWidth value={detailForm.affiliation ?? ''} onChange={e => handleDetailChange('affiliation', e.target.value)} />
+              <TextField label={t('survey.fields.waterTemp')} fullWidth value={detailForm.waterTemp ?? ''} onChange={e => handleDetailChange('waterTemp', e.target.value)} />
+              <TextField label={t('survey.fields.startingAirTemp')} fullWidth value={detailForm.startingAirTemp ?? ''} onChange={e => handleDetailChange('startingAirTemp', e.target.value)} />
+              <TextField label={t('survey.fields.endingAirTemp')} fullWidth value={detailForm.endingAirTemp ?? ''} onChange={e => handleDetailChange('endingAirTemp', e.target.value)} />
 
               <FormControl fullWidth variant="outlined" required>
                 <InputLabel shrink={detailForm.skyCondition !== undefined && detailForm.skyCondition !== ''}>
-                  {observationsContent.fields.skyCondition}
+                  {t('survey.fields.skyCondition')}
                 </InputLabel>
-                <Select value={detailForm.skyCondition ?? ''} onChange={e => handleDetailChange('skyCondition', e.target.value)} label={observationsContent.fields.skyCondition} required>
-                  {observationsContent.options.skyConditions.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
+                <Select value={detailForm.skyCondition ?? ''} onChange={e => handleDetailChange('skyCondition', e.target.value)} label={t('survey.fields.skyCondition')} required>
+                  {Array.isArray(skyConditions) && skyConditions.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
                 </Select>
               </FormControl>
 
               <FormControl fullWidth variant="outlined" required>
                 <InputLabel shrink={detailForm.windSpeed !== undefined && detailForm.windSpeed !== ''}>
-                  {observationsContent.fields.windSpeed}
+                  {t('survey.fields.windSpeed')}
                 </InputLabel>
-                <Select value={detailForm.windSpeed ?? ''} onChange={e => handleDetailChange('windSpeed', e.target.value)} label={observationsContent.fields.windSpeed} required>
-                  {observationsContent.options.windSpeeds.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
+                <Select value={detailForm.windSpeed ?? ''} onChange={e => handleDetailChange('windSpeed', e.target.value)} label={t('survey.fields.windSpeed')} required>
+                  {Array.isArray(windSpeeds) && windSpeeds.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
                 </Select>
               </FormControl>
 
-              <TextField label={observationsContent.fields.endTime} fullWidth type="time" required value={detailForm.endTime ?? ''} onChange={e => handleDetailChange('endTime', e.target.value)} InputLabelProps={{ shrink: true }} />
+              <TextField label={t('survey.fields.endTime')} fullWidth type="time" required value={detailForm.endTime ?? ''} onChange={e => handleDetailChange('endTime', e.target.value)} InputLabelProps={{ shrink: true }} />
 
-              <Typography variant="h6" sx={{ mt: 1 }}>{observationsContent.frogSpeciesHeading}</Typography>
+              <Typography variant="h6" sx={{ mt: 1 }}>{t('observations.speciesHeading')}</Typography>
 
               {(frogContent?.frogs || []).map(frog => (
                 <FormControl key={frog.fieldName} fullWidth variant="outlined">
                   <InputLabel shrink={detailForm[frog.fieldName] !== undefined && detailForm[frog.fieldName] !== ''}>
-                    {frog.name}
+                    {t(`frogs.${frog.fieldName}.name`) || frog.name}
                   </InputLabel>
-                  <Select value={detailForm[frog.fieldName] ?? '0'} onChange={e => handleDetailChange(frog.fieldName, e.target.value)} label={frog.name}>
-                    {observationsContent.options.speciesDensityOptions.map((label, idx) => (
+                  <Select value={detailForm[frog.fieldName] ?? '0'} onChange={e => handleDetailChange(frog.fieldName, e.target.value)} label={t(`frogs.${frog.fieldName}.name`) || frog.name}>
+                    {Array.isArray(speciesDensityOptions) && speciesDensityOptions.map((label, idx) => (
                       <MenuItem key={label} value={String(idx)}>{label}</MenuItem>
                     ))}
                   </Select>
                 </FormControl>
               ))}
 
-              <TextField label={observationsContent.fields.comments} fullWidth multiline rows={3} value={detailForm.comments ?? ''} onChange={e => handleDetailChange('comments', e.target.value)} />
+              <TextField label={t('survey.fields.comments')} fullWidth multiline rows={3} value={detailForm.comments ?? ''} onChange={e => handleDetailChange('comments', e.target.value)} />
             </Box>
           </DialogContent>
           <DialogActions>

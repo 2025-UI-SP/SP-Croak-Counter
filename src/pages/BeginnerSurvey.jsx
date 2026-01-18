@@ -18,6 +18,10 @@ import { usePageTitle } from '../hooks/usePageTitle.js';
 import { useLocalStorageForm } from '../hooks/useLocalStorageForm.js';
 import { useNavigate } from 'react-router-dom';
 import { Snackbar, Alert as MuiAlert } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import dayjs from 'dayjs';
 
 function BeginnerSurvey() {
   usePageTitle('Call Index Survey');
@@ -43,8 +47,8 @@ function BeginnerSurvey() {
     { name: 'location', label: 'location' },
     { name: 'latitude', label: 'latitude' },
     { name: 'longitude', label: 'longitude' },
-    { name: 'startTime', label: 'start time'},
-    { name: 'endTime', label: 'end time'},
+    { name: 'startTime', label: 'start time' },
+    { name: 'endTime', label: 'end time' },
     { name: 'skyCondition', label: 'sky condition' },
     { name: 'windSpeed', label: 'wind speed' },
     { name: 'frogCallDensity', label: 'call density' }
@@ -59,13 +63,13 @@ function BeginnerSurvey() {
   // GPS state
   const [gpsLoading, setGpsLoading] = useState(false);
   const [gpsError, setGpsError] = useState('');
-  
+
   // Track invalid input per field for responsive feedback
   const [fieldError, setFieldError] = useState('');
 
   //Regex validation, so only numbers decimals and negatives can be put into the temperature and latitude/longitude fields
   const isValidNumber = (value) => /^-?\d*\.?\d*$/.test(value);
-  
+
   // Handle number fields with responsive validation feedback
   const handleNumberInput = (field, value) => {
     if (isValidNumber(value) || value === '') {
@@ -169,7 +173,7 @@ function BeginnerSurvey() {
     clearForm();
   };
 
-{/*Form Content*/}
+  {/*Form Content*/ }
   return (
     <Container maxWidth="lg" sx={{ mt: 12, mb: 4 }}>
       <Box display="flex" justifyContent="center">
@@ -228,24 +232,25 @@ function BeginnerSurvey() {
           >
             <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               {/* Start Time */}
-              <TextField
-                fullWidth
-                required
-                label="Start Time"
-                type="time"
-                value={formData.startTime}
-                onChange={(e) => updateField('startTime', e.target.value)}
-                helperText="Time when survey started"
-                error={!!errors.startTime}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                sx={{
-                  '& input[type="time"]::-webkit-calendar-picker-indicator': {
-                    filter: (theme) => theme.palette.mode === 'dark' ? 'invert(1)' : 'none'
-                  }
-                }}
-              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <TimePicker
+                  label="Start Time *"
+                  value={formData.startTime ? dayjs(formData.startTime, 'HH:mm') : null}
+                  onChange={(newValue) => {
+                    updateField('startTime', newValue ? newValue.format('HH:mm') : '');
+                  }}
+                  timeSteps={{ minutes: 1 }}
+                  referenceDate={dayjs()}
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      required: true,
+                      helperText: "Time when survey started",
+                      error: !!errors.startTime
+                    }
+                  }}
+                />
+              </LocalizationProvider>
               {/*Location*/}
               <TextField
                 fullWidth
@@ -279,8 +284,13 @@ function BeginnerSurvey() {
                 onChange={(e) => handleNumberInput('latitude', e.target.value)}
                 error={!!errors.latitude}
                 helperText={errors.latitude}
-                input type = "text"
-                inputMode="decimal"
+                type="text"
+                slotProps={{
+                  htmlInput: {
+                    inputMode: 'decimal',
+                    pattern: '[0-9.-]*'
+                  }
+                }}
               />
               {fieldError === 'latitude' && (
                 <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
@@ -295,8 +305,13 @@ function BeginnerSurvey() {
                 onChange={(e) => handleNumberInput('longitude', e.target.value)}
                 error={!!errors.longitude}
                 helperText={errors.longitude}
-                input type = "text"
-                inputMode="decimal"
+                type="text"
+                slotProps={{
+                  htmlInput: {
+                    inputMode: 'decimal',
+                    pattern: '[0-9.-]*'
+                  }
+                }}
               />
               {fieldError === 'longitude' && (
                 <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
@@ -315,8 +330,13 @@ function BeginnerSurvey() {
                 value={formData.waterTemp}
                 onChange={(e) => handleNumberInput('waterTemp', e.target.value)}
                 helperText="Optional - only if you have a thermometer"
-                input type = "text"
-                inputMode="decimal"
+                type="text"
+                slotProps={{
+                  htmlInput: {
+                    inputMode: 'decimal',
+                    pattern: '[0-9.-]*'
+                  }
+                }}
               />
               {fieldError === 'waterTemp' && (
                 <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
@@ -329,8 +349,13 @@ function BeginnerSurvey() {
                 value={formData.startingAirTemp}
                 onChange={(e) => handleNumberInput('startingAirTemp', e.target.value)}
                 helperText="Optional - air temperature when you started"
-                input type = "text"
-                inputMode="decimal"
+                type="text"
+                slotProps={{
+                  htmlInput: {
+                    inputMode: 'decimal',
+                    pattern: '[0-9.-]*'
+                  }
+                }}
               />
               {fieldError === 'startingAirTemp' && (
                 <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
@@ -343,8 +368,13 @@ function BeginnerSurvey() {
                 value={formData.endingAirTemp}
                 onChange={(e) => handleNumberInput('endingAirTemp', e.target.value)}
                 helperText="Optional - air temperature when you finished"
-                input type = "text"
-                inputMode="decimal"
+                type="text"
+                slotProps={{
+                  htmlInput: {
+                    inputMode: 'decimal',
+                    pattern: '[0-9.-]*'
+                  }
+                }}
               />
               {fieldError === 'endingAirTemp' && (
                 <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
@@ -424,24 +454,25 @@ function BeginnerSurvey() {
 
 
               {/* End Time */}
-              <TextField
-                fullWidth
-                required
-                label="End Time"
-                type="time"
-                value={formData.endTime}
-                onChange={(e) => updateField('endTime', e.target.value)}
-                helperText="Time when survey ended"
-                error={!!errors.endTime}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                sx={{
-                  '& input[type="time"]::-webkit-calendar-picker-indicator': {
-                    filter: (theme) => theme.palette.mode === 'dark' ? 'invert(1)' : 'none'
-                  }
-                }}
-              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <TimePicker
+                  label="End Time *"
+                  value={formData.endTime ? dayjs(formData.endTime, 'HH:mm') : null}
+                  onChange={(newValue) => {
+                    updateField('endTime', newValue ? newValue.format('HH:mm') : '');
+                  }}
+                  timeSteps={{ minutes: 1 }}
+                  referenceDate={dayjs()}
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      required: true,
+                      helperText: "Time when survey ended",
+                      error: !!errors.endTime
+                    }
+                  }}
+                />
+              </LocalizationProvider>
               {/*Comments Section*/}
               <TextField
                 fullWidth

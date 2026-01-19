@@ -23,7 +23,13 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  Card,
+  CardContent,
+  CardActions,
+  Stack,
+  Divider,
+  useMediaQuery
 } from '@mui/material';
 // Import icons for upload, delete, and status indicators
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -31,6 +37,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 // Import configuration for text labels (like table headers and button text)
 import { observationsContent } from '../config.js';
+import { useTheme } from '@mui/material/styles';
 
 // Convert an ISO date string (like "2023-10-06T20:21:00Z") into a readable format (e.g., "10/6/2023, 8:21 PM")
 function formatDate(iso) {
@@ -80,6 +87,10 @@ function formatRange(val) {
 
 // Main component for the Observations page
 export default function Observations() {
+  // Determines when to use the mobile layout vs. desktop table
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // <=600px
+
   // Load saved survey data from the browser's localStorage or start with an empty list
   const [entries, setEntries] = React.useState(() => {
     try {
@@ -219,6 +230,75 @@ export default function Observations() {
     else setSelected(new Set(entries.map((o) => o.id)));
   }
 
+  function MobileList() {
+  return (
+    <Box sx={{ px: 2, pb: 2 }}>
+      <Stack spacing={2}>
+        {entries.map((obs) => (
+          <Card key={obs.id} variant="outlined">
+            <CardContent sx={{ pb: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+                {/* Optional: keep selection on mobile */}
+                <Checkbox
+                  checked={selected.has(obs.id)}
+                  onClick={(e) => { e.stopPropagation(); toggleOne(obs.id); }}
+                  inputProps={{ 'aria-label': `select observation ${obs.id}` }}
+                />
+
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                    {formatDate(obs.date)}
+                  </Typography>
+
+                  <Typography variant="body2" color="text.secondary">
+                    {obs.site}
+                  </Typography>
+
+                  <Box sx={{ mt: 1 }}>
+                    {obs.status === 'uploaded' ? (
+                      <Chip icon={<CheckCircleIcon />} label="Uploaded" color="success" size="small" />
+                    ) : (
+                      <Chip label="Saved" size="small" />
+                    )}
+                  </Box>
+                </Box>
+              </Box>
+            </CardContent>
+
+          <Divider />
+
+            {/* Actions are BELOW date/site so they’re always reachable */}
+            <CardActions sx={{ px: 2, py: 1.5 }}>
+              <Stack direction="column" spacing={1} sx={{ width: '100%' }}>
+                <Button
+                  variant="contained"
+                  onClick={() => openDetails(obs)}
+                  fullWidth
+                >
+                  View / Edit
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  startIcon={<CloudUploadIcon />}
+                  onClick={() => { /* upload not implemented */ }}
+                  fullWidth
+                >
+                  Upload
+                  </Button>
+
+                  {/* Delete intentionally hidden on mobile list (per your note) */}
+                  {/* If you DO want it, add a third button here with handleDelete */}
+                </Stack>
+              </CardActions>
+            </Card>
+          ))}
+        </Stack>
+      </Box>
+    );
+  }
+
+
   // Render the page's user interface
   return (
     <Container maxWidth="md" className="observations-container">
@@ -246,77 +326,97 @@ export default function Observations() {
           </Button>
         </Toolbar>
 
-        {/* The table to display survey data */}
-        <Table className="observations-table">
-          <TableHead>
-            <TableRow>
-              {/* Checkbox to select/deselect all rows */}
-              <TableCell padding="checkbox">
-                <Checkbox
-                  indeterminate={selected.size > 0 && !allSelected} /* Show a dash if some but not all rows are selected */
-                  checked={allSelected} /* Checked if all rows are selected */
-                  onChange={toggleAll} /* Call toggleAll when clicked */
-                  inputProps={{ 'aria-label': 'select all observations' }}
-                />
-              </TableCell>
-              {/* Column headers from the config */}
-              <TableCell>{observationsContent.labels.date}</TableCell>
-              <TableCell>{observationsContent.labels.site}</TableCell>
-              <TableCell>{observationsContent.labels.callDensity}</TableCell>
-              <TableCell>{observationsContent.labels.wind}</TableCell>
-              <TableCell>{observationsContent.labels.waterTemp}</TableCell>
-              <TableCell>{observationsContent.labels.startAir}</TableCell>
-              <TableCell>{observationsContent.labels.endAir}</TableCell>
-              <TableCell>{observationsContent.labels.status}</TableCell>
-              <TableCell align="right">{observationsContent.labels.actions}</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {/* Loop through each survey entry to create a row */}
-            {entries.map((obs) => (
-              <TableRow key={obs.id} hover onClick={() => openDetails(obs)} sx={{ cursor: 'pointer' }}> {/* Hover effect and clickable row */}
-                {/* Checkbox for selecting this row */}
+        {/* Desktop table / Mobile cards */}
+        {isMobile ? (
+          <MobileList />
+        ) : (
+          <Table className="observations-table">
+            <TableHead>
+              <TableRow>
                 <TableCell padding="checkbox">
                   <Checkbox
-                    checked={selected.has(obs.id)} /* Checked if this row is selected */
-                    onClick={(e) => { e.stopPropagation(); toggleOne(obs.id); }} /* Stop row click and toggle selection */
-                    inputProps={{ 'aria-label': `select observation ${obs.id}` }}
+                    indeterminate={selected.size > 0 && !allSelected}
+                    checked={allSelected}
+                    onChange={toggleAll}
+                    inputProps={{ 'aria-label': 'select all observations' }}
                   />
                 </TableCell>
-                {/* Display formatted data for each column */}
-                <TableCell>{formatDate(obs.date)}</TableCell>
-                <TableCell>{obs.site}</TableCell>
-                {/* Use fallback (??) to handle different data structures */}
-                <TableCell>{formatDensity(obs.data?.frogCallDensity ?? obs.frogCallDensity)}</TableCell>
-                <TableCell>{formatRange(obs.data?.windSpeed ?? obs.windSpeed)}</TableCell>
-                <TableCell>{formatTemp(obs.data?.waterTemp ?? obs.waterTemp)}</TableCell>
-                <TableCell>{formatTemp(obs.data?.startingAirTemp ?? obs.startingAirTemp)}</TableCell>
-                <TableCell>{formatTemp(obs.data?.endingAirTemp ?? obs.endingAirTemp)}</TableCell>
-                {/* Show status as a colored chip */}
-                <TableCell>
-                  {obs.status === 'uploaded' ? (
-                    <Chip icon={<CheckCircleIcon />} label="Uploaded" color="success" size="small" />
-                  ) : (
-                    <Chip label="Saved" size="small" />
-                  )}
-                </TableCell>
-                {/* Action buttons for upload and delete */}
+                <TableCell>{observationsContent.labels.date}</TableCell>
+                <TableCell>{observationsContent.labels.site}</TableCell>
+                <TableCell>{observationsContent.labels.callDensity}</TableCell>
+                <TableCell>{observationsContent.labels.wind}</TableCell>
+                <TableCell>{observationsContent.labels.waterTemp}</TableCell>
+                <TableCell>{observationsContent.labels.startAir}</TableCell>
+                <TableCell>{observationsContent.labels.endAir}</TableCell>
+                <TableCell>{observationsContent.labels.status}</TableCell>
                 <TableCell align="right">
-                  {/* Upload button (not functional yet) */}
-                  <IconButton aria-label="upload" size="small" onClick={(e) => { e.stopPropagation(); /* no-op for now */ }} title="Upload not implemented yet">
-                    <CloudUploadIcon />
-                  </IconButton>
-                  {/* Delete button to remove the entry */}
-                  <IconButton aria-label="delete" size="small" onClick={(e) => { e.stopPropagation(); handleDelete(obs.id); }}>
-                    <DeleteIcon />
-                  </IconButton>
+                  {observationsContent.labels.actions}
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
 
-        
+            <TableBody>
+              {entries.map((obs) => (
+                <TableRow
+                  key={obs.id}
+                  hover
+                  onClick={() => openDetails(obs)}
+                  sx={{ cursor: 'pointer' }}
+                >
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      checked={selected.has(obs.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleOne(obs.id);
+                      }}
+                    />
+                  </TableCell>
+
+                  <TableCell>{formatDate(obs.date)}</TableCell>
+                  <TableCell>{obs.site}</TableCell>
+                  <TableCell>{formatDensity(obs.data?.frogCallDensity)}</TableCell>
+                  <TableCell>{formatRange(obs.data?.windSpeed)}</TableCell>
+                  <TableCell>{formatTemp(obs.data?.waterTemp)}</TableCell>
+                  <TableCell>{formatTemp(obs.data?.startingAirTemp)}</TableCell>
+                  <TableCell>{formatTemp(obs.data?.endingAirTemp)}</TableCell>
+
+                  <TableCell>
+                    {obs.status === 'uploaded' ? (
+                      <Chip
+                        icon={<CheckCircleIcon />}
+                        label="Uploaded"
+                        color="success"
+                        size="small"
+                      />
+                    ) : (
+                      <Chip label="Saved" size="small" />
+                    )}
+                  </TableCell>
+
+                  <TableCell align="right">
+                    <IconButton
+                      size="small"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <CloudUploadIcon />
+                    </IconButton>
+
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(obs.id);
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}      
         <Dialog open={!!detailEntry} onClose={closeDetails} fullWidth maxWidth="sm">
           <DialogTitle>Observation Details</DialogTitle>
           <DialogContent dividers>

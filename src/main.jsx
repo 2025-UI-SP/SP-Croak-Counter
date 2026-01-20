@@ -1,9 +1,9 @@
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createRoot } from 'react-dom/client'
 import { Box } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { CustomThemeProvider } from './contexts/ThemeContext.jsx';
-import './index.css'  
+import './index.css'
 // Pages
 import App from './pages/App.jsx'
 import Help from './pages/Help.jsx';
@@ -29,7 +29,7 @@ const basename = import.meta.env.MODE === 'gh-pages' ? '/SP-Croak-Counter' : '';
 createRoot(document.getElementById('root')).render(
   <CustomThemeProvider>
     <CssBaseline />
-    <HashRouter>
+    <BrowserRouter basename={basename}>
       <Box
         sx={{
           display: 'flex',
@@ -54,11 +54,11 @@ createRoot(document.getElementById('root')).render(
             <Route path="/join" element={<Join />} />
             <Route path="/frog-identification" element={<FrogIdentification />} />
             <Route path="/observations" element={<Observations />} />
-            <Route path="/about" element={<About/>} />
+            <Route path="/about" element={<About />} />
           </Routes>
         </Box>
         <AppFooter />
       </Box>
-    </HashRouter>
+    </BrowserRouter>
   </CustomThemeProvider>
 );

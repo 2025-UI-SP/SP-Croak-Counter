@@ -1,6 +1,6 @@
 # Croak Counter
 ## Fall Senior Software Project MTU 2025
-*Lucas Bohanon, Maci Dostaler, Peter Laakso, Duncan McBride, Steven Maki, Simon Novak*
+*Lucas Bohanon, Maci Dostaler, Peter Laakso, Zachary Latusek, Duncan McBride, Steven Maki, Simon Novak*
 ---
 
 ## Running

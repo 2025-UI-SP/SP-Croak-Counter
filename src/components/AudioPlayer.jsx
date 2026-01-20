@@ -1,22 +1,24 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  Box, 
-  IconButton, 
-  Slider, 
+import {
+  Box,
+  IconButton,
+  Slider,
   Typography,
   useTheme,
   useMediaQuery
 } from '@mui/material';
-import { 
-  PlayArrow, 
+import {
+  PlayArrow,
   Pause
 } from '@mui/icons-material';
+import { useTranslation } from '../hooks/useTranslation.js';
 
 const AudioPlayer = ({ src, startTime }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const audioRef = useRef(null);
-  
+  const { t } = useTranslation();
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -59,7 +61,7 @@ const AudioPlayer = ({ src, startTime }) => {
     const handleLoadedMetadata = () => {
       setDuration(audio.duration);
       setIsLoading(false);
-      if (startTime !== undefined && startTime > 0) { 
+      if (startTime !== undefined && startTime > 0) {
         audio.currentTime = startTime;
         setCurrentTime(startTime);
       }
@@ -86,7 +88,7 @@ const AudioPlayer = ({ src, startTime }) => {
       setIsPlaying(true);
       setIsLoading(false);
     };
-    
+
     const handlePause = () => setIsPlaying(false);
 
     const handleError = () => {
@@ -223,7 +225,7 @@ const AudioPlayer = ({ src, startTime }) => {
       {/* Loading indicator - only show when actually loading and not ready */}
       {isLoading && duration === 0 && (
         <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center', display: 'block', mt: 1 }}>
-          Loading audio...
+          {t('audioPlayer.loading')}
         </Typography>
       )}
     </Box>

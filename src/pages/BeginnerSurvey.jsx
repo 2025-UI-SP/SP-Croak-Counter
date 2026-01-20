@@ -16,11 +16,18 @@ import {
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { usePageTitle } from '../hooks/usePageTitle.js';
 import { useLocalStorageForm } from '../hooks/useLocalStorageForm.js';
+import { useTranslation } from '../hooks/useTranslation.js';
 import { useNavigate } from 'react-router-dom';
 import { Snackbar, Alert as MuiAlert } from '@mui/material';
 
 function BeginnerSurvey() {
   usePageTitle('Call Index Survey');
+  const { t } = useTranslation();
+
+  // Fetch options
+  const skyConditions = t('survey.options.skyConditions') || [];
+  const windSpeeds = t('survey.options.windSpeeds') || [];
+  const frogCallDensities = t('survey.options.frogCallDensity') || [];
 
   //What we're storing for each survey
   const initialFormState = {
@@ -40,14 +47,14 @@ function BeginnerSurvey() {
 
   // Required Fields
   const requiredFields = [
-    { name: 'location', label: 'location' },
+    { name: 'location', label: 'site' }, // label key in en.json
     { name: 'latitude', label: 'latitude' },
     { name: 'longitude', label: 'longitude' },
-    { name: 'startTime', label: 'start time'},
-    { name: 'endTime', label: 'end time'},
-    { name: 'skyCondition', label: 'sky condition' },
-    { name: 'windSpeed', label: 'wind speed' },
-    { name: 'frogCallDensity', label: 'call density' }
+    { name: 'startTime', label: 'startTime' },
+    { name: 'endTime', label: 'endTime' },
+    { name: 'skyCondition', label: 'skyCondition' },
+    { name: 'windSpeed', label: 'windSpeed' },
+    { name: 'frogCallDensity', label: 'frogCallDensity' }
   ];
 
   const { formData, lastSaved, errors, updateField, setFieldErrors, clearForm } =
@@ -59,13 +66,13 @@ function BeginnerSurvey() {
   // GPS state
   const [gpsLoading, setGpsLoading] = useState(false);
   const [gpsError, setGpsError] = useState('');
-  
+
   // Track invalid input per field for responsive feedback
   const [fieldError, setFieldError] = useState('');
 
   //Regex validation, so only numbers decimals and negatives can be put into the temperature and latitude/longitude fields
   const isValidNumber = (value) => /^-?\d*\.?\d*$/.test(value);
-  
+
   // Handle number fields with responsive validation feedback
   const handleNumberInput = (field, value) => {
     if (isValidNumber(value) || value === '') {
@@ -83,7 +90,8 @@ function BeginnerSurvey() {
     requiredFields.forEach(field => {
       const value = formData[field.name];
       if (!value || !value.toString().trim()) {
-        newErrors[field.name] = `Please enter ${field.label}`;
+        const fieldLabel = t(`survey.fields.${field.label}`);
+        newErrors[field.name] = t('survey.messages.requiredError').replace('{field}', fieldLabel);
       }
     });
 
@@ -108,14 +116,14 @@ function BeginnerSurvey() {
         setGpsError('');
       },
       (error) => {
-        let errorMessage = 'Can not get user location';
+        let errorMessage = t('survey.messages.gpsError');
 
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = 'Location access denied, please allow access';
+            errorMessage = t('survey.messages.gpsDenied');
             break;
           case error.POSITION_UNAVAILABLE:
-            errorMessage = 'Location information unavailable';
+            errorMessage = t('survey.messages.gpsUnavailable');
             break;
         }
 
@@ -169,7 +177,7 @@ function BeginnerSurvey() {
     clearForm();
   };
 
-{/*Form Content*/}
+  {/*Form Content*/ }
   return (
     <Container maxWidth="lg" sx={{ mt: 12, mb: 4 }}>
       <Box display="flex" justifyContent="center">
@@ -187,7 +195,7 @@ function BeginnerSurvey() {
                 fontWeight: 700
               }}
             >
-              Call Index Survey
+              {t('survey.beginnerTitle')}
             </Typography>
 
             <Typography
@@ -200,7 +208,7 @@ function BeginnerSurvey() {
                 color: 'text.secondary'
               }}
             >
-              Fill out the fields below based on what you observed
+              {t('survey.intro')}
             </Typography>
 
             {lastSaved && (
@@ -213,7 +221,7 @@ function BeginnerSurvey() {
                   mb: 2
                 }}
               >
-                Saved at {lastSaved.toLocaleTimeString()}
+                {t('survey.savedAt')} {lastSaved.toLocaleTimeString()}
               </Alert>
             )}
           </Box>
@@ -231,11 +239,11 @@ function BeginnerSurvey() {
               <TextField
                 fullWidth
                 required
-                label="Start Time"
+                label={t('survey.fields.startTime')}
                 type="time"
                 value={formData.startTime}
                 onChange={(e) => updateField('startTime', e.target.value)}
-                helperText="Time when survey started"
+                helperText={t('survey.helpers.startTime')}
                 error={!!errors.startTime}
                 InputLabelProps={{
                   shrink: true,
@@ -250,10 +258,10 @@ function BeginnerSurvey() {
               <TextField
                 fullWidth
                 required
-                label="Location"
+                label={t('survey.fields.site')}
                 value={formData.location}
                 onChange={(e) => updateField('location', e.target.value)}
-                placeholder="Where did you do the survey?"
+                placeholder={t('survey.helpers.location')}
                 error={!!errors.location}
                 helperText={errors.location}
               />
@@ -267,39 +275,39 @@ function BeginnerSurvey() {
                 startIcon={<LocationOnIcon />}
                 sx={{ height: '56px' }}
               >
-                {gpsLoading ? 'Getting Location, wait one moment please' : 'Get GPS Location'}
+                {gpsLoading ? t('survey.messages.gpsLoading') : t('survey.messages.gpsButton')}
               </Button>
 
               {/*Latitude field should autofill with the button*/}
               <TextField
                 fullWidth
                 required
-                label="Latitude"
+                label={t('survey.fields.latitude')}
                 value={formData.latitude}
                 onChange={(e) => handleNumberInput('latitude', e.target.value)}
                 error={!!errors.latitude}
                 helperText={errors.latitude}
-                input type = "text"
+                input type="text"
                 inputMode="decimal"
               />
               {fieldError === 'latitude' && (
-                <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
+                <Alert severity="warning" sx={{ mt: 1 }}>{t('survey.messages.numbersOnly')}</Alert>
               )}
 
               {/*Longitude field, should autofill with the button*/}
               <TextField
                 fullWidth
                 required
-                label="Longitude"
+                label={t('survey.fields.longitude')}
                 value={formData.longitude}
                 onChange={(e) => handleNumberInput('longitude', e.target.value)}
                 error={!!errors.longitude}
                 helperText={errors.longitude}
-                input type = "text"
+                input type="text"
                 inputMode="decimal"
               />
               {fieldError === 'longitude' && (
-                <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
+                <Alert severity="warning" sx={{ mt: 1 }}>{t('survey.messages.numbersOnly')}</Alert>
               )}
 
               {gpsError && (
@@ -311,60 +319,58 @@ function BeginnerSurvey() {
               {/*Water temp*/}
               <TextField
                 fullWidth
-                label="Water Temp (°F)"
+                label={t('survey.fields.waterTemp')}
                 value={formData.waterTemp}
                 onChange={(e) => handleNumberInput('waterTemp', e.target.value)}
-                helperText="Optional - only if you have a thermometer"
-                input type = "text"
+                helperText={t('survey.helpers.waterTemp')}
+                input type="text"
                 inputMode="decimal"
               />
               {fieldError === 'waterTemp' && (
-                <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
+                <Alert severity="warning" sx={{ mt: 1 }}>{t('survey.messages.numbersOnly')}</Alert>
               )}
 
               {/*Starting air temp*/}
               <TextField
                 fullWidth
-                label="Starting Air Temp (°F)"
+                label={t('survey.fields.startingAirTemp')}
                 value={formData.startingAirTemp}
                 onChange={(e) => handleNumberInput('startingAirTemp', e.target.value)}
-                helperText="Optional - air temperature when you started"
-                input type = "text"
+                helperText={t('survey.helpers.startingAirTemp')}
+                input type="text"
                 inputMode="decimal"
               />
               {fieldError === 'startingAirTemp' && (
-                <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
+                <Alert severity="warning" sx={{ mt: 1 }}>{t('survey.messages.numbersOnly')}</Alert>
               )}
 
               {/*Ending Air Temp*/}
               <TextField
                 fullWidth
-                label="Ending Air Temp (°F)"
+                label={t('survey.fields.endingAirTemp')}
                 value={formData.endingAirTemp}
                 onChange={(e) => handleNumberInput('endingAirTemp', e.target.value)}
-                helperText="Optional - air temperature when you finished"
-                input type = "text"
+                helperText={t('survey.helpers.endingAirTemp')}
+                input type="text"
                 inputMode="decimal"
               />
               {fieldError === 'endingAirTemp' && (
-                <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
+                <Alert severity="warning" sx={{ mt: 1 }}>{t('survey.messages.numbersOnly')}</Alert>
               )}
 
               {/*Sky Condition Dropdown*/}
               <FormControl fullWidth required error={!!errors.skyCondition}>
-                <InputLabel>Sky Condition</InputLabel>
+                <InputLabel>{t('survey.fields.skyCondition')}</InputLabel>
                 <Select
                   value={formData.skyCondition}
                   onChange={(e) => updateField('skyCondition', e.target.value)}
-                  label="Sky Condition"
+                  label={t('survey.fields.skyCondition')}
                 >
-                  <MenuItem value="Clear or only a few clouds">Clear or only a few clouds</MenuItem>
-                  <MenuItem value="Partly cloudy or variable">Partly cloudy or variable</MenuItem>
-                  <MenuItem value="Broken clouds or overcast">Broken clouds or overcast</MenuItem>
-                  <MenuItem value="Fog">Fog</MenuItem>
-                  <MenuItem value="Drizzle or light rain (not affecting hearing)">Drizzle or light rain (not affecting hearing)</MenuItem>
-                  <MenuItem value="Snow">Snow</MenuItem>
-                  <MenuItem value="Showers (is affecting hearing ability)">Showers (is affecting hearing ability)</MenuItem>
+                  {Array.isArray(skyConditions) && skyConditions.map((condition) => (
+                    <MenuItem key={condition} value={condition}>
+                      {condition}
+                    </MenuItem>
+                  ))}
                 </Select>
                 {errors.skyCondition && (
                   <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1.5 }}>
@@ -375,25 +381,17 @@ function BeginnerSurvey() {
 
               {/*Wind Speed Form*/}
               <FormControl fullWidth required error={!!errors.windSpeed}>
-                <InputLabel>Wind Speed</InputLabel>
+                <InputLabel>{t('survey.fields.windSpeed')}</InputLabel>
                 <Select
                   value={formData.windSpeed}
                   onChange={(e) => updateField('windSpeed', e.target.value)}
-                  label="Wind Speed"
+                  label={t('survey.fields.windSpeed')}
                 >
-                  <MenuItem value="Calm (<1 mph)">Calm (under 1 mph)</MenuItem>
-                  <MenuItem value="Light Air (1-3 mph)">Light Air (1-3 mph)</MenuItem>
-                  <MenuItem value="Light Breeze (4-7 mph)">Light Breeze (4-7 mph)</MenuItem>
-                  <MenuItem value="Gentle Breeze (8-12 mph)">Gentle Breeze (8-12 mph)</MenuItem>
-                  <MenuItem value="Moderate Breeze (13-18 mph)">Moderate Breeze (13-18 mph)</MenuItem>
-                  <MenuItem value="Fresh Breeze (19-24 mph)">Fresh Breeze (19-24 mph)</MenuItem>
-                  <MenuItem value="Strong Breeze (25-31 mph)">Strong Breeze (25-31 mph)</MenuItem>
-                  <MenuItem value="Moderate Gale (32-38 mph)">Moderate Gale (32-38 mph)</MenuItem>
-                  <MenuItem value="Fresh Gale (39-46 mph)">Fresh Gale (39-46 mph)</MenuItem>
-                  <MenuItem value="Strong Gale (47-54 mph)">Strong Gale (47-54 mph)</MenuItem>
-                  <MenuItem value="Whole Gale (55-63 mph)">Whole Gale (55-63 mph)</MenuItem>
-                  <MenuItem value="Storm (64-72 mph)">Storm (64-72 mph)</MenuItem>
-                  <MenuItem value="Hurricane (73+ mph)">Hurricane (73+ mph)</MenuItem>
+                  {Array.isArray(windSpeeds) && windSpeeds.map((speed) => (
+                    <MenuItem key={speed} value={speed}>
+                      {speed}
+                    </MenuItem>
+                  ))}
                 </Select>
                 {errors.windSpeed && (
                   <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1.5 }}>
@@ -404,16 +402,17 @@ function BeginnerSurvey() {
 
               {/* Frog Call Density Drop Down */}
               <FormControl fullWidth required error={!!errors.frogCallDensity}>
-                <InputLabel>Frog Call Density</InputLabel>
+                <InputLabel>{t('survey.fields.frogCallDensity')}</InputLabel>
                 <Select
                   value={formData.frogCallDensity}
                   onChange={(e) => updateField('frogCallDensity', e.target.value)}
-                  label="Frog Call Density"
+                  label={t('survey.fields.frogCallDensity')}
                 >
-                  <MenuItem value="0 - None">0 - No frogs heard</MenuItem>
-                  <MenuItem value="1 - Individual calls, no overlapping">1 - Individual calls, easy to count</MenuItem>
-                  <MenuItem value="2 - Individual calls, some overlapping">2 - Some calls overlapping</MenuItem>
-                  <MenuItem value="3 - Full chorus, constant, continuous">3 - Full chorus, constant calling</MenuItem>
+                  {Array.isArray(frogCallDensities) && frogCallDensities.map((density) => (
+                    <MenuItem key={density} value={density}>
+                      {density}
+                    </MenuItem>
+                  ))}
                 </Select>
                 {errors.frogCallDensity && (
                   <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1.5 }}>
@@ -427,11 +426,11 @@ function BeginnerSurvey() {
               <TextField
                 fullWidth
                 required
-                label="End Time"
+                label={t('survey.fields.endTime')}
                 type="time"
                 value={formData.endTime}
                 onChange={(e) => updateField('endTime', e.target.value)}
-                helperText="Time when survey ended"
+                helperText={t('survey.helpers.endTime')}
                 error={!!errors.endTime}
                 InputLabelProps={{
                   shrink: true,
@@ -447,11 +446,11 @@ function BeginnerSurvey() {
                 fullWidth
                 multiline
                 rows={4}
-                label="Comments"
+                label={t('survey.fields.comments')}
                 value={formData.comments}
                 onChange={(e) => updateField('comments', e.target.value)}
-                placeholder="Final Comments"
-                helperText="Any other wildlife species encountered? Anything interesting or concerning at the site? Any additional frog information you want to include?"
+                placeholder={t('survey.fields.comments')}
+                helperText={t('survey.helpers.comments')}
               />
 
               {/*Buttons*/}
@@ -470,7 +469,7 @@ function BeginnerSurvey() {
                     px: 4
                   }}
                 >
-                  Clear Form
+                  {t('survey.clearForm')}
                 </Button>
 
                 <Button
@@ -483,7 +482,7 @@ function BeginnerSurvey() {
                     px: 4
                   }}
                 >
-                  Submit Survey
+                  {t('survey.submit')}
                 </Button>
               </Stack>
 
@@ -497,7 +496,7 @@ function BeginnerSurvey() {
         onClose={() => setShowValidation(false)}
       >
         <MuiAlert severity="warning" onClose={() => setShowValidation(false)}>
-          Please fill out all required fields before saving.
+          {t('survey.messages.validationWarning')}
         </MuiAlert>
       </Snackbar>
       <Snackbar
@@ -506,7 +505,7 @@ function BeginnerSurvey() {
         onClose={() => setShowSuccess(false)}
       >
         <MuiAlert severity="success" onClose={() => setShowSuccess(false)}>
-          Survey submitted — saving to Observations
+          {t('survey.messages.success')}
         </MuiAlert>
       </Snackbar>
     </Container>

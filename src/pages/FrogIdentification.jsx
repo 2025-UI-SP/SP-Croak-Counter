@@ -1,29 +1,33 @@
 import React from 'react';
-import { 
-  Container, 
-  Typography, 
-  Accordion, 
-  AccordionSummary, 
-  AccordionDetails,
-  Box
+import {
+  Container,
+  Typography,
+  Box,
+  TextField
 } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { usePageTitle } from '../hooks/usePageTitle.js';
-import {frogContent} from '../config.js';
-import { TextField } from '@mui/material';
+import { useTranslation } from '../hooks/useTranslation.js';
+import { frogContent } from '../config.js';
 import AudioPlayer from '../components/AudioPlayer';
 
-function Help() {
+function FrogIdentification() {
   usePageTitle('Frog Identification');
+  const { t } = useTranslation();
   const [filter, setFilter] = React.useState('');
 
-  const filteredFrogs = frogContent.frogs.filter(frog =>
-    frog.name.toLowerCase().includes(filter.toLowerCase())
+  const frogs = (frogContent.frogs || []).map(frog => ({
+    ...frog,
+    displayName: t(`frogs.${frog.fieldName}.name`) || frog.name,
+    displayDescription: t(`frogs.${frog.fieldName}.description`) || frog.description
+  }));
+
+  const filteredFrogs = frogs.filter(frog =>
+    frog.displayName.toLowerCase().includes(filter.toLowerCase())
   );
 
   return (
     <Container maxWidth="md" sx={{ mt: { xs: 8, sm: 10, md: 12 }, mb: 4 }}>
-      <Typography 
+      <Typography
         variant="h3"
         component="h1"
         gutterBottom
@@ -34,12 +38,12 @@ function Help() {
           fontWeight: 700
         }}
       >
-        Frog Identification
+        {t('frogIdentification.title')}
       </Typography>
-      <Typography 
-        variant="h5" 
-        component="p" 
-        color="text.secondary" 
+      <Typography
+        variant="h5"
+        component="p"
+        color="text.secondary"
         gutterBottom
         sx={{
           fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' },
@@ -47,7 +51,7 @@ function Help() {
           mb: 2
         }}
       >
-        Resources to help with identification
+        {t('frogIdentification.subtitle')}
       </Typography>
 
       <Box sx={{ mt: 4, mb: 3, display: 'flex', justifyContent: 'center' }}>
@@ -55,7 +59,7 @@ function Help() {
           <TextField
             fullWidth
             variant="outlined"
-            label="Filter frogs by name"
+            label={t('frogIdentification.filterLabel')}
             value={filter}
             onChange={e => setFilter(e.target.value)}
             size="medium"
@@ -78,7 +82,7 @@ function Help() {
       >
         {filteredFrogs.map((frog, idx) => (
           <Box
-            key={frog.name || idx}
+            key={frog.fieldName || idx}
             sx={{
               border: theme => `1px solid ${theme.palette.divider}`,
               borderRadius: 2,
@@ -92,16 +96,16 @@ function Help() {
             }}
           >
             <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 1, color: 'primary.dark' }}>
-              {frog.name}
+              {frog.displayName}
             </Typography>
             <Typography variant="body1" sx={{ mb: 2, color: 'text.secondary' }}>
-              {frog.description}
+              {frog.displayDescription}
             </Typography>
             {frog.image && (
               <Box sx={{ mb: 2, textAlign: 'center' }}>
-                <img 
-                  src={frog.image} 
-                  alt={frog.name} 
+                <img
+                  src={frog.image}
+                  alt={frog.displayName}
                   style={{ maxWidth: '100%', maxHeight: 220, borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
                 />
               </Box>
@@ -115,7 +119,7 @@ function Help() {
         ))}
         {filteredFrogs.length === 0 && (
           <Typography variant="body1" color="text.secondary" sx={{ textAlign: 'center', mt: 4 }}>
-            No frogs found.
+            {t('frogIdentification.noFrogs')}
           </Typography>
         )}
       </Box>
@@ -123,6 +127,6 @@ function Help() {
   );
 }
 
-export default Help;
+export default FrogIdentification;
 
 

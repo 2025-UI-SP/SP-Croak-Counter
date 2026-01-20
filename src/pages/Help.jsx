@@ -1,21 +1,24 @@
 import React from 'react';
-import { 
-  Container, 
-  Typography, 
-  Accordion, 
-  AccordionSummary, 
+import {
+  Container,
+  Typography,
+  Accordion,
+  AccordionSummary,
   AccordionDetails,
   Box
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { usePageTitle } from '../hooks/usePageTitle.js';
+import { useTranslation } from '../hooks/useTranslation.js';
 import calendar from "../assets/help_page/frogCallingZone4.JPG";
 
 function Help() {
   usePageTitle('Help');
+  const { t } = useTranslation();
+
   return (
     <Container maxWidth="md" sx={{ mt: 12, mb: 4 }}>
-      <Typography 
+      <Typography
         variant="h3"
         component="h1"
         gutterBottom
@@ -26,12 +29,12 @@ function Help() {
           fontWeight: 700
         }}
       >
-        Croak Counter Help Page
+        {t('help.title')}
       </Typography>
-      <Typography 
-        variant="h5" 
-        component="p" 
-        color="text.secondary" 
+      <Typography
+        variant="h5"
+        component="p"
+        color="text.secondary"
         gutterBottom
         sx={{
           fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' },
@@ -39,145 +42,110 @@ function Help() {
           mb: 2
         }}
       >
-        Please refer to the resources below
+        {t('help.subtitle')}
       </Typography>
-      
-      <Box sx={{ mt: 4}}>
+
+      <Box sx={{ mt: 4 }}>
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="h5"><strong>Calling Calendar</strong></Typography>
+            <Typography variant="h5"><strong>{t('help.calendar.title')}</strong></Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography
-                sx={{fontSize: {xs: '1.125rem', sm: '1.25rem', md: '1.35rem'} }}
+              sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.35rem' } }}
             >
-              Here you can view the breeding periods of frogs in order to better narrow down what frog species you should be hearing during the given month.
-              The western upper peninsula is located within Zone 4.
+              {t('help.calendar.description')}
             </Typography>
-            <br/>
+            <br />
 
-            <img src={calendar} alt="Zone 4 Calling Calendar" style={{display: 'flex', width: '100%', height: 'auto'}}/>
+            <img src={calendar} alt={t('help.calendar.altText')} style={{ display: 'flex', width: '100%', height: 'auto' }} />
 
           </AccordionDetails>
         </Accordion>
 
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="h5"><strong>Ideal Environment</strong></Typography>
+            <Typography variant="h5"><strong>{t('help.environment.title')}</strong></Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography
-                sx={{fontSize: {xs: '1.125rem', sm: '1.25rem', md: '1.35rem'} }}
+              sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.35rem' } }}
             >
-              The survey is best taken in swampy environments where frogs are commonly found.
-              However, surveying should not occur on evenings with lightning, heavy rain (though mist and light rain that does not affect hearing is fine),
-              or when wind speeds are consistently greater than 12 mph (19 kmh). Surveying also should not occur when air temperatures are less than 42 degrees Fahrenheit (5.6 degrees Celsius).
+              {t('help.environment.description')}
             </Typography>
           </AccordionDetails>
         </Accordion>
-        
+
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="h5"><strong>Standard Procedure</strong></Typography>
+            <Typography variant="h5"><strong>{t('help.procedure.title')}</strong></Typography>
           </AccordionSummary>
           <AccordionDetails>
 
             <Typography variant="h5">
-              <strong>Pre-Survey</strong>
+              <strong>{t('help.procedure.preSurvey.title')}</strong>
             </Typography>
-            <br/>
-            <Typography sx={{fontSize: {xs: '1.125rem', sm: '1.25rem', md: '1.35rem'} }}>
-              <strong>1. Scout the site. </strong>
-              Obtain site maps and access instructions, including permission to enter private property.
-              Select only sites with suitable habitat. Visit the site in the daytime prior to beginning surveys to familiarize yourself with the area.
-              If you are surveying more than one site, change the order of the site visits with each survey,
-              e.g., if there are 5 sites, survey 1-2-3-4-5 first, then 2-3-4-5-1, then 3-4-5-1-2, etc. If you intend to survey long-term,
-              do not vary from initially selected sampling sites - monitor the same sites year after year.
-
-              <br/><br/>
-              <strong>2. Survey effort. </strong>
-              Surveys should be conducted approximately once per week. Select an evening when weather conditions are met.
-              It is okay to miss one survey per month, but if more are missed, false absences may increase.
-
-              <br/><br/>
-              <strong>3. Gas. </strong>
-              Make sure any vehicles have enough gas to complete the routes.
-
-              <br/><br/>
-              <strong>4. Safety. </strong>
-              Tell someone where you are going before heading out for the evening. Enlist a partner whenever possible for safety.
-
-              <br/><br/>
-              <strong>5. Equipment. </strong>
-              Make sure you have all necessary equipment, including, but not limited to, a map, a flashlight,
-              a stopwatch (or other time piece), a thermometer, a first aid kit, and proper clothing.
-
-              <br/><br/><br/>
+            <br />
+            <Typography sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.35rem' } }}>
+              <strong>{t('help.procedure.preSurvey.step1')}</strong>
+              <br /><br />
+              <strong>{t('help.procedure.preSurvey.step2')}</strong>
+              <br /><br />
+              <strong>{t('help.procedure.preSurvey.step3')}</strong>
+              <br /><br />
+              <strong>{t('help.procedure.preSurvey.step4')}</strong>
+              <br /><br />
+              <strong>{t('help.procedure.preSurvey.step5')}</strong>
+              <br /><br /><br />
             </Typography>
 
             <Typography variant="h5">
-              <strong>Survey Procedure</strong>
+              <strong>{t('help.procedure.surveyProcedure.title')}</strong>
             </Typography>
-            <br/>
-            <Typography sx={{fontSize: {xs: '1.125rem', sm: '1.25rem', md: '1.35rem'} }}>
+            <br />
+            <Typography sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.35rem' } }}>
 
-              <strong> 1. </strong>
-                Record survey location. Upon opening the survey, you'll notice a button labbeled "Get GPS Location". Please
-                select this button while at the survey site. Upon selection, your phone will ask for permission to access your current location. 
-                This is to ensure that we record the correct coordinates for the survey site. Please select "allow".
-                
-              <br/><br/>
-              <strong>2. </strong>
-                Begin call surveys 30 minutes after sunset.
+              <strong>{t('help.procedure.surveyProcedure.step1')}</strong>
 
-              <br/><br/>
-              <strong>3. </strong>
-              At each call site, quietly wait 2-3 minutes after arriving at the listening post before starting the stopwatch for a 5-minute survey.
-              During this time, expose the thermometer bulb to the air so it begins equalizing with the air temperature,
-              and fill out the preliminary weather and time information on the data form. Start the survey, recording frogs heard.
-              At the end of the 5 minutes, take the water temperature and fill in the remaining data.
+              <br /><br />
+              <strong>{t('help.procedure.surveyProcedure.step2')}</strong>
 
-              <br/><br/>
-              <strong>4. </strong>
-              Listen to and record frogs from the wetland being monitored, but also record frogs heard in the distance as "distant" calls and note the direction.
-              Distance calls are from other wetlands, not the one you are monitoring.
+              <br /><br />
+              <strong>{t('help.procedure.surveyProcedure.step3')}</strong>
 
-              <br/><br/>
-              <strong>5. </strong>
-              Any time noise from passing vehicles, storms, etc. makes hearing impossible, elapsed time should be stopped on the stopwatch at the point of interruption
-              and continued afterwards until the survey has been conducted for the full five minutes.
+              <br /><br />
+              <strong>{t('help.procedure.surveyProcedure.step4')}</strong>
 
-              <br/><br/>
-              <strong>6. </strong>
-              You may record any birds or other wildlife detected in the Comments section, along with any comments or anything you think may have disturbed the survey.
+              <br /><br />
+              <strong>{t('help.procedure.surveyProcedure.step5')}</strong>
 
-              <br/><br/><br/>
+              <br /><br />
+              <strong>{t('help.procedure.surveyProcedure.step6')}</strong>
+
+              <br /><br /><br />
             </Typography>
 
             <Typography variant="h5">
-              <strong>Post-Survey</strong>
+              <strong>{t('help.procedure.postSurvey.title')}</strong>
             </Typography>
-            <br/>
-            <Typography sx={{fontSize: {xs: '1.125rem', sm: '1.25rem', md: '1.35rem'} }}>
-              <strong>1. </strong>
-              Store equipment. Place all wet equipment in a place where it can dry.
+            <br />
+            <Typography sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.35rem' } }}>
+              <strong>{t('help.procedure.postSurvey.step1')}</strong>
 
-              <br/><br/>
-              <strong>2. </strong>
-              Ensure the survey was successfully submitted. Congratulate yourself on a job well done!
+              <br /><br />
+              <strong>{t('help.procedure.postSurvey.step2')}</strong>
             </Typography>
 
           </AccordionDetails>
         </Accordion>
-        
+
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="h5"><strong>Frog Identification</strong></Typography>
+            <Typography variant="h5"><strong>{t('help.identification.title')}</strong></Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Typography sx={{fontSize: {xs: '1.125rem', sm: '1.25rem', md: '1.35rem'} }}>
-              All of the frog species that you may encounter in the Keweenaw area are listed in the Frog Identification page.
-              Each species has a description, image, and audio clip of their call to help with identification.
+            <Typography sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.35rem' } }}>
+              {t('help.identification.description')}
             </Typography>
           </AccordionDetails>
         </Accordion>

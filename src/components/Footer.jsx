@@ -5,10 +5,12 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CloudOffIcon from '@mui/icons-material/CloudOff';
 import { useThemeMode } from '../contexts/ThemeContext.jsx';
 import useOnlineStatus from '../hooks/useOnlineStatus';
+import { useTranslation } from '../hooks/useTranslation.js';
 
 function AppFooter() {
   const { darkMode, toggleDarkMode } = useThemeMode();
   const online = useOnlineStatus();
+  const { t } = useTranslation();
 
   return (
     <Box
@@ -33,18 +35,18 @@ function AppFooter() {
           }}
         >
           <Typography variant="body2" color="text.secondary">
-            Senior Software Project · 2025
+            {t('footer.seniorProject')}
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Chip
               icon={online ? <CheckCircleIcon /> : <CloudOffIcon />}
-              label={online ? 'Online' : 'Offline'}
+              label={online ? t('footer.online') : t('footer.offline')}
               color={online ? 'success' : 'default'}
               size="small"
             />
-            <Tooltip title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
-              <IconButton 
-                onClick={toggleDarkMode} 
+            <Tooltip title={darkMode ? t('footer.lightMode') : t('footer.darkMode')}>
+              <IconButton
+                onClick={toggleDarkMode}
                 color="primary"
                 size="small"
               >

@@ -83,6 +83,14 @@ function Help() {
           <AccordionDetails>
 
             <Typography variant="h5">
+              <strong>{t('help.procedure.offlineInfo.title')}</strong>
+            </Typography>
+            <br />
+            <Typography sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.35rem' } }}>
+              {t('help.procedure.offlineInfo.description')}
+            </Typography>
+            <br />
+            <Typography variant="h5">
               <strong>{t('help.procedure.preSurvey.title')}</strong>
             </Typography>
             <br />

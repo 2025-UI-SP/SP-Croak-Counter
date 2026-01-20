@@ -382,7 +382,7 @@ function AdvancedSurvey() {
                 value={formData.affiliation}
                 onChange={(e) => updateField('affiliation', e.target.value)}
                 placeholder={t('survey.helpers.affiliation')}
-                helperText={t('survey.helpers.affiliationHelper')}
+                helperText={t('survey.helpers.affiliationOptional')}
               />
 
               {/*Water Temperature*/}

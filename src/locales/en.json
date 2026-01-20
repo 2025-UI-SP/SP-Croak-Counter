@@ -243,6 +243,11 @@
         "savedAt": "Saved at",
         "clearForm": "Clear Form",
         "submit": "Submit Survey",
+        "species":{
+            "title":"Frog Species Observations",
+            "description":"Rate call density from 0-3 for each species observed. Listen to the audio to help with identification."
+
+        },
         "messages": {
             "validationWarning": "Please fill out all required fields before saving.",
             "success": "Survey submitted — saving to Observations",

@@ -22,6 +22,10 @@ import { useNavigate } from 'react-router-dom';
 import { Snackbar, Alert as MuiAlert } from '@mui/material';
 import { frogContent } from '../config.js';
 import AudioPlayer from '../components/AudioPlayer.jsx';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import dayjs from 'dayjs';
 
 function AdvancedSurvey() {
   usePageTitle('Advanced Survey');
@@ -249,30 +253,31 @@ function AdvancedSurvey() {
             sx={{
               p: 5,
               borderRadius: 4,
-              mx: { xs: 2, md: 4 }
+              mx: { xs: -4.05, md: 4 }
             }}
           >
             <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
 
               {/* Start Time */}
-              <TextField
-                fullWidth
-                required
-                label={t('survey.fields.startTime')}
-                type="time"
-                value={formData.startTime}
-                onChange={(e) => updateField('startTime', e.target.value)}
-                helperText={t('survey.helpers.startTime')}
-                error={!!errors.startTime}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                sx={{
-                  '& input[type="time"]::-webkit-calendar-picker-indicator': {
-                    filter: (theme) => theme.palette.mode === 'dark' ? 'invert(1)' : 'none'
-                  }
-                }}
-              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <TimePicker
+                  label="Start Time *"
+                  value={formData.startTime ? dayjs(formData.startTime, 'HH:mm') : null}
+                  onChange={(newValue) => {
+                    updateField('startTime', newValue ? newValue.format('HH:mm') : '');
+                  }}
+                  timeSteps={{ minutes: 1 }}
+                  referenceDate={dayjs()}
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      required: true,
+                      helperText: "Time when survey started",
+                      error: !!errors.startTime
+                    }
+                  }}
+                />
+              </LocalizationProvider>
 
               {/* Site Name */}
               <TextField
@@ -307,8 +312,13 @@ function AdvancedSurvey() {
                 onChange={(e) => handleNumberInput('latitude', e.target.value)}
                 error={!!errors.latitude}
                 helperText={errors.latitude}
-                input type="text"
-                inputMode="decimal"
+                type="text"
+                slotProps={{
+                  htmlInput: {
+                    inputMode: 'decimal',
+                    pattern: '[0-9.-]*'
+                  }
+                }}
               />
               {fieldError === 'latitude' && (
                 <Alert severity="warning" sx={{ mt: 1 }}>{t('survey.messages.numbersOnly')}</Alert>
@@ -323,8 +333,13 @@ function AdvancedSurvey() {
                 onChange={(e) => handleNumberInput('longitude', e.target.value)}
                 error={!!errors.longitude}
                 helperText={errors.longitude}
-                input type="text"
-                inputMode="decimal"
+                type="text"
+                slotProps={{
+                  htmlInput: {
+                    inputMode: 'decimal',
+                    pattern: '[0-9.-]*'
+                  }
+                }}
               />
               {fieldError === 'longitude' && (
                 <Alert severity="warning" sx={{ mt: 1 }}>{t('survey.messages.numbersOnly')}</Alert>
@@ -376,9 +391,14 @@ function AdvancedSurvey() {
                 label={t('survey.fields.waterTemp')}
                 value={formData.waterTemp}
                 onChange={(e) => handleNumberInput('waterTemp', e.target.value)}
-                helperText={t('survey.helpers.waterTemp')}
-                input type="text"
-                inputMode="decimal"
+                helperText="Optional - only if you have a thermometer"
+                type="text"
+                slotProps={{
+                  htmlInput: {
+                    inputMode: 'decimal',
+                    pattern: '[0-9.-]*'
+                  }
+                }}
               />
               {fieldError === 'waterTemp' && (
                 <Alert severity="warning" sx={{ mt: 1 }}>{t('survey.messages.numbersOnly')}</Alert>
@@ -390,9 +410,14 @@ function AdvancedSurvey() {
                 label={t('survey.fields.startingAirTemp')}
                 value={formData.startingAirTemp}
                 onChange={(e) => handleNumberInput('startingAirTemp', e.target.value)}
-                helperText={t('survey.helpers.startingAirTemp')}
-                input type="text"
-                inputMode="decimal"
+                helperText="Optional - air temperature when you started"
+                type="text"
+                slotProps={{
+                  htmlInput: {
+                    inputMode: 'decimal',
+                    pattern: '[0-9.-]*'
+                  }
+                }}
               />
               {fieldError === 'startingAirTemp' && (
                 <Alert severity="warning" sx={{ mt: 1 }}>{t('survey.messages.numbersOnly')}</Alert>
@@ -404,9 +429,14 @@ function AdvancedSurvey() {
                 label={t('survey.fields.endingAirTemp')}
                 value={formData.endingAirTemp}
                 onChange={(e) => handleNumberInput('endingAirTemp', e.target.value)}
-                helperText={t('survey.helpers.endingAirTemp')}
-                input type="text"
-                inputMode="decimal"
+                helperText="Optional - air temperature when you finished"
+                type="text"
+                slotProps={{
+                  htmlInput: {
+                    inputMode: 'decimal',
+                    pattern: '[0-9.-]*'
+                  }
+                }}
               />
               {fieldError === 'endingAirTemp' && (
                 <Alert severity="warning" sx={{ mt: 1 }}>{t('survey.messages.numbersOnly')}</Alert>
@@ -473,8 +503,8 @@ function AdvancedSurvey() {
                     borderRadius: 1,
                     mb: 3,
                     position: 'relative',
-                    boxShadow: 3
-
+                    boxShadow: 3,
+                    overflow: 'hidden'
                   }}
                 >
                   <Box
@@ -482,58 +512,75 @@ function AdvancedSurvey() {
                       position: 'absolute',
                       top: 12,
                       right: 12,
-                      fontSize: '1.5rem'
+                      fontSize: { xs: '1rem', sm: '1.5rem'}
                     }}
                   >
                     🐸
                   </Box>
-                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: 'primary.main' }}>
-                    {t(`frogs.${frog.fieldName}.name`) || frog.name}
+                  
+                  <Typography 
+                    variant="h6" 
+                    gutterBottom 
+                    sx={{ 
+                      fontWeight: 600, 
+                      color: 'primary.main',
+                      pr: { xs: 2, sm: 4 } 
+                    }}
+                  >
+                    {frog.name}
                   </Typography>
 
-                  {/* Audio Player */}
-                  {frog.audio && (
-                    <Box sx={{ mb: 2 }}>
-                      <AudioPlayer src={frog.audio} startTime={frog.startTime} />
-                    </Box>
-                  )}
+                {/* Audio Player */}
+                {frog.audio && (
+                <Box 
+                  sx={{ 
+                    mb: 2,
+                    '& .MuiSlider-root': {
+                      mr: 1
+                    }
+                  }}
+                >
+                  <AudioPlayer src={frog.audio} startTime={frog.startTime}/>
+                </Box>
+              )}
 
-                  {/* Call Density Selector */}
-                  <FormControl fullWidth>
-                    <InputLabel>{t('survey.fields.frogCallDensity')}</InputLabel>
-                    <Select
-                      value={formData[frog.fieldName] || '0'}
-                      onChange={(e) => updateField(frog.fieldName, e.target.value)}
-                      label={t('survey.fields.frogCallDensity')}
-                    >
-                      <MenuItem value="0">{frogCallDensities[0] || "0 - None"}</MenuItem>
-                      <MenuItem value="1">{frogCallDensities[1] || "1 - Individual calls..."}</MenuItem>
-                      <MenuItem value="2">{frogCallDensities[2] || "2 - Some calls..."}</MenuItem>
-                      <MenuItem value="3">{frogCallDensities[3] || "3 - Full chorus..."}</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Paper>
-              ))}
+              {/* Call Density Selector */}
+              <FormControl fullWidth>
+                <InputLabel>Call Density</InputLabel>
+                <Select
+                  value={formData[frog.fieldName] || '0'}
+                  onChange={(e) => updateField(frog.fieldName, e.target.value)}
+                  label="Call Density"
+                >
+                  <MenuItem value="0">0 - None heard</MenuItem>
+                  <MenuItem value="1">1 - Individual calls, no overlapping</MenuItem>
+                  <MenuItem value="2">2 - Individual calls, some overlapping</MenuItem>
+                  <MenuItem value="3">3 - Full chorus, constant calling</MenuItem>
+                </Select>
+              </FormControl>
+            </Paper>
+          ))}
 
               {/* End Time */}
-              <TextField
-                fullWidth
-                required
-                label={t('survey.fields.endTime')}
-                type="time"
-                value={formData.endTime}
-                onChange={(e) => updateField('endTime', e.target.value)}
-                helperText={t('survey.helpers.endTime')}
-                error={!!errors.endTime}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                sx={{
-                  '& input[type="time"]::-webkit-calendar-picker-indicator': {
-                    filter: (theme) => theme.palette.mode === 'dark' ? 'invert(1)' : 'none'
-                  }
-                }}
-              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <TimePicker
+                  label="End Time *"
+                  value={formData.endTime ? dayjs(formData.endTime, 'HH:mm') : null}
+                  onChange={(newValue) => {
+                    updateField('endTime', newValue ? newValue.format('HH:mm') : '');
+                  }}
+                  timeSteps={{ minutes: 1 }}
+                  referenceDate={dayjs()}
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      required: true,
+                      helperText: "Time when survey ended",
+                      error: !!errors.endTime
+                    }
+                  }}
+                />
+              </LocalizationProvider>
 
               {/* Comments */}
               <TextField

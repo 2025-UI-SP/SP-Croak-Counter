@@ -17,6 +17,7 @@ import {
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { usePageTitle } from '../hooks/usePageTitle.js';
 import { useLocalStorageForm } from '../hooks/useLocalStorageForm.js';
+import { useTranslation } from '../hooks/useTranslation.js';
 import { useNavigate } from 'react-router-dom';
 import { Snackbar, Alert as MuiAlert } from '@mui/material';
 import { frogContent } from '../config.js';
@@ -28,6 +29,14 @@ import dayjs from 'dayjs';
 
 function AdvancedSurvey() {
   usePageTitle('Advanced Survey');
+  const { t } = useTranslation();
+
+  // Fetch options
+  const skyConditions = t('survey.options.skyConditions') || [];
+  const windSpeeds = t('survey.options.windSpeeds') || [];
+  // Note: frogCallDensities array in en.json tracks "0 - None", "1 - ...", etc.
+  // We can use the index or mapped value, but the form uses "0", "1", "2", "3" as values currently.
+  const frogCallDensities = t('survey.options.frogCallDensity') || [];
 
   // Form state for advanced survey
   const initialFormState = {
@@ -36,7 +45,7 @@ function AdvancedSurvey() {
     longitude: '',
     county: '',
     observer: '',
-    affiliation: '',  
+    affiliation: '',
     waterTemp: '',
     startingAirTemp: '',
     endingAirTemp: '',
@@ -62,20 +71,20 @@ function AdvancedSurvey() {
 
   // Required fields for advanced survey
   const requiredFields = [
-    { name: 'location', label: 'site name' },
+    { name: 'location', label: 'site' }, // keys in en.json survey.fields
     { name: 'latitude', label: 'latitude' },
     { name: 'longitude', label: 'longitude' },
-    { name: 'startTime', label: 'start time' },
-    { name: 'endTime', label: 'end time' },
+    { name: 'startTime', label: 'startTime' },
+    { name: 'endTime', label: 'endTime' },
     { name: 'county', label: 'county' },
-    { name: 'observer', label: 'observer name' },
-    { name: 'skyCondition', label: 'sky condition' },
-    { name: 'windSpeed', label: 'wind speed' }
+    { name: 'observer', label: 'observer' },
+    { name: 'skyCondition', label: 'skyCondition' },
+    { name: 'windSpeed', label: 'windSpeed' }
   ];
 
   const { formData, lastSaved, errors, updateField, setFieldErrors, clearForm } =
     useLocalStorageForm('advancedSurveyDraft', initialFormState);
-  
+
   const navigate = useNavigate();
   const [showValidation, setShowValidation] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -83,13 +92,13 @@ function AdvancedSurvey() {
   // GPS state
   const [gpsLoading, setGpsLoading] = useState(false);
   const [gpsError, setGpsError] = useState('');
-  
+
   // Track invalid input per field
   const [fieldError, setFieldError] = useState('');
 
   //Regex validation, so only numbers decimals and negatives can be put into the temperature and latitude/longitude fields
   const isValidNumber = (value) => /^-?\d*\.?\d*$/.test(value);
-  
+
   // Handle number fields for responsiveness
   const handleNumberInput = (field, value) => {
     if (isValidNumber(value) || value === '') {
@@ -107,7 +116,8 @@ function AdvancedSurvey() {
     requiredFields.forEach(field => {
       const value = formData[field.name];
       if (!value || !value.toString().trim()) {
-        newErrors[field.name] = `Please enter ${field.label}`;
+        const fieldLabel = t(`survey.fields.${field.label}`);
+        newErrors[field.name] = t('survey.messages.requiredError').replace('{field}', fieldLabel);
       }
     });
 
@@ -129,13 +139,13 @@ function AdvancedSurvey() {
         setGpsError('');
       },
       (error) => {
-        let errorMessage = 'Cannot get user location';
+        let errorMessage = t('survey.messages.gpsError');
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = 'Location access denied, please allow access';
+            errorMessage = t('survey.messages.gpsDenied');
             break;
           case error.POSITION_UNAVAILABLE:
-            errorMessage = 'Location information unavailable';
+            errorMessage = t('survey.messages.gpsUnavailable');
             break;
         }
         setGpsError(errorMessage);
@@ -171,11 +181,11 @@ function AdvancedSurvey() {
       };
       existing.unshift(entry);
       localStorage.setItem('observations', JSON.stringify(existing));
-      
+
       // Clear draft without prompting the user, show success, then navigate
       clearForm(false);
       setShowSuccess(true);
-      
+
       // Wait briefly so user sees confirmation, then navigate
       setTimeout(() => {
         setShowSuccess(false);
@@ -207,7 +217,7 @@ function AdvancedSurvey() {
                 fontWeight: 700
               }}
             >
-              Advanced Call Index Survey
+              {t('survey.advancedTitle')}
             </Typography>
 
             <Typography
@@ -220,7 +230,7 @@ function AdvancedSurvey() {
                 color: 'text.secondary'
               }}
             >
-              Fill out the fields below based on what you observed
+              {t('survey.intro')}
             </Typography>
 
             {lastSaved && (
@@ -233,7 +243,7 @@ function AdvancedSurvey() {
                   mb: 2
                 }}
               >
-                Saved at {lastSaved.toLocaleTimeString()}
+                {t('survey.savedAt')} {lastSaved.toLocaleTimeString()}
               </Alert>
             )}
           </Box>
@@ -273,10 +283,10 @@ function AdvancedSurvey() {
               <TextField
                 fullWidth
                 required
-                label="Site Name"
+                label={t('survey.fields.site')}
                 value={formData.location}
                 onChange={(e) => updateField('location', e.target.value)}
-                placeholder="Name of the survey location"
+                placeholder={t('survey.helpers.location')}
                 error={!!errors.location}
                 helperText={errors.location}
               />
@@ -290,14 +300,14 @@ function AdvancedSurvey() {
                 startIcon={<LocationOnIcon />}
                 sx={{ height: '56px' }}
               >
-                {gpsLoading ? 'Getting Location, wait one moment please' : 'Get GPS Location'}
+                {gpsLoading ? t('survey.messages.gpsLoading') : t('survey.messages.gpsButton')}
               </Button>
 
               {/* Latitude */}
               <TextField
                 fullWidth
                 required
-                label="Latitude"
+                label={t('survey.fields.latitude')}
                 value={formData.latitude}
                 onChange={(e) => handleNumberInput('latitude', e.target.value)}
                 error={!!errors.latitude}
@@ -311,14 +321,14 @@ function AdvancedSurvey() {
                 }}
               />
               {fieldError === 'latitude' && (
-                <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
+                <Alert severity="warning" sx={{ mt: 1 }}>{t('survey.messages.numbersOnly')}</Alert>
               )}
 
               {/* Longitude */}
               <TextField
                 fullWidth
                 required
-                label="Longitude"
+                label={t('survey.fields.longitude')}
                 value={formData.longitude}
                 onChange={(e) => handleNumberInput('longitude', e.target.value)}
                 error={!!errors.longitude}
@@ -332,7 +342,7 @@ function AdvancedSurvey() {
                 }}
               />
               {fieldError === 'longitude' && (
-                <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
+                <Alert severity="warning" sx={{ mt: 1 }}>{t('survey.messages.numbersOnly')}</Alert>
               )}
 
               {gpsError && (
@@ -345,10 +355,10 @@ function AdvancedSurvey() {
               <TextField
                 fullWidth
                 required
-                label="County"
+                label={t('survey.fields.county')}
                 value={formData.county}
                 onChange={(e) => updateField('county', e.target.value)}
-                placeholder="e.g., Baraga"
+                placeholder={t('survey.helpers.county')}
                 error={!!errors.county}
                 helperText={errors.county}
               />
@@ -357,10 +367,10 @@ function AdvancedSurvey() {
               <TextField
                 fullWidth
                 required
-                label="Observer Name"
+                label={t('survey.fields.observer')}
                 value={formData.observer}
                 onChange={(e) => updateField('observer', e.target.value)}
-                placeholder="Name of person conducting survey"
+                placeholder={t('survey.helpers.observer')}
                 error={!!errors.observer}
                 helperText={errors.observer}
               />
@@ -368,17 +378,17 @@ function AdvancedSurvey() {
               {/*Affiliation*/}
               <TextField
                 fullWidth
-                label="Affiliation"
+                label={t('survey.fields.affiliation')}
                 value={formData.affiliation}
                 onChange={(e) => updateField('affiliation', e.target.value)}
-                placeholder="School, organization, or institution"
-                helperText="Optional - affiliated organization if applicable"
+                placeholder={t('survey.helpers.affiliation')}
+                helperText={t('survey.helpers.affiliationHelper')}
               />
 
               {/*Water Temperature*/}
               <TextField
                 fullWidth
-                label="Water Temp (°F)"
+                label={t('survey.fields.waterTemp')}
                 value={formData.waterTemp}
                 onChange={(e) => handleNumberInput('waterTemp', e.target.value)}
                 helperText="Optional - only if you have a thermometer"
@@ -391,13 +401,13 @@ function AdvancedSurvey() {
                 }}
               />
               {fieldError === 'waterTemp' && (
-                <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
+                <Alert severity="warning" sx={{ mt: 1 }}>{t('survey.messages.numbersOnly')}</Alert>
               )}
 
               {/*Starting Air Temperature*/}
               <TextField
                 fullWidth
-                label="Starting Air Temp (°F)"
+                label={t('survey.fields.startingAirTemp')}
                 value={formData.startingAirTemp}
                 onChange={(e) => handleNumberInput('startingAirTemp', e.target.value)}
                 helperText="Optional - air temperature when you started"
@@ -410,13 +420,13 @@ function AdvancedSurvey() {
                 }}
               />
               {fieldError === 'startingAirTemp' && (
-                <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
+                <Alert severity="warning" sx={{ mt: 1 }}>{t('survey.messages.numbersOnly')}</Alert>
               )}
 
               {/* Ending Air Temperature */}
               <TextField
                 fullWidth
-                label="Ending Air Temp (°F)"
+                label={t('survey.fields.endingAirTemp')}
                 value={formData.endingAirTemp}
                 onChange={(e) => handleNumberInput('endingAirTemp', e.target.value)}
                 helperText="Optional - air temperature when you finished"
@@ -429,24 +439,22 @@ function AdvancedSurvey() {
                 }}
               />
               {fieldError === 'endingAirTemp' && (
-                <Alert severity="warning" sx={{ mt: 1 }}>Numbers only</Alert>
+                <Alert severity="warning" sx={{ mt: 1 }}>{t('survey.messages.numbersOnly')}</Alert>
               )}
 
               {/* Sky Condition */}
               <FormControl fullWidth required error={!!errors.skyCondition}>
-                <InputLabel>Sky Condition</InputLabel>
+                <InputLabel>{t('survey.fields.skyCondition')}</InputLabel>
                 <Select
                   value={formData.skyCondition}
                   onChange={(e) => updateField('skyCondition', e.target.value)}
-                  label="Sky Condition"
+                  label={t('survey.fields.skyCondition')}
                 >
-                  <MenuItem value="Clear or only a few clouds">Clear or only a few clouds</MenuItem>
-                  <MenuItem value="Partly cloudy or variable">Partly cloudy or variable</MenuItem>
-                  <MenuItem value="Broken clouds or overcast">Broken clouds or overcast</MenuItem>
-                  <MenuItem value="Fog">Fog</MenuItem>
-                  <MenuItem value="Drizzle or light rain (not affecting hearing)">Drizzle or light rain (not affecting hearing)</MenuItem>
-                  <MenuItem value="Snow">Snow</MenuItem>
-                  <MenuItem value="Showers (is affecting hearing ability)">Showers (is affecting hearing ability)</MenuItem>
+                  {Array.isArray(skyConditions) && skyConditions.map((condition) => (
+                    <MenuItem key={condition} value={condition}>
+                      {condition}
+                    </MenuItem>
+                  ))}
                 </Select>
                 {errors.skyCondition && (
                   <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1.5 }}>
@@ -457,25 +465,17 @@ function AdvancedSurvey() {
 
               {/* Wind Speed */}
               <FormControl fullWidth required error={!!errors.windSpeed}>
-                <InputLabel>Wind Speed</InputLabel>
+                <InputLabel>{t('survey.fields.windSpeed')}</InputLabel>
                 <Select
                   value={formData.windSpeed}
                   onChange={(e) => updateField('windSpeed', e.target.value)}
-                  label="Wind Speed"
+                  label={t('survey.fields.windSpeed')}
                 >
-                  <MenuItem value="Calm (<1 mph)">Calm (under 1 mph)</MenuItem>
-                  <MenuItem value="Light Air (1-3 mph)">Light Air (1-3 mph)</MenuItem>
-                  <MenuItem value="Light Breeze (4-7 mph)">Light Breeze (4-7 mph)</MenuItem>
-                  <MenuItem value="Gentle Breeze (8-12 mph)">Gentle Breeze (8-12 mph)</MenuItem>
-                  <MenuItem value="Moderate Breeze (13-18 mph)">Moderate Breeze (13-18 mph)</MenuItem>
-                  <MenuItem value="Fresh Breeze (19-24 mph)">Fresh Breeze (19-24 mph)</MenuItem>
-                  <MenuItem value="Strong Breeze (25-31 mph)">Strong Breeze (25-31 mph)</MenuItem>
-                  <MenuItem value="Moderate Gale (32-38 mph)">Moderate Gale (32-38 mph)</MenuItem>
-                  <MenuItem value="Fresh Gale (39-46 mph)">Fresh Gale (39-46 mph)</MenuItem>
-                  <MenuItem value="Strong Gale (47-54 mph)">Strong Gale (47-54 mph)</MenuItem>
-                  <MenuItem value="Whole Gale (55-63 mph)">Whole Gale (55-63 mph)</MenuItem>
-                  <MenuItem value="Storm (64-72 mph)">Storm (64-72 mph)</MenuItem>
-                  <MenuItem value="Hurricane (73+ mph)">Hurricane (73+ mph)</MenuItem>
+                  {Array.isArray(windSpeeds) && windSpeeds.map((speed) => (
+                    <MenuItem key={speed} value={speed}>
+                      {speed}
+                    </MenuItem>
+                  ))}
                 </Select>
                 {errors.windSpeed && (
                   <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1.5 }}>
@@ -486,22 +486,22 @@ function AdvancedSurvey() {
 
               {/* Frog Species Section */}
               <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, color: 'primary.main' }}>
-                Frog Species Observations
+                {t('survey.species.title')}
               </Typography>
               <Typography variant="body2" color="text.secondary" paragraph>
-                Rate call density from 0-3 for each species observed. Listen to the audio to help with identification.
+                {t('survey.species.description')}
               </Typography>
 
               {/* Loop through all frogs from config */}
-              {frogContent.frogs.map((frog) => (
+              {(frogContent.frogs || []).map((frog) => (
                 <Paper
                   key={frog.name}
-                  sx={{ 
+                  sx={{
                     p: 2,
                     border: 1,
-                    borderColor: 'text.secondary', 
+                    borderColor: 'text.secondary',
                     borderRadius: 1,
-                    mb: 3, 
+                    mb: 3,
                     position: 'relative',
                     boxShadow: 3,
                     overflow: 'hidden'
@@ -587,11 +587,11 @@ function AdvancedSurvey() {
                 fullWidth
                 multiline
                 rows={4}
-                label="Comments"
+                label={t('survey.fields.comments')}
                 value={formData.comments}
                 onChange={(e) => updateField('comments', e.target.value)}
-                placeholder="Final Comments"
-                helperText="Any other wildlife species encountered? Anything interesting or concerning at the site? Any additional frog information you want to include?"
+                placeholder={t('survey.fields.comments')}
+                helperText={t('survey.helpers.comments')}
               />
 
               {/* Buttons */}
@@ -610,7 +610,7 @@ function AdvancedSurvey() {
                     px: 4
                   }}
                 >
-                  Clear Form
+                  {t('survey.clearForm')}
                 </Button>
 
                 <Button
@@ -623,10 +623,9 @@ function AdvancedSurvey() {
                     px: 4
                   }}
                 >
-                  Submit Survey
+                  {t('survey.submit')}
                 </Button>
               </Stack>
-
             </Box>
           </Paper>
         </Box>
@@ -638,7 +637,7 @@ function AdvancedSurvey() {
         onClose={() => setShowValidation(false)}
       >
         <MuiAlert severity="warning" onClose={() => setShowValidation(false)}>
-          Please fill out all required fields before saving.
+          {t('survey.messages.validationWarning')}
         </MuiAlert>
       </Snackbar>
 
@@ -648,7 +647,7 @@ function AdvancedSurvey() {
         onClose={() => setShowSuccess(false)}
       >
         <MuiAlert severity="success" onClose={() => setShowSuccess(false)}>
-          Survey submitted — saving to Observations
+          {t('survey.messages.success')}
         </MuiAlert>
       </Snackbar>
     </Container>

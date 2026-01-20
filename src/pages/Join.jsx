@@ -12,12 +12,17 @@ import {
   Stack,
 } from "@mui/material";
 import { usePageTitle } from "../hooks/usePageTitle.js";
-import { joinPageContent } from "../config";
+import { useTranslation } from "../hooks/useTranslation.js";
 
 // Join page component for displaying membership information and steps
 const Join = () => {
   // Set page title using custom hook
   usePageTitle();
+  const { t } = useTranslation();
+
+  // Get lists from translation
+  const steps = t('join.steps') || [];
+  const contact = t('join.contact') || [];
 
   return (
     // Main container with responsive top and bottom margins
@@ -46,7 +51,7 @@ const Join = () => {
                 fontWeight: 700
               }}
             >
-              {joinPageContent.title}
+              {t('join.title')}
             </Typography>
 
             {/* Introductory Text */}
@@ -61,7 +66,7 @@ const Join = () => {
                 mb: 2
               }}
             >
-              {joinPageContent.intro}
+              {t('join.intro')}
             </Typography>
 
             <Divider sx={{ my: 4 }} />
@@ -76,12 +81,12 @@ const Join = () => {
                 mb: 4,
               }}
             >
-              Follow These Steps to Join
+              {t('join.stepsTitle')}
             </Typography>
 
             {/* Grid of step cards */}
             <Grid container spacing={4} justifyContent="center" sx={{ mb: 4 }}>
-              {joinPageContent.steps.map((step, idx) => (
+              {Array.isArray(steps) && steps.map((step, idx) => (
                 <Grid
                   item
                   xs={12}
@@ -135,7 +140,7 @@ const Join = () => {
                         fontWeight={600}
                         sx={{ mb: 1 }}
                       >
-                        Step {idx + 1}
+                        {t('join.stepPrefix')} {idx + 1}
                       </Typography>
                       <Typography
                         variant="body2"
@@ -158,7 +163,7 @@ const Join = () => {
                 mx: "auto",
               }}
             >
-              {joinPageContent.contact.map((line, idx) => {
+              {Array.isArray(contact) && contact.map((line, idx) => {
                 // Format phone number to prevent wrapping
                 const formattedLine = line.replace(
                   /(906-524-5757 ext\. 4227)/,
@@ -170,7 +175,7 @@ const Join = () => {
                     key={idx}
                     variant="body2"
                     sx={{
-                      mb: idx !== joinPageContent.contact.length - 1 ? 1.5 : 0,
+                      mb: idx !== contact.length - 1 ? 1.5 : 0,
                     }}
                     dangerouslySetInnerHTML={{ __html: formattedLine }}
                   />
@@ -187,7 +192,7 @@ const Join = () => {
               justifyContent="center"
             >
               <Button
-                href={joinPageContent.websiteUrl}
+                href="https://nrd.kbic-nsn.gov/get-involved/"
                 target="_blank"
                 rel="noopener noreferrer"
                 variant="contained"
@@ -199,7 +204,7 @@ const Join = () => {
                   "&:hover": { color: "white" },
                 }}
               >
-                {joinPageContent.websiteLabel}
+                {t('join.websiteLabel')}
               </Button>
             </Stack>
           </Paper>

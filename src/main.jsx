@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { Box } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { CustomThemeProvider } from './contexts/ThemeContext.jsx';
-import './index.css'  
+import './index.css'
 // Pages
 import App from './pages/App.jsx'
 import Help from './pages/Help.jsx';
@@ -13,6 +13,7 @@ import Join from './pages/Join.jsx';
 import FrogIdentification from './pages/FrogIdentification.jsx';
 import Observations from './pages/Observations.jsx';
 import About from './pages/About';
+import NotFound from './pages/NotFound.jsx';
 
 // Components
 import AppNavbar from './components/Navbar.jsx';
@@ -54,7 +55,8 @@ createRoot(document.getElementById('root')).render(
             <Route path="/join" element={<Join />} />
             <Route path="/frog-identification" element={<FrogIdentification />} />
             <Route path="/observations" element={<Observations />} />
-            <Route path="/about" element={<About/>} />
+            <Route path="/about" element={<About />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Box>
         <AppFooter />

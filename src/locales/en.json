@@ -2,6 +2,12 @@
     "app": {
         "title": "Croak Counter"
     },
+    "notfound": {
+        "title": "404",
+        "subtitle": "No Frogs Here...",
+        "message": "The page you are looking for does not exist.",
+        "button": "Go Home"
+    },
     "nav": {
         "home": "Home",
         "help": "Help",
@@ -94,9 +100,9 @@
             "description": "The survey is best taken in swampy environments where frogs are commonly found. However, surveying should not occur on evenings with lightning, heavy rain (though mist and light rain that does not affect hearing is fine), or when wind speeds are consistently greater than 12 mph (19 kmh). Surveying also should not occur when air temperatures are less than 42 degrees Fahrenheit (5.6 degrees Celsius)."
         },
         "procedure": {
-            "offlineInfo":{
-                    "title":"Important Information About Offline Usage",
-                    "description":"This app works offline, allowing you to conduct surveys in remote areas without internet access. When offline, you can fill out and save surveys. These surveys will be stored on your device and can be accessed on the observations page. When you reconnect to the internet, you can upload saved surveys on the observations page."
+            "offlineInfo": {
+                "title": "Important Information About Offline Usage",
+                "description": "This app works offline, allowing you to conduct surveys in remote areas without internet access. When offline, you can fill out and save surveys. These surveys will be stored on your device and can be accessed on the observations page. When you reconnect to the internet, you can upload saved surveys on the observations page."
             },
             "title": "Standard Procedure",
             "preSurvey": {
@@ -247,10 +253,9 @@
         "savedAt": "Saved at",
         "clearForm": "Clear Form",
         "submit": "Submit Survey",
-        "species":{
-            "title":"Frog Species Observations",
-            "description":"Rate call density from 0-3 for each species observed. Listen to the audio to help with identification."
-
+        "species": {
+            "title": "Frog Species Observations",
+            "description": "Rate call density from 0-3 for each species observed. Listen to the audio to help with identification."
         },
         "messages": {
             "validationWarning": "Please fill out all required fields before saving.",

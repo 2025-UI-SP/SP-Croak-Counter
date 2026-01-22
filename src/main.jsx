@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createRoot } from 'react-dom/client'
 import { Box } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -30,7 +30,7 @@ const basename = import.meta.env.MODE === 'gh-pages' ? '/SP-Croak-Counter' : '';
 createRoot(document.getElementById('root')).render(
   <CustomThemeProvider>
     <CssBaseline />
-    <HashRouter>
+    <BrowserRouter basename={basename}>
       <Box
         sx={{
           display: 'flex',
@@ -61,6 +61,6 @@ createRoot(document.getElementById('root')).render(
         </Box>
         <AppFooter />
       </Box>
-    </HashRouter>
+    </BrowserRouter>
   </CustomThemeProvider>
 );

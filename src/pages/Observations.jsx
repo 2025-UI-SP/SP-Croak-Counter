@@ -23,8 +23,15 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  Card,
+  CardContent,
+  CardActions,
+  Stack,
+  Divider
 } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -33,6 +40,16 @@ import { useTranslation } from '../hooks/useTranslation.js';
 import { frogContent } from '../config.js';
 
 /* ---------- helpers ---------- */
+function formatDateTime(iso) {
+  if (!iso) return '—';
+  try {
+    const d = new Date(iso);
+    return isNaN(d) ? String(iso) : d.toLocaleString();
+  } catch {
+    return String(iso);
+  }
+}
+
 function formatDateOnly(iso) {
   if (!iso) return '—';
   try {
@@ -73,6 +90,8 @@ function formatTime(time) {
 /* ---------- component ---------- */
 export default function Observations() {
   const { t } = useTranslation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   // Fetch options from translation
   const skyConditions = t('survey.options.skyConditions') || [];
@@ -207,10 +226,16 @@ export default function Observations() {
 
   /* ---- upload placeholder ---- */
   const performUpload = async (id) => {
-    console.log('Upload placeholder triggered for ID:', id);
-    setUploadSnackbarMessage('Upload functionality is not yet implemented.');
+    // Preserve local mock upload logic from Sprint 7
+    const next = entries.map((e) =>
+      e.id === id ? { ...e, status: 'uploaded', uploadedAt: new Date().toISOString() } : e
+    );
+    persistEntries(next);
+
+    // Show success message (using master's snackbar infrastructure)
+    setUploadSnackbarMessage(t('observations.messages.uploadSuccess') || 'Observation marked as uploaded (mock)');
     setUploadSnackbarOpen(true);
-    return { ok: false, message: 'not implemented' };
+    return { ok: true };
   };
 
   /* ---- dialogs / snackbar ---- */
@@ -231,9 +256,81 @@ export default function Observations() {
     setSelected(allSelected ? new Set() : new Set(entries.map(o => o.id)));
   };
 
+  /* ---------- Mobile cards ---------- */
+  function MobileList() {
+    if (entries.length === 0) {
+      return (
+        <Box sx={{ p: 2 }}>
+          <Typography color="text.secondary">No observations saved yet.</Typography>
+        </Box>
+      );
+    }
+
+    return (
+      <Box sx={{ px: 2, pb: 2 }}>
+        <Stack spacing={2}>
+          {entries.map((obs) => (
+            <Card key={obs.id} variant="outlined">
+              <CardContent sx={{ pb: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+                  <Checkbox
+                    checked={selected.has(obs.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleOne(obs.id);
+                    }}
+                    inputProps={{ 'aria-label': `select observation ${obs.id}` }}
+                  />
+
+                  <Box sx={{ flex: 1 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                      {formatDateTime(obs.date ?? obs.data?.date ?? obs.startTime)}
+                    </Typography>
+
+                    <Typography variant="body2" color="text.secondary">
+                      {obs.site || '—'}
+                    </Typography>
+
+                    <Box sx={{ mt: 1 }}>
+                      {obs.status === 'uploaded' ? (
+                        <Chip icon={<CheckCircleIcon />} label="Uploaded" color="success" size="small" />
+                      ) : (
+                        <Chip label="Saved" size="small" />
+                      )}
+                    </Box>
+                  </Box>
+                </Box>
+              </CardContent>
+
+              <Divider />
+
+              <CardActions sx={{ px: 2, py: 1.5 }}>
+                <Stack direction="column" spacing={1} sx={{ width: '100%' }}>
+                  <Button variant="contained" onClick={() => openDetails(obs)} fullWidth>
+                    View / Edit
+                  </Button>
+
+                  <Button
+                    variant="outlined"
+                    startIcon={<CloudUploadIcon />}
+                    onClick={() => setConfirmUploadId(obs.id)}
+                    fullWidth
+                  >
+                    {/* Preserve 'Upload' label logic or use t() */}
+                    {t('observations.labels.uploadButton') || 'Upload'}
+                  </Button>
+                </Stack>
+              </CardActions>
+            </Card>
+          ))}
+        </Stack>
+      </Box>
+    );
+  }
+
   /* ---------- render ---------- */
   return (
-    <Container maxWidth="lg" sx={{ mt: 12, mb: 4 }}>
+    <Container maxWidth="lg" className="observations-container" sx={{ mt: 12, mb: 4 }}>
       <Box textAlign="center" mb={4}>
         <Typography
           variant="h3"
@@ -263,118 +360,120 @@ export default function Observations() {
           </Button>
         </Toolbar>
 
-        <Box sx={{ overflowX: 'auto' }}>
-          <Table size="small" className="observations-table">
-            <TableHead>
-              <TableRow>
-                <TableCell padding="checkbox">
-                  <div style={{ whiteSpace: 'nowrap' }}>
-                    <label htmlFor="selectAll"><strong>{t('observations.selectAllLabel')}</strong></label>
-                    <Checkbox
-                      id="selectAll"
-                      indeterminate={selected.size > 0 && !allSelected}
-                      checked={allSelected}
-                      onChange={toggleAll}
-                      aria-label="select all observations"
-                    />
-                  </div>
-                </TableCell>
-
-                <TableCell>{t('observations.labels.date')}</TableCell>
-                <TableCell>{t('observations.labels.time')}</TableCell>
-                <TableCell sx={{ maxWidth: { xs: 120, sm: 240 }, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {t('observations.labels.site')}
-                </TableCell>
-                <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{t('observations.table.type')}</TableCell>
-                <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{t('observations.labels.status')}</TableCell>
-                <TableCell align="center" sx={{ width: 120 }}>{t('observations.table.uploadColumn')}</TableCell>
-                <TableCell align="center" sx={{ width: 120 }}>{t('observations.table.deleteColumn')}</TableCell>
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {entries.map((obs) => {
-                const type = obs.surveyType ?? obs.formType;
-                const isAdvanced = type === 'advanced';
-                const isBeginner = ['basic', 'beginner'].includes(type); // PRESERVED
-
-                return (
-                  <TableRow
-                    key={obs.id}
-                    hover
-                    onClick={() => openDetails(obs)}
-                    sx={{ cursor: 'pointer' }}
-                  >
-                    <TableCell padding="checkbox" onClick={e => e.stopPropagation()}>
+        {isMobile ? (
+          <MobileList />
+        ) : (
+          <Box sx={{ overflowX: 'auto' }}>
+            <Table size="small" className="observations-table">
+              <TableHead>
+                <TableRow>
+                  <TableCell padding="checkbox">
+                    <div style={{ whiteSpace: 'nowrap' }}>
+                      <label htmlFor="selectAll"><strong>{t('observations.selectAllLabel')}</strong></label>
                       <Checkbox
-                        checked={selected.has(obs.id)}
-                        onClick={e => { e.stopPropagation(); toggleOne(obs.id); }}
-                        aria-label={`select observation ${obs.id}`}
+                        id="selectAll"
+                        indeterminate={selected.size > 0 && !allSelected}
+                        checked={allSelected}
+                        onChange={toggleAll}
+                        aria-label="select all observations"
                       />
-                    </TableCell>
+                    </div>
+                  </TableCell>
 
-                    <TableCell>{formatDateOnly(obs.date ?? obs.data?.date ?? obs.startTime ?? '')}</TableCell>
-                    <TableCell>{formatTime(obs.date ?? obs.data?.date ?? obs.startTime ?? '')}</TableCell>
+                  <TableCell>{t('observations.labels.date')}</TableCell>
+                  <TableCell>{t('observations.labels.time')}</TableCell>
+                  <TableCell sx={{ maxWidth: { xs: 120, sm: 240 }, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {t('observations.labels.site')}
+                  </TableCell>
+                  <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{t('observations.table.type')}</TableCell>
+                  <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{t('observations.labels.status')}</TableCell>
+                  <TableCell align="center" sx={{ width: 120 }}>{t('observations.table.uploadColumn')}</TableCell>
+                  <TableCell align="center" sx={{ width: 120 }}>{t('observations.table.deleteColumn')}</TableCell>
+                </TableRow>
+              </TableHead>
 
-                    <TableCell
-                      sx={{
-                        maxWidth: { xs: 120, sm: 240 },
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap'
-                      }}
+              <TableBody>
+                {entries.map((obs) => {
+                  const type = obs.surveyType ?? obs.formType;
+                  const isAdvanced = type === 'advanced';
+                  const isBeginner = ['basic', 'beginner'].includes(type);
+
+                  return (
+                    <TableRow
+                      key={obs.id}
+                      hover
+                      onClick={() => openDetails(obs)}
+                      sx={{ cursor: 'pointer' }}
                     >
-                      {obs.site}
-                    </TableCell>
+                      <TableCell padding="checkbox" onClick={e => e.stopPropagation()}>
+                        <Checkbox
+                          checked={selected.has(obs.id)}
+                          onClick={e => { e.stopPropagation(); toggleOne(obs.id); }}
+                          aria-label={`select observation ${obs.id}`}
+                        />
+                      </TableCell>
 
-                    <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
-                      {isAdvanced
-                        ? t('observations.typeLabels.advanced')
-                        : isBeginner
-                          ? t('observations.typeLabels.beginner')
-                          : t('observations.typeLabels.unknown')}
-                    </TableCell>
+                      <TableCell>{formatDateOnly(obs.date ?? obs.data?.date ?? obs.startTime ?? '')}</TableCell>
+                      <TableCell>{formatTime(obs.date ?? obs.data?.date ?? obs.startTime ?? '')}</TableCell>
 
-                    <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
-                      {obs.status === 'uploaded' ? (
-                        <Chip icon={<CheckCircleIcon />} label={t('observations.statusLabels.uploaded')} color="success" size="small" />
-                      ) : (
-                        <Chip label={t('observations.statusLabels.saved')} size="small" />
-                      )}
-                    </TableCell>
-
-                    <TableCell align="center" sx={{ width: 120 }}>
-                      <IconButton
-                        size="small"
-                        onClick={(e) => { e.stopPropagation(); setConfirmUploadId(obs.id); }}
-                        title={t('observations.labels.uploadButton')}
-                        aria-label="upload"
+                      <TableCell
+                        sx={{
+                          maxWidth: { xs: 120, sm: 240 },
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }}
                       >
-                        <CloudUploadIcon />
-                      </IconButton>
-                    </TableCell>
+                        {obs.site}
+                      </TableCell>
 
-                    <TableCell align="center" sx={{ width: 120 }}>
-                      <IconButton
-                        size="small"
-                        onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(obs.id); }}
-                        title={t('observations.table.deleteColumn')}
-                        aria-label="delete"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </Box>
+                      <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
+                        {isAdvanced
+                          ? t('observations.typeLabels.advanced')
+                          : isBeginner
+                            ? t('observations.typeLabels.beginner')
+                            : t('observations.typeLabels.unknown')}
+                      </TableCell>
 
+                      <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
+                        {obs.status === 'uploaded' ? (
+                          <Chip icon={<CheckCircleIcon />} label={t('observations.statusLabels.uploaded')} color="success" size="small" />
+                        ) : (
+                          <Chip label={t('observations.statusLabels.saved')} size="small" />
+                        )}
+                      </TableCell>
 
+                      <TableCell align="center" sx={{ width: 120 }}>
+                        <IconButton
+                          size="small"
+                          onClick={(e) => { e.stopPropagation(); setConfirmUploadId(obs.id); }}
+                          title={t('observations.labels.uploadButton')}
+                          aria-label="upload"
+                        >
+                          <CloudUploadIcon />
+                        </IconButton>
+                      </TableCell>
 
+                      <TableCell align="center" sx={{ width: 120 }}>
+                        <IconButton
+                          size="small"
+                          onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(obs.id); }}
+                          title={t('observations.table.deleteColumn')}
+                          aria-label="delete"
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </Box>
+        )}
 
         {/* dialogs and modals*/}
+
         <Dialog open={!!confirmUploadId} onClose={() => setConfirmUploadId(null)}>
           <DialogTitle>{t('observations.dialogs.confirmUploadTitle')}</DialogTitle>
           <DialogContent dividers><Typography>{t('observations.dialogs.confirmUploadMessage')}</Typography></DialogContent>
@@ -415,9 +514,6 @@ export default function Observations() {
             </Button>
           </DialogActions>
         </Dialog>
-
-
-
 
         {/* Beginner Modal */}
         <Dialog
@@ -473,9 +569,6 @@ export default function Observations() {
             <Button variant="contained" onClick={handleSaveDetails} disabled={missingBeginnerRequired}>Save</Button>
           </DialogActions>
         </Dialog>
-
-
-
 
         {/* Advanced Modal */}
         <Dialog

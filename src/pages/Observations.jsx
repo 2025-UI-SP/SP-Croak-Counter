@@ -112,6 +112,8 @@ export default function Observations() {
   const [selected, setSelected] = React.useState(new Set());
   const allSelected = selected.size === entries.length && entries.length > 0;
 
+  const BACKENDURL = "https://script.google.com/macros/s/AKfycbyNzSU9Q5rhg5aQv8VyalevlmFhgYdCv8X7Wsmng75oR9yWG6U_fZu-_5cVMo0v4F5a/exec"
+
   React.useEffect(() => {
     try {
       const stored = localStorage.getItem('observations');
@@ -225,16 +227,35 @@ export default function Observations() {
   };
 
   const doUpload = function (entries) {
-    fetch("https://script.google.com/macros/s/AKfycbyNzSU9Q5rhg5aQv8VyalevlmFhgYdCv8X7Wsmng75oR9yWG6U_fZu-_5cVMo0v4F5a/exec", {
-      redirect: "follow",
-      method: "POST",
-      body: JSON.stringify(entries),
-      headers: {
-        // "Content-Type": "text/plain;charset=utf-8",
-      },
-    })
-    .then(r => r.json())
-    .then(console.log);
+    return new Promise<boolean>(async (res, rej) => { 
+      const response = await fetch(BACKENDURL, {
+        redirect: "follow",
+        method: "POST",
+        body: JSON.stringify(entries),
+        headers: {},
+      });
+      if ((await res.json()).success) {
+        res(true);
+      } else {
+        rej(false);
+      }
+    });
+  }
+
+  const doGet = function (rowNum) {
+    return Promise<{"data": "to be decided"}>(async (res, rej) => {
+      const response = await fetch(BACKENDURL + `/${rowNum}`, {
+        redirect: "follow",
+        method: "GET",
+        headers: {},
+      });
+      const json = await res.json();
+      if (json.success) {
+        res(json.data);
+      } else {
+        rej(false);
+      }
+    });
   }
 
   /* ---- upload placeholder ---- */

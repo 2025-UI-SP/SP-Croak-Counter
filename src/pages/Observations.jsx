@@ -111,8 +111,13 @@ export default function Observations() {
 
   const [selected, setSelected] = React.useState(new Set());
   const allSelected = selected.size === entries.length && entries.length > 0;
-
-  const BACKENDURL = "https://script.google.com/macros/s/AKfycbyNzSU9Q5rhg5aQv8VyalevlmFhgYdCv8X7Wsmng75oR9yWG6U_fZu-_5cVMo0v4F5a/exec"
+  // Note for future devs, when working on apps script run the function in the console `getAccesstoken`, and put the token below
+  // Allows you to run latest code without a deploy. If you run into CORs errors with it run the script again, 99% chance it expired.
+  // Github will not allow you to push with the token, so it must be removed before attempting github commands.
+  const token = ""
+  const BACKENDURL = token ? 
+    "https://script.google.com/a/macros/mtu.edu/s/AKfycbxh2f4dvJP-EgPZim6J2AssshNlUKtps3gJqgCHnBg/dev?access_token=" + token:
+    "https://script.google.com/macros/s/AKfycbw7Yjg_I9L6ypXvw7j0o7H9Mud7XA6oshxHDva_j4-ssiB5EGHaekgXvtPs5aKaSFlA/exec"
 
   React.useEffect(() => {
     try {
@@ -227,34 +232,22 @@ export default function Observations() {
   };
 
   const doUpload = function (entries) {
-    return new Promise<boolean>(async (res, rej) => { 
-      const response = await fetch(BACKENDURL, {
+    return new Promise((res, rej) => {
+      fetch(BACKENDURL, {
         redirect: "follow",
         method: "POST",
         body: JSON.stringify(entries),
         headers: {},
+      })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) {
+          res(true);
+        } else {
+          console.error("doUpload error ", data.error);
+          rej(false);
+        }
       });
-      if ((await res.json()).success) {
-        res(true);
-      } else {
-        rej(false);
-      }
-    });
-  }
-
-  const doGet = function (rowNum) {
-    return Promise<{"data": "to be decided"}>(async (res, rej) => {
-      const response = await fetch(BACKENDURL + `/${rowNum}`, {
-        redirect: "follow",
-        method: "GET",
-        headers: {},
-      });
-      const json = await res.json();
-      if (json.success) {
-        res(json.data);
-      } else {
-        rej(false);
-      }
     });
   }
 

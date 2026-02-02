@@ -111,6 +111,13 @@ export default function Observations() {
 
   const [selected, setSelected] = React.useState(new Set());
   const allSelected = selected.size === entries.length && entries.length > 0;
+  // Note for future devs, when working on apps script run the function in the console `getAccesstoken`, and put the token below
+  // Allows you to run latest code without a deploy. If you run into CORs errors with it run the script again, 99% chance it expired.
+  // Github will not allow you to push with the token, so it must be removed before attempting github commands.
+  const token = ""
+  const BACKENDURL = token ? 
+    "https://script.google.com/a/macros/mtu.edu/s/AKfycbxh2f4dvJP-EgPZim6J2AssshNlUKtps3gJqgCHnBg/dev?access_token=" + token:
+    "https://script.google.com/macros/s/AKfycbw7Yjg_I9L6ypXvw7j0o7H9Mud7XA6oshxHDva_j4-ssiB5EGHaekgXvtPs5aKaSFlA/exec"
 
   React.useEffect(() => {
     try {
@@ -224,18 +231,43 @@ export default function Observations() {
     persistEntries(next);
   };
 
+  const doUpload = function (entries) {
+    return new Promise((res, rej) => {
+      fetch(BACKENDURL, {
+        redirect: "follow",
+        method: "POST",
+        body: JSON.stringify(entries),
+        headers: {},
+      })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) {
+          res(true);
+        } else {
+          console.error("doUpload error ", data.error);
+          res(false);
+        }
+      });
+    });
+  }
+
   /* ---- upload placeholder ---- */
   const performUpload = async (id) => {
     // Preserve local mock upload logic from Sprint 7
-    const next = entries.map((e) =>
-      e.id === id ? { ...e, status: 'uploaded', uploadedAt: new Date().toISOString() } : e
-    );
-    persistEntries(next);
+    if (await doUpload(entries)) {
+      const next = entries.map((e) =>
+        e.id === id ? { ...e, status: 'uploaded', uploadedAt: new Date().toISOString() } : e
+      );
+      persistEntries(next);
 
-    // Show success message (using master's snackbar infrastructure)
-    setUploadSnackbarMessage(t('observations.messages.uploadSuccess') || 'Observation marked as uploaded (mock)');
-    setUploadSnackbarOpen(true);
-    return { ok: true };
+      // Show success message (using master's snackbar infrastructure)
+      setUploadSnackbarMessage(t('observations.messages.uploadSuccess') || 'Observation marked as uploaded (mock)');
+      setUploadSnackbarOpen(true);
+      return { ok: true };
+    } else {
+      return { ok: false };
+    }
+    
   };
 
   /* ---- dialogs / snackbar ---- */

@@ -245,7 +245,7 @@ export default function Observations() {
           res(true);
         } else {
           console.error("doUpload error ", data.error);
-          rej(false);
+          res(false);
         }
       });
     });

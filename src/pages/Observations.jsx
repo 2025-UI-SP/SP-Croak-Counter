@@ -254,16 +254,20 @@ export default function Observations() {
   /* ---- upload placeholder ---- */
   const performUpload = async (id) => {
     // Preserve local mock upload logic from Sprint 7
-    doUpload(entries);
-    // const next = entries.map((e) =>
-    //   e.id === id ? { ...e, status: 'uploaded', uploadedAt: new Date().toISOString() } : e
-    // );
-    // persistEntries(next);
+    if (await doUpload(entries)) {
+      const next = entries.map((e) =>
+        e.id === id ? { ...e, status: 'uploaded', uploadedAt: new Date().toISOString() } : e
+      );
+      persistEntries(next);
 
-    // // Show success message (using master's snackbar infrastructure)
-    // setUploadSnackbarMessage(t('observations.messages.uploadSuccess') || 'Observation marked as uploaded (mock)');
-    // setUploadSnackbarOpen(true);
-    // return { ok: true };
+      // Show success message (using master's snackbar infrastructure)
+      setUploadSnackbarMessage(t('observations.messages.uploadSuccess') || 'Observation marked as uploaded (mock)');
+      setUploadSnackbarOpen(true);
+      return { ok: true };
+    } else {
+      return { ok: false };
+    }
+    
   };
 
   /* ---- dialogs / snackbar ---- */

@@ -19,6 +19,7 @@ import {
   DialogContent,
   DialogActions,
   Snackbar,
+  Alert,
   TextField,
   FormControl,
   InputLabel,
@@ -28,7 +29,9 @@ import {
   CardContent,
   CardActions,
   Stack,
-  Divider
+  Divider,
+  Backdrop,
+  CircularProgress
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
@@ -198,13 +201,11 @@ export default function Observations() {
   const handleSaveDetails = () => {
     if (!detailEntry) return;
     if (isAdvancedModal && missingRequired) {
-      setUploadSnackbarMessage(t('survey.messages.validationWarning'));
-      setUploadSnackbarOpen(true);
+      showUploadSnackbar(t('survey.messages.validationWarning'), 'warning');
       return;
     }
     if (isBeginnerModal && missingBeginnerRequired) {
-      setUploadSnackbarMessage(t('survey.messages.validationWarning'));
-      setUploadSnackbarOpen(true);
+      showUploadSnackbar(t('survey.messages.validationWarning'), 'warning');
       return;
     }
     const { site, latitude, longitude, ...dataFields } = detailForm;
@@ -231,43 +232,38 @@ export default function Observations() {
     persistEntries(next);
   };
 
-  const doUpload = function (entries) {
-    return new Promise((res, rej) => {
-      fetch(BACKENDURL, {
-        redirect: "follow",
-        method: "POST",
-        body: JSON.stringify(entries),
-        headers: {},
-      })
+  const doUpload = function (entriesToSend) {
+    return fetch(BACKENDURL, {
+      redirect: "follow",
+      method: "POST",
+      body: JSON.stringify(entriesToSend),
+      headers: {},
+    })
       .then((r) => r.json())
       .then((data) => {
         if (data.success) {
-          res(true);
-        } else {
-          console.error("doUpload error ", data.error);
-          res(false);
+          return { success: true };
         }
+        console.error("doUpload error ", data.error);
+        return { success: false, error: data.error || t('observations.messages.uploadErrorUnknown') || 'Upload failed' };
+      })
+      .catch((err) => {
+        console.error("doUpload fetch error", err);
+        return { success: false, error: t('observations.messages.uploadErrorNetwork') || 'Network or server error' };
       });
-    });
-  }
+  };
 
-  /* ---- upload placeholder ---- */
+  /* ---- upload ---- */
   const performUpload = async (id) => {
-    // Preserve local mock upload logic from Sprint 7
-    if (await doUpload(entries)) {
+    const result = await doUpload(entries);
+    if (result.success) {
       const next = entries.map((e) =>
         e.id === id ? { ...e, status: 'uploaded', uploadedAt: new Date().toISOString() } : e
       );
       persistEntries(next);
-
-      // Show success message (using master's snackbar infrastructure)
-      setUploadSnackbarMessage(t('observations.messages.uploadSuccess') || 'Observation marked as uploaded (mock)');
-      setUploadSnackbarOpen(true);
       return { ok: true };
-    } else {
-      return { ok: false };
     }
-    
+    return { ok: false, error: result.error };
   };
 
   /* ---- dialogs / snackbar ---- */
@@ -276,6 +272,14 @@ export default function Observations() {
   const [confirmBulkUploadOpen, setConfirmBulkUploadOpen] = React.useState(false);
   const [uploadSnackbarOpen, setUploadSnackbarOpen] = React.useState(false);
   const [uploadSnackbarMessage, setUploadSnackbarMessage] = React.useState('');
+  const [uploadSnackbarSeverity, setUploadSnackbarSeverity] = React.useState('success');
+  const [isUploading, setIsUploading] = React.useState(false);
+
+  const showUploadSnackbar = (message, severity = 'success') => {
+    setUploadSnackbarMessage(message);
+    setUploadSnackbarSeverity(severity);
+    setUploadSnackbarOpen(true);
+  };
 
   /* ---- selection ---- */
   const toggleOne = (id) => {
@@ -506,18 +510,44 @@ export default function Observations() {
 
         {/* dialogs and modals*/}
 
-        <Dialog open={!!confirmUploadId} onClose={() => setConfirmUploadId(null)}>
+        <Dialog open={!!confirmUploadId} onClose={() => !isUploading && setConfirmUploadId(null)}>
           <DialogTitle>{t('observations.dialogs.confirmUploadTitle')}</DialogTitle>
           <DialogContent dividers><Typography>{t('observations.dialogs.confirmUploadMessage')}</Typography></DialogContent>
           <DialogActions>
-            <Button onClick={() => setConfirmUploadId(null)}>Cancel</Button>
-            <Button variant="contained" onClick={() => { performUpload(confirmUploadId); setConfirmUploadId(null); }}>
+            <Button onClick={() => setConfirmUploadId(null)} disabled={isUploading}>Cancel</Button>
+            <Button
+              variant="contained"
+              disabled={isUploading}
+              onClick={async () => {
+                const id = confirmUploadId;
+                setConfirmUploadId(null);
+                setIsUploading(true);
+                const result = await performUpload(id);
+                setIsUploading(false);
+                if (result.ok) {
+                  showUploadSnackbar(t('observations.messages.uploadSuccess') || 'Observation uploaded successfully.', 'success');
+                } else {
+                  showUploadSnackbar(result.error || t('observations.messages.uploadFailed') || 'Upload failed.', 'error');
+                }
+              }}
+            >
               {t('observations.labels.uploadButton')}
             </Button>
           </DialogActions>
         </Dialog>
 
-        <Snackbar open={uploadSnackbarOpen} autoHideDuration={4000} onClose={() => setUploadSnackbarOpen(false)} message={uploadSnackbarMessage} />
+        <Snackbar open={uploadSnackbarOpen} autoHideDuration={6000} onClose={() => setUploadSnackbarOpen(false)} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+          <Alert onClose={() => setUploadSnackbarOpen(false)} severity={uploadSnackbarSeverity} variant="filled" sx={{ width: '100%' }}>
+            {uploadSnackbarMessage}
+          </Alert>
+        </Snackbar>
+
+        <Backdrop open={isUploading} sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+            <CircularProgress color="inherit" size={56} />
+            <Typography variant="h6">{t('observations.labels.uploading') || 'Uploading observations…'}</Typography>
+          </Box>
+        </Backdrop>
 
         <Dialog open={!!confirmDeleteId} onClose={() => setConfirmDeleteId(null)}>
           <DialogTitle>{t('observations.dialogs.confirmDeleteTitle')}</DialogTitle>
@@ -530,18 +560,41 @@ export default function Observations() {
           </DialogActions>
         </Dialog>
 
-        <Dialog open={confirmBulkUploadOpen} onClose={() => setConfirmBulkUploadOpen(false)}>
+        <Dialog open={confirmBulkUploadOpen} onClose={() => !isUploading && setConfirmBulkUploadOpen(false)}>
           <DialogTitle>{t('observations.dialogs.bulkUploadTitle')}</DialogTitle>
           <DialogContent dividers>
             <Typography>{t('observations.dialogs.bulkUploadMessage').replace('{count}', selected.size)}</Typography>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setConfirmBulkUploadOpen(false)}>Cancel</Button>
-            <Button variant="contained" onClick={() => {
-              Array.from(selected).forEach(id => performUpload(id));
-              setSelected(new Set());
-              setConfirmBulkUploadOpen(false);
-            }}>
+            <Button onClick={() => setConfirmBulkUploadOpen(false)} disabled={isUploading}>Cancel</Button>
+            <Button
+              variant="contained"
+              disabled={isUploading}
+              onClick={async () => {
+                const ids = Array.from(selected);
+                setSelected(new Set());
+                setConfirmBulkUploadOpen(false);
+                setIsUploading(true);
+                const results = await Promise.all(ids.map((id) => performUpload(id)));
+                setIsUploading(false);
+                const succeeded = results.filter((r) => r.ok).length;
+                const failed = results.filter((r) => !r.ok);
+                const firstError = failed[0]?.error;
+                if (failed.length === 0) {
+                  showUploadSnackbar(
+                    t('observations.messages.uploadSuccessCount')?.replace('{count}', String(succeeded)) || `${succeeded} observation(s) uploaded successfully.`,
+                    'success'
+                  );
+                } else if (succeeded === 0) {
+                  showUploadSnackbar(firstError || t('observations.messages.uploadFailed') || 'Upload failed.', 'error');
+                } else {
+                  showUploadSnackbar(
+                    t('observations.messages.uploadPartialFailure')?.replace('{succeeded}', String(succeeded)).replace('{failed}', String(failed.length)).replace('{error}', firstError || '') || `${succeeded} uploaded, ${failed.length} failed: ${firstError || ''}`,
+                    'error'
+                  );
+                }
+              }}
+            >
               {t('observations.labels.uploadButton')}
             </Button>
           </DialogActions>

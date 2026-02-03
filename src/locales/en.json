@@ -217,7 +217,8 @@
             "time": "Time",
             "site": "Site",
             "status": "Status",
-            "uploadButton": "Upload"
+            "uploadButton": "Upload",
+            "uploading": "Uploading observations…"
         },
         "selectAllLabel": "Select All",
         "table": {
@@ -244,7 +245,15 @@
             "beginnerDetailsTitle": "Observation Details (Beginner)",
             "advancedDetailsTitle": "Observation Details (Advanced)"
         },
-        "speciesHeading": "Frog Species Observations"
+        "speciesHeading": "Frog Species Observations",
+        "messages": {
+            "uploadSuccess": "Observation uploaded successfully.",
+            "uploadSuccessCount": "{count} observation(s) uploaded successfully.",
+            "uploadFailed": "Upload failed.",
+            "uploadErrorUnknown": "Upload failed.",
+            "uploadErrorNetwork": "Network or server error.",
+            "uploadPartialFailure": "{succeeded} uploaded, {failed} failed: {error}"
+        }
     },
     "survey": {
         "beginnerTitle": "Call Index Survey",

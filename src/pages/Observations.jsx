@@ -230,6 +230,19 @@ export default function Observations() {
   const handleDelete = (id) => {
     const next = entries.filter(e => e.id !== id);
     persistEntries(next);
+
+    // Ensure deleted item is also removed from selection
+    setSelected(prev => {
+      const updated = new Set(prev);
+      updated.delete(id);
+      return updated;
+    });
+
+    // Show a toast confirming deletion
+    showUploadSnackbar(
+      t('observations.messages.deleteSuccess') || 'Observation deleted.',
+      'success'
+    );
   };
 
   const doUpload = function (entriesToSend) {
@@ -354,6 +367,16 @@ export default function Observations() {
                   >
                     {/* Preserve 'Upload' label logic or use t() */}
                     {t('observations.labels.uploadButton') || 'Upload'}
+                  </Button>
+
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    startIcon={<DeleteIcon />}
+                    onClick={() => setConfirmDeleteId(obs.id)}
+                    fullWidth
+                  >
+                    {t('observations.table.deleteColumn') || 'Delete'}
                   </Button>
                 </Stack>
               </CardActions>

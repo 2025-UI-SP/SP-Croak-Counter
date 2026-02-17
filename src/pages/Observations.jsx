@@ -119,8 +119,8 @@ export default function Observations() {
   // Github will not allow you to push with the token, so it must be removed before attempting github commands.
   const token = ""
   const BACKENDURL = token ? 
-    "https://script.google.com/a/macros/mtu.edu/s/AKfycbxh2f4dvJP-EgPZim6J2AssshNlUKtps3gJqgCHnBg/dev?access_token=" + token:
-    "https://script.google.com/macros/s/AKfycbw7Yjg_I9L6ypXvw7j0o7H9Mud7XA6oshxHDva_j4-ssiB5EGHaekgXvtPs5aKaSFlA/exec"
+    "https://script.google.com/a/macros/mtu.edu/s/AKfycbxh2f4dvJP-EgPZim6J2AssshNlUKtps3gJqgCHnBg/dev?access_token=" + token :
+    "https://script.google.com/macros/s/AKfycbxKw1p3zPRmrJAK3OhLZ9BDboBK6xVTicKF7X2Nq-9NCSsILo9le_ziBKw7qYEI1-I3/exec"
 
   React.useEffect(() => {
     try {
@@ -239,18 +239,18 @@ export default function Observations() {
       body: JSON.stringify(entriesToSend),
       headers: {},
     })
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.success) {
-          return { success: true };
-        }
-        console.error("doUpload error ", data.error);
-        return { success: false, error: data.error || t('observations.messages.uploadErrorUnknown') || 'Upload failed' };
-      })
-      .catch((err) => {
-        console.error("doUpload fetch error", err);
-        return { success: false, error: t('observations.messages.uploadErrorNetwork') || 'Network or server error' };
-      });
+    .then((r) => r.json())
+    .then((data) => {
+      if (data.success) {
+        return { success: true };
+      }
+      console.error("doUpload error ", data.error);
+      return { success: false, error: data.error || t('observations.messages.uploadErrorUnknown') || 'Upload failed' };
+    })
+    .catch((err) => {
+      console.error("doUpload fetch error", err);
+      return { success: false, error: t('observations.messages.uploadErrorNetwork') || 'Network or server error' };
+    });
   };
 
   /* ---- upload ---- */

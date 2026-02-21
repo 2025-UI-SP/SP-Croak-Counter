@@ -2,15 +2,15 @@ const SHEET_NAME = "Data"
 
 function transformWindSpeed(speed) {
   switch (speed) {
-    case "Calm (<1 mph)":
+    case "0 - Calm (<1 mph)":
       return "0";
-    case "Light Air (1-3 mph)":
+    case "1 - Light Air (1-3 mph)":
       return "1";
-    case "Light Breeze (4-7 mph)":
+    case "2 - Light Breeze (4-7 mph)":
       return "2";
-    case "Gentle Breeze (8-12 mph)":
+    case "3 - Gentle Breeze (8-12 mph)":
       return "3";
-    case "Moderate Breeze (13-18 mph)":
+    case "4 - Moderate Breeze (13-18 mph)":
       return "4";
     default:
       throw new Error(`Unkown speed value: '${speed}'`);
@@ -19,17 +19,17 @@ function transformWindSpeed(speed) {
 
 function transformSkyCode(sky) {
   switch (sky) {
-    case "Clear or only a few clouds":
+    case "0 - Clear or only a few clouds":
       return "0";
-    case "Partly cloudy or variable":
+    case "1 - Partly cloudy or variable":
       return "1";
-    case "Broken clouds or overcast":
+    case "2 - Broken clouds or overcast":
       return "2";
-    case "Fog":
+    case "4 - Fog":
       return "4";
-    case "Drizzle or light rain (not affecting hearing)":
+    case "5 - Drizzle or light rain (not affecting hearing)":
       return "5";
-    case "Showers (is affecting hearing ability)":
+    case "6 - Showers (is affecting hearing ability)":
       return "6";
     default:
       throw new Error(`Unkown sky value '${sky}'`);

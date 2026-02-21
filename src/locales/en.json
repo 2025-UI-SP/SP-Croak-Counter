@@ -312,19 +312,19 @@
         },
         "options": {
             "skyConditions": [
-                "Clear or only a few clouds",
-                "Partly cloudy or variable",
-                "Broken clouds or overcast",
-                "Fog",
-                "Drizzle or light rain (not affecting hearing)",
-                "Showers (is affecting hearing ability)"
+                "0 - Clear or only a few clouds",
+                "1 - Partly cloudy or variable",
+                "2 - Broken clouds or overcast",
+                "4 - Fog",
+                "5 - Drizzle or light rain (not affecting hearing)",
+                "6 - Showers (is affecting hearing ability)"
             ],
             "windSpeeds": [
-                "Calm (<1 mph)",
-                "Light Air (1-3 mph)",
-                "Light Breeze (4-7 mph)",
-                "Gentle Breeze (8-12 mph)",
-                "Moderate Breeze (13-18 mph)"
+                "0 - Calm (<1 mph)",
+                "1 - Light Air (1-3 mph)",
+                "2 - Light Breeze (4-7 mph)",
+                "3 - Gentle Breeze (8-12 mph)",
+                "4 - Moderate Breeze (13-18 mph)"
             ],
             "frogCallDensity": [
                 "0 - No frogs heard",

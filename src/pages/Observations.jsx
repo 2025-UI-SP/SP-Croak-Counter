@@ -120,7 +120,7 @@ export default function Observations() {
   const token = ""
   const BACKENDURL = token ? 
     "https://script.google.com/a/macros/mtu.edu/s/AKfycbxh2f4dvJP-EgPZim6J2AssshNlUKtps3gJqgCHnBg/dev?access_token=" + token :
-    "https://script.google.com/macros/s/AKfycbxKw1p3zPRmrJAK3OhLZ9BDboBK6xVTicKF7X2Nq-9NCSsILo9le_ziBKw7qYEI1-I3/exec"
+    "https://script.google.com/macros/s/AKfycbwm8ti80f7QSiIqCnkWbBaD4ldEjL2Svk66VMeuJMMKGHRBo8oxfdwzXKcNgAqXdsaf/exec"
 
   React.useEffect(() => {
     try {
@@ -268,7 +268,7 @@ export default function Observations() {
 
   /* ---- upload ---- */
   const performUpload = async (id) => {
-    const result = await doUpload(entries);
+    const result = await doUpload(entries.filter(e => e.id === id));
     if (result.success) {
       const next = entries.map((e) =>
         e.id === id ? { ...e, status: 'uploaded', uploadedAt: new Date().toISOString() } : e

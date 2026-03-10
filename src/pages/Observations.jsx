@@ -41,6 +41,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useTranslation } from '../hooks/useTranslation.js';
 
 import { frogContent } from '../config.js';
+import ErrorModal from '../components/ErrorModal.jsx';
 
 /* ---------- helpers ---------- */
 function formatDateTime(iso) {
@@ -107,7 +108,8 @@ export default function Observations() {
       const stored = localStorage.getItem('observations');
       const parsed = stored ? JSON.parse(stored) : null;
       return Array.isArray(parsed) && parsed.length > 0 ? parsed : [];
-    } catch {
+    } catch (error) {
+      console.error('Failed to read observations from localStorage', error);
       return [];
     }
   });
@@ -118,9 +120,27 @@ export default function Observations() {
   // Allows you to run latest code without a deploy. If you run into CORs errors with it run the script again, 99% chance it expired.
   // Github will not allow you to push with the token, so it must be removed before attempting github commands.
   const token = ""
-  const BACKENDURL = token ? 
+  const BACKENDURL = token ?
     "https://script.google.com/a/macros/mtu.edu/s/AKfycbxh2f4dvJP-EgPZim6J2AssshNlUKtps3gJqgCHnBg/dev?access_token=" + token :
     "https://script.google.com/macros/s/AKfycbwm8ti80f7QSiIqCnkWbBaD4ldEjL2Svk66VMeuJMMKGHRBo8oxfdwzXKcNgAqXdsaf/exec"
+
+  const [errorModalState, setErrorModalState] = React.useState({
+    open: false,
+    title: '',
+    error: null,
+  });
+
+  const showErrorModal = (title, error) => {
+    setErrorModalState({
+      open: true,
+      title,
+      error,
+    });
+  };
+
+  const closeErrorModal = () => {
+    setErrorModalState(prev => ({ ...prev, open: false }));
+  };
 
   React.useEffect(() => {
     try {
@@ -128,6 +148,7 @@ export default function Observations() {
       if (stored) setEntries(JSON.parse(stored));
     } catch (error) {
       console.error('Failed to load observations from localStorage', error);
+      showErrorModal('Failed to load saved observations', error);
     }
   }, []);
 
@@ -137,6 +158,7 @@ export default function Observations() {
       localStorage.setItem('observations', JSON.stringify(nextEntries));
     } catch (error) {
       console.error('Failed to save observations', error);
+      showErrorModal('Failed to save observations', error);
     }
   };
 
@@ -252,18 +274,22 @@ export default function Observations() {
       body: JSON.stringify(entriesToSend),
       headers: {},
     })
-    .then((r) => r.json())
-    .then((data) => {
-      if (data.success) {
-        return { success: true };
-      }
-      console.error("doUpload error ", data.error);
-      return { success: false, error: data.error || t('observations.messages.uploadErrorUnknown') || 'Upload failed' };
-    })
-    .catch((err) => {
-      console.error("doUpload fetch error", err);
-      return { success: false, error: t('observations.messages.uploadErrorNetwork') || 'Network or server error' };
-    });
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) {
+          return { success: true };
+        }
+        console.error("doUpload error ", data.error);
+        const message = data.error || t('observations.messages.uploadErrorUnknown') || 'Upload failed';
+        showErrorModal('Upload error', new Error(message));
+        return { success: false, error: message };
+      })
+      .catch((err) => {
+        console.error("doUpload fetch error", err);
+        const message = t('observations.messages.uploadErrorNetwork') || 'Network or server error';
+        showErrorModal('Network error during upload', err);
+        return { success: false, error: message };
+      });
   };
 
   /* ---- upload ---- */
@@ -275,6 +301,9 @@ export default function Observations() {
       );
       persistEntries(next);
       return { ok: true };
+    }
+    if (result.error) {
+      showErrorModal('Upload failed', new Error(String(result.error)));
     }
     return { ok: false, error: result.error };
   };
@@ -615,6 +644,9 @@ export default function Observations() {
                     t('observations.messages.uploadPartialFailure')?.replace('{succeeded}', String(succeeded)).replace('{failed}', String(failed.length)).replace('{error}', firstError || '') || `${succeeded} uploaded, ${failed.length} failed: ${firstError || ''}`,
                     'error'
                   );
+                  if (firstError) {
+                    showErrorModal('Some uploads failed', new Error(String(firstError)));
+                  }
                 }
               }}
             >
@@ -743,6 +775,12 @@ export default function Observations() {
           </DialogActions>
         </Dialog>
       </Paper>
+      <ErrorModal
+        open={errorModalState.open}
+        title={errorModalState.title}
+        error={errorModalState.error}
+        onClose={closeErrorModal}
+      />
     </Container>
   );
 }

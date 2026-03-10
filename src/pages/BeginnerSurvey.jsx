@@ -19,6 +19,7 @@ import { useLocalStorageForm } from '../hooks/useLocalStorageForm.js';
 import { useTranslation } from '../hooks/useTranslation.js';
 import { useNavigate } from 'react-router-dom';
 import { Snackbar, Alert as MuiAlert } from '@mui/material';
+import ErrorModal from '../components/ErrorModal.jsx';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
@@ -73,6 +74,24 @@ function BeginnerSurvey() {
 
   // Track invalid input per field for responsive feedback
   const [fieldError, setFieldError] = useState('');
+
+  const [errorModalState, setErrorModalState] = useState({
+    open: false,
+    title: '',
+    error: null,
+  });
+
+  const showErrorModal = (title, error) => {
+    setErrorModalState({
+      open: true,
+      title,
+      error,
+    });
+  };
+
+  const closeErrorModal = () => {
+    setErrorModalState(prev => ({ ...prev, open: false }));
+  };
 
   //Regex validation, so only numbers decimals and negatives can be put into the temperature and latitude/longitude fields
   const isValidNumber = (value) => /^-?\d*\.?\d*$/.test(value);
@@ -174,6 +193,7 @@ function BeginnerSurvey() {
       }, 1100);
     } catch (err) {
       console.error('Failed to save observation', err);
+      showErrorModal('Failed to save observation', err);
     }
   };
 
@@ -539,6 +559,13 @@ function BeginnerSurvey() {
           {t('survey.messages.success')}
         </MuiAlert>
       </Snackbar>
+
+      <ErrorModal
+        open={errorModalState.open}
+        title={errorModalState.title}
+        error={errorModalState.error}
+        onClose={closeErrorModal}
+      />
     </Container>
   );
 }

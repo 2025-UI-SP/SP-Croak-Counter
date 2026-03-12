@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 
 /**
- * Generic error modal that shows error name / label
+ * Error modal that shows error name / label
  */
 export default function ErrorModal({
   open,
@@ -24,10 +24,13 @@ export default function ErrorModal({
   if (error) {
     if (typeof error === 'string') {
       errorLabel = error;
-    } else if (error.name) {
-      errorLabel = error.name;
-    } else if (error.message) {
+    } else if (typeof error.message === 'string' && typeof error.name === 'string' && error.name && error.name !== 'Error') {
+      // Include name when it's specific (e.g. TypeError: ...).
+      errorLabel = `${error.name}: ${error.message}`;
+    } else if (typeof error.message === 'string' && error.message) {
       errorLabel = error.message;
+    } else if (typeof error.name === 'string' && error.name) {
+      errorLabel = error.name;
     }
   }
 

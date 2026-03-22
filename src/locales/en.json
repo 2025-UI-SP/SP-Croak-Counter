@@ -245,6 +245,7 @@
             "beginnerDetailsTitle": "Observation Details (Beginner)",
             "advancedDetailsTitle": "Observation Details (Advanced)"
         },
+        "frogAudioReference": "Frog call samples (reference)",
         "speciesHeading": "Frog Species Observations",
         "messages": {
             "uploadSuccess": "Observation uploaded successfully.",
@@ -253,7 +254,8 @@
             "uploadErrorUnknown": "Upload failed.",
             "uploadErrorNetwork": "Network or server error.",
             "uploadPartialFailure": "{succeeded} uploaded, {failed} failed: {error}",
-            "deleteSuccess": "Observation deleted."
+            "deleteSuccess": "Observation deleted.",
+            "saveSuccess": "Your observation was updated successfully."
         }
     },
     "survey": {

@@ -41,6 +41,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useTranslation } from '../hooks/useTranslation.js';
 
 import { frogContent } from '../config.js';
+import AudioPlayer from '../components/AudioPlayer';
 
 /* ---------- helpers ---------- */
 function formatDateTime(iso) {
@@ -88,6 +89,31 @@ function formatTime(time) {
   } catch {
     return String(time);
   }
+}
+
+function buildDetailSnapshot(obs) {
+  const data = obs.data || {};
+  const base = {
+    site: obs.site || data.location || '',
+    latitude: obs.latitude ?? data.latitude ?? '',
+    longitude: obs.longitude ?? data.longitude ?? '',
+    frogCallDensity: data.frogCallDensity ?? data.frog_call_density ?? '',
+    windSpeed: data.windSpeed ?? data.wind_speed ?? '',
+    skyCondition: data.skyCondition ?? data.sky_condition ?? '',
+    waterTemp: data.waterTemp ?? data.water_temp ?? '',
+    startingAirTemp: data.startingAirTemp ?? data.starting_air_temp ?? '',
+    endingAirTemp: data.endingAirTemp ?? data.ending_air_temp ?? '',
+    startTime: data.startTime ?? obs.startTime ?? '',
+    endTime: data.endTime ?? obs.endTime ?? '',
+    comments: data.comments ?? '',
+    observer: data.observer ?? obs.observer ?? '',
+    affiliation: data.affiliation ?? obs.affiliation ?? '',
+    county: data.county ?? obs.county ?? ''
+  };
+  const speciesFields = Object.fromEntries(
+    (frogContent?.frogs || []).map(frog => [frog.fieldName, data[frog.fieldName] ?? ''])
+  );
+  return { ...base, ...speciesFields };
 }
 
 /* ---------- component ---------- */
@@ -145,31 +171,8 @@ export default function Observations() {
   const [detailForm, setDetailForm] = React.useState({});
 
   const openDetails = (obs) => {
-    const data = obs.data || {};
-    const base = {
-      site: obs.site || data.location || '',
-      latitude: obs.latitude ?? data.latitude ?? '',
-      longitude: obs.longitude ?? data.longitude ?? '',
-      frogCallDensity: data.frogCallDensity ?? data.frog_call_density ?? '',
-      windSpeed: data.windSpeed ?? data.wind_speed ?? '',
-      skyCondition: data.skyCondition ?? data.sky_condition ?? '',
-      waterTemp: data.waterTemp ?? data.water_temp ?? '',
-      startingAirTemp: data.startingAirTemp ?? data.starting_air_temp ?? '',
-      endingAirTemp: data.endingAirTemp ?? data.ending_air_temp ?? '',
-      startTime: data.startTime ?? obs.startTime ?? '',
-      endTime: data.endTime ?? obs.endTime ?? '',
-      comments: data.comments ?? '',
-      observer: data.observer ?? obs.observer ?? '',
-      affiliation: data.affiliation ?? obs.affiliation ?? '',
-      county: data.county ?? obs.county ?? ''
-    };
-
-    const speciesFields = Object.fromEntries(
-      (frogContent?.frogs || []).map(frog => [frog.fieldName, data[frog.fieldName] ?? ''])
-    );
-
     setDetailEntry(obs);
-    setDetailForm({ ...base, ...speciesFields });
+    setDetailForm(buildDetailSnapshot(obs));
   };
 
   const closeDetails = () => {
@@ -224,6 +227,7 @@ export default function Observations() {
 
     persistEntries(updated);
     closeDetails();
+    showUploadSnackbar(t('observations.messages.saveSuccess'), 'success');
   };
 
   /* ---- delete ---- */
@@ -286,11 +290,13 @@ export default function Observations() {
   const [uploadSnackbarOpen, setUploadSnackbarOpen] = React.useState(false);
   const [uploadSnackbarMessage, setUploadSnackbarMessage] = React.useState('');
   const [uploadSnackbarSeverity, setUploadSnackbarSeverity] = React.useState('success');
+  const [uploadSnackbarDuration, setUploadSnackbarDuration] = React.useState(6000);
   const [isUploading, setIsUploading] = React.useState(false);
 
-  const showUploadSnackbar = (message, severity = 'success') => {
+  const showUploadSnackbar = (message, severity = 'success', durationMs = 6000) => {
     setUploadSnackbarMessage(message);
     setUploadSnackbarSeverity(severity);
+    setUploadSnackbarDuration(durationMs);
     setUploadSnackbarOpen(true);
   };
 
@@ -559,8 +565,13 @@ export default function Observations() {
           </DialogActions>
         </Dialog>
 
-        <Snackbar open={uploadSnackbarOpen} autoHideDuration={6000} onClose={() => setUploadSnackbarOpen(false)} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
-          <Alert onClose={() => setUploadSnackbarOpen(false)} severity={uploadSnackbarSeverity} variant="filled" sx={{ width: '100%' }}>
+        <Snackbar open={uploadSnackbarOpen} autoHideDuration={uploadSnackbarDuration} onClose={() => setUploadSnackbarOpen(false)} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+          <Alert
+            onClose={() => setUploadSnackbarOpen(false)}
+            severity={uploadSnackbarSeverity}
+            variant="filled"
+            sx={{ width: '100%', maxWidth: { sm: 560 }, wordBreak: 'break-word' }}
+          >
             {uploadSnackbarMessage}
           </Alert>
         </Snackbar>
@@ -669,6 +680,22 @@ export default function Observations() {
                 </Select>
               </FormControl>
 
+              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                {t('observations.frogAudioReference')}
+              </Typography>
+              <Box sx={{ maxHeight: 280, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 1.5, pr: 0.5 }}>
+                {(frogContent?.frogs || []).map(frog => (
+                  frog.audio ? (
+                    <Box key={frog.fieldName}>
+                      <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 0.5 }}>
+                        {t(`frogs.${frog.fieldName}.name`) || frog.name}
+                      </Typography>
+                      <AudioPlayer src={frog.audio} startTime={frog.startTime} />
+                    </Box>
+                  ) : null
+                ))}
+              </Box>
+
               <TextField label={t('survey.fields.comments')} fullWidth multiline rows={3} value={detailForm.comments ?? ''} onChange={e => handleDetailChange('comments', e.target.value)} />
             </Box>
           </DialogContent>
@@ -722,16 +749,23 @@ export default function Observations() {
               <Typography variant="h6" sx={{ mt: 1 }}>{t('observations.speciesHeading')}</Typography>
 
               {(frogContent?.frogs || []).map(frog => (
-                <FormControl key={frog.fieldName} fullWidth variant="outlined">
-                  <InputLabel shrink={detailForm[frog.fieldName] !== undefined && detailForm[frog.fieldName] !== ''}>
-                    {t(`frogs.${frog.fieldName}.name`) || frog.name}
-                  </InputLabel>
-                  <Select value={detailForm[frog.fieldName] ?? '0'} onChange={e => handleDetailChange(frog.fieldName, e.target.value)} label={t(`frogs.${frog.fieldName}.name`) || frog.name}>
-                    {Array.isArray(speciesDensityOptions) && speciesDensityOptions.map((label, idx) => (
-                      <MenuItem key={label} value={String(idx)}>{label}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <Box key={frog.fieldName}>
+                  <FormControl fullWidth variant="outlined">
+                    <InputLabel shrink={detailForm[frog.fieldName] !== undefined && detailForm[frog.fieldName] !== ''}>
+                      {t(`frogs.${frog.fieldName}.name`) || frog.name}
+                    </InputLabel>
+                    <Select value={detailForm[frog.fieldName] ?? '0'} onChange={e => handleDetailChange(frog.fieldName, e.target.value)} label={t(`frogs.${frog.fieldName}.name`) || frog.name}>
+                      {Array.isArray(speciesDensityOptions) && speciesDensityOptions.map((label, idx) => (
+                        <MenuItem key={label} value={String(idx)}>{label}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  {frog.audio && (
+                    <Box sx={{ mt: 1.5 }}>
+                      <AudioPlayer src={frog.audio} startTime={frog.startTime} />
+                    </Box>
+                  )}
+                </Box>
               ))}
 
               <TextField label={t('survey.fields.comments')} fullWidth multiline rows={3} value={detailForm.comments ?? ''} onChange={e => handleDetailChange('comments', e.target.value)} />

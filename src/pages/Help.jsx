@@ -46,35 +46,6 @@ function Help() {
       </Typography>
 
       <Box sx={{ mt: 4 }}>
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="h5"><strong>{t('help.calendar.title')}</strong></Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography
-              sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.35rem' } }}
-            >
-              {t('help.calendar.description')}
-            </Typography>
-            <br />
-
-            <img src={calendar} alt={t('help.calendar.altText')} style={{ display: 'flex', width: '100%', height: 'auto' }} />
-
-          </AccordionDetails>
-        </Accordion>
-
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="h5"><strong>{t('help.environment.title')}</strong></Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography
-              sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.35rem' } }}
-            >
-              {t('help.environment.description')}
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
 
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -146,6 +117,38 @@ function Help() {
 
           </AccordionDetails>
         </Accordion>
+
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="h5"><strong>{t('help.calendar.title')}</strong></Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography
+              sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.35rem' } }}
+            >
+              {t('help.calendar.description')}
+            </Typography>
+            <br />
+
+            <img src={calendar} alt={t('help.calendar.altText')} style={{ display: 'flex', width: '100%', height: 'auto' }} />
+
+          </AccordionDetails>
+        </Accordion>
+
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="h5"><strong>{t('help.environment.title')}</strong></Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography
+              sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.35rem' } }}
+            >
+              {t('help.environment.description')}
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+
+
 
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>

@@ -29,6 +29,18 @@ export default defineConfig(({ mode }) => ({
                 maxAgeSeconds: 60 * 60 * 24 * 30
               }
             }
+          },
+          {
+            urlPattern: ({ url }) =>
+          url.pathname.match(/\.(mp3|wav|ogg|m4a)$/i),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'audio',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 30
+              }
+            }
           }
         ]
       }

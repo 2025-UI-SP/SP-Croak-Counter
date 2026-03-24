@@ -10,7 +10,7 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { usePageTitle } from '../hooks/usePageTitle.js';
 import { useTranslation } from '../hooks/useTranslation.js';
-import calendar from "../assets/help_page/frogCallingZone4.JPG";
+import calendar from "../assets/help_page/frogCallingZone4.jpg";
 
 function Help() {
   usePageTitle('Help');

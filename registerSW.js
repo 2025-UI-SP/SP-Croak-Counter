@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/SP-Croak-Counter/sw.js', { scope: '/SP-Croak-Counter/' })})}

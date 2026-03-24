@@ -19,8 +19,8 @@ import NotFound from './pages/NotFound.jsx';
 import AppNavbar from './components/Navbar.jsx';
 import AppFooter from './components/Footer.jsx';
 
-// Get base path from Vite config
-const basename = import.meta.env.MODE === 'gh-pages' ? '/SP-Croak-Counter' : '';
+// Keep router basename aligned with Vite's configured base URL.
+const basename = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 /*
   This is the main entry point for the application.

@@ -106,6 +106,12 @@ export const frogContent = {
     audio: frog.audio ? joinBase(frog.audio) : undefined,
     image: frog.image ? joinBase(frog.image) : undefined,
   })),
+  attribution: {
+    text: "Frog images available from ",
+    source: "iNaturalist.org",
+    url: "https://www.inaturalist.org",
+    accessDate: " 3/17/2026"
+  }
 }
 
 

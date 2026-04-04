@@ -115,7 +115,7 @@
             },
             "surveyProcedure": {
                 "title": "Survey Procedure",
-                "step1": "1. Record survey location. Upon opening the survey, you'll notice a button labbeled \"Get GPS Location\". Please select this button while at the survey site. Upon selection, your phone will ask for permission to access your current location. This is to ensure that we record the correct coordinates for the survey site. Please select \"allow\".",
+                "step1": "1. Record survey location. Upon opening the survey, you'll notice a button labeled \"Get GPS Location\". Please select this button while at the survey site. Upon selection, your phone will ask for permission to access your current location. This is to ensure that we record the correct coordinates for the survey site. Please select \"allow\".",
                 "step2": "2. Begin call surveys 30 minutes after sunset.",
                 "step3": "3. At each call site, quietly wait 2-3 minutes after arriving at the listening post before starting the stopwatch for a 5-minute survey. During this time, expose the thermometer bulb to the air so it begins equalizing with the air temperature, and fill out the preliminary weather and time information on the data form. Start the survey, recording frogs heard. At the end of the 5 minutes, take the water temperature and fill in the remaining data.",
                 "step4": "4. Listen to and record frogs from the wetland being monitored, but also record frogs heard in the distance as \"distant\" calls and note the direction. Distance calls are from other wetlands, not the one you are monitoring.",
@@ -131,7 +131,10 @@
         "identification": {
             "title": "Frog Identification",
             "description": "All of the frog species that you may encounter in the Keweenaw area are listed in the Frog Identification page. Each species has a description, image, and audio clip of their call to help with identification."
-        }
+        },
+        "install": {
+            "title": "Installing the App",
+            "description": "Before embarking on an expidition, be sure to visit this app (while still connected to the internet) on all mobile devices that will be used for surveying. To add a shortcut to this app on iPhone, select the share button in Safari and then select \"Add to Home Screen\". To add a shortcut on Android, select the three dots in the top right corner of Chrome and then select \"Add to Home Screen\"."}
     },
     "join": {
         "title": "Join the KBIC Citizen Science Community",

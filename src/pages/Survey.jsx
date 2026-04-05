@@ -397,7 +397,7 @@ function AdvancedSurvey() {
                 value={formData.affiliation}
                 onChange={(e) => updateField('affiliation', e.target.value)}
                 placeholder={t('survey.helpers.affiliation')}
-                helperText={t('survey.helpers.affiliationHelper')}
+                helperText={t('survey.helpers.affiliationOptional')}
               />
 
               {/*Water Temperature*/}
@@ -527,54 +527,54 @@ function AdvancedSurvey() {
                       position: 'absolute',
                       top: 12,
                       right: 12,
-                      fontSize: { xs: '1rem', sm: '1.5rem'}
+                      fontSize: { xs: '1rem', sm: '1.5rem' }
                     }}
                   >
                     🐸
                   </Box>
-                  
-                  <Typography 
-                    variant="h6" 
-                    gutterBottom 
-                    sx={{ 
-                      fontWeight: 600, 
+
+                  <Typography
+                    variant="h6"
+                    gutterBottom
+                    sx={{
+                      fontWeight: 600,
                       color: 'primary.main',
-                      pr: { xs: 2, sm: 4 } 
+                      pr: { xs: 2, sm: 4 }
                     }}
                   >
                     {frog.name}
                   </Typography>
 
-                {/* Audio Player */}
-                {frog.audio && (
-                <Box 
-                  sx={{ 
-                    mb: 2,
-                    '& .MuiSlider-root': {
-                      mr: 1
-                    }
-                  }}
-                >
-                  <AudioPlayer src={frog.audio} startTime={frog.startTime}/>
-                </Box>
-              )}
+                  {/* Audio Player */}
+                  {frog.audio && (
+                    <Box
+                      sx={{
+                        mb: 2,
+                        '& .MuiSlider-root': {
+                          mr: 1
+                        }
+                      }}
+                    >
+                      <AudioPlayer src={frog.audio} startTime={frog.startTime} />
+                    </Box>
+                  )}
 
-              {/* Call Density Selector */}
-              <FormControl fullWidth>
-                <InputLabel>Call Density</InputLabel>
-                <Select
-                  value={formData[frog.fieldName] || '0'}
-                  onChange={(e) => updateField(frog.fieldName, e.target.value)}
-                  label="Call Density"
-                >
-                  <MenuItem value="0">0 - None heard</MenuItem>
-                  <MenuItem value="1">1 - Individual calls, no overlapping</MenuItem>
-                  <MenuItem value="2">2 - Individual calls, some overlapping</MenuItem>
-                  <MenuItem value="3">3 - Full chorus, constant calling</MenuItem>
-                </Select>
-              </FormControl>
-            </Paper>
-          ))}
+                  {/* Call Density Selector */}
+                  <FormControl fullWidth>
+                    <InputLabel>Call Density</InputLabel>
+                    <Select
+                      value={formData[frog.fieldName] || '0'}
+                      onChange={(e) => updateField(frog.fieldName, e.target.value)}
+                      label="Call Density"
+                    >
+                      <MenuItem value="0">0 - None heard</MenuItem>
+                      <MenuItem value="1">1 - Individual calls, no overlapping</MenuItem>
+                      <MenuItem value="2">2 - Individual calls, some overlapping</MenuItem>
+                      <MenuItem value="3">3 - Full chorus, constant calling</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Paper>
+              ))}
 
               {/* End Time */}
               <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -598,16 +598,20 @@ function AdvancedSurvey() {
               </LocalizationProvider>
 
               {/* Comments */}
-              <TextField
-                fullWidth
-                multiline
-                rows={4}
-                label={t('survey.fields.comments')}
-                value={formData.comments}
-                onChange={(e) => updateField('comments', e.target.value)}
-                placeholder={t('survey.fields.comments')}
-                helperText={t('survey.helpers.comments')}
-              />
+              <Box>
+                <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 1 }}>
+                  {t('survey.helpers.comments')}
+                </Typography>
+                <TextField
+                  fullWidth
+                  multiline
+                  rows={4}
+                  label={t('survey.fields.comments')}
+                  value={formData.comments}
+                  onChange={(e) => updateField('comments', e.target.value)}
+                  placeholder={t('survey.fields.comments')}
+                />
+              </Box>
 
               {/* Buttons */}
               <Stack

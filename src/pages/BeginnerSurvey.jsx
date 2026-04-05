@@ -488,16 +488,20 @@ function BeginnerSurvey() {
                 />
               </LocalizationProvider>
               {/*Comments Section*/}
-              <TextField
-                fullWidth
-                multiline
-                rows={4}
-                label={t('survey.fields.comments')}
-                value={formData.comments}
-                onChange={(e) => updateField('comments', e.target.value)}
-                placeholder={t('survey.fields.comments')}
-                helperText={t('survey.helpers.comments')}
-              />
+              <Box>
+                <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 1 }}>
+                  {t('survey.helpers.comments')}
+                </Typography>
+                <TextField
+                  fullWidth
+                  multiline
+                  rows={4}
+                  label={t('survey.fields.comments')}
+                  value={formData.comments}
+                  onChange={(e) => updateField('comments', e.target.value)}
+                  placeholder={t('survey.fields.comments')}
+                />
+              </Box>
 
               {/*Buttons*/}
               <Stack

@@ -19,6 +19,7 @@ import {
   DialogContent,
   DialogActions,
   Snackbar,
+  Alert,
   TextField,
   FormControl,
   InputLabel,
@@ -28,7 +29,9 @@ import {
   CardContent,
   CardActions,
   Stack,
-  Divider
+  Divider,
+  Backdrop,
+  CircularProgress
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
@@ -38,6 +41,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useTranslation } from '../hooks/useTranslation.js';
 
 import { frogContent } from '../config.js';
+import AudioPlayer from '../components/AudioPlayer';
 
 /* ---------- helpers ---------- */
 function formatDateTime(iso) {
@@ -87,6 +91,31 @@ function formatTime(time) {
   }
 }
 
+function buildDetailSnapshot(obs) {
+  const data = obs.data || {};
+  const base = {
+    site: obs.site || data.location || '',
+    latitude: obs.latitude ?? data.latitude ?? '',
+    longitude: obs.longitude ?? data.longitude ?? '',
+    frogCallDensity: data.frogCallDensity ?? data.frog_call_density ?? '',
+    windSpeed: data.windSpeed ?? data.wind_speed ?? '',
+    skyCondition: data.skyCondition ?? data.sky_condition ?? '',
+    waterTemp: data.waterTemp ?? data.water_temp ?? '',
+    startingAirTemp: data.startingAirTemp ?? data.starting_air_temp ?? '',
+    endingAirTemp: data.endingAirTemp ?? data.ending_air_temp ?? '',
+    startTime: data.startTime ?? obs.startTime ?? '',
+    endTime: data.endTime ?? obs.endTime ?? '',
+    comments: data.comments ?? '',
+    observer: data.observer ?? obs.observer ?? '',
+    affiliation: data.affiliation ?? obs.affiliation ?? '',
+    county: data.county ?? obs.county ?? ''
+  };
+  const speciesFields = Object.fromEntries(
+    (frogContent?.frogs || []).map(frog => [frog.fieldName, data[frog.fieldName] ?? ''])
+  );
+  return { ...base, ...speciesFields };
+}
+
 /* ---------- component ---------- */
 export default function Observations() {
   const { t } = useTranslation();
@@ -111,6 +140,13 @@ export default function Observations() {
 
   const [selected, setSelected] = React.useState(new Set());
   const allSelected = selected.size === entries.length && entries.length > 0;
+  // Note for future devs, when working on apps script run the function in the console `getAccesstoken`, and put the token below
+  // Allows you to run latest code without a deploy. If you run into CORs errors with it run the script again, 99% chance it expired.
+  // Github will not allow you to push with the token, so it must be removed before attempting github commands.
+  const token = ""
+  const BACKENDURL = token ? 
+    "https://script.google.com/a/macros/mtu.edu/s/AKfycbxh2f4dvJP-EgPZim6J2AssshNlUKtps3gJqgCHnBg/dev?access_token=" + token :
+    "https://script.google.com/macros/s/AKfycbwm8ti80f7QSiIqCnkWbBaD4ldEjL2Svk66VMeuJMMKGHRBo8oxfdwzXKcNgAqXdsaf/exec"
 
   React.useEffect(() => {
     try {
@@ -135,31 +171,8 @@ export default function Observations() {
   const [detailForm, setDetailForm] = React.useState({});
 
   const openDetails = (obs) => {
-    const data = obs.data || {};
-    const base = {
-      site: obs.site || data.location || '',
-      latitude: obs.latitude ?? data.latitude ?? '',
-      longitude: obs.longitude ?? data.longitude ?? '',
-      frogCallDensity: data.frogCallDensity ?? data.frog_call_density ?? '',
-      windSpeed: data.windSpeed ?? data.wind_speed ?? '',
-      skyCondition: data.skyCondition ?? data.sky_condition ?? '',
-      waterTemp: data.waterTemp ?? data.water_temp ?? '',
-      startingAirTemp: data.startingAirTemp ?? data.starting_air_temp ?? '',
-      endingAirTemp: data.endingAirTemp ?? data.ending_air_temp ?? '',
-      startTime: data.startTime ?? obs.startTime ?? '',
-      endTime: data.endTime ?? obs.endTime ?? '',
-      comments: data.comments ?? '',
-      observer: data.observer ?? obs.observer ?? '',
-      affiliation: data.affiliation ?? obs.affiliation ?? '',
-      county: data.county ?? obs.county ?? ''
-    };
-
-    const speciesFields = Object.fromEntries(
-      (frogContent?.frogs || []).map(frog => [frog.fieldName, data[frog.fieldName] ?? ''])
-    );
-
     setDetailEntry(obs);
-    setDetailForm({ ...base, ...speciesFields });
+    setDetailForm(buildDetailSnapshot(obs));
   };
 
   const closeDetails = () => {
@@ -191,13 +204,11 @@ export default function Observations() {
   const handleSaveDetails = () => {
     if (!detailEntry) return;
     if (isAdvancedModal && missingRequired) {
-      setUploadSnackbarMessage(t('survey.messages.validationWarning'));
-      setUploadSnackbarOpen(true);
+      showUploadSnackbar(t('survey.messages.validationWarning'), 'warning');
       return;
     }
     if (isBeginnerModal && missingBeginnerRequired) {
-      setUploadSnackbarMessage(t('survey.messages.validationWarning'));
-      setUploadSnackbarOpen(true);
+      showUploadSnackbar(t('survey.messages.validationWarning'), 'warning');
       return;
     }
     const { site, latitude, longitude, ...dataFields } = detailForm;
@@ -216,26 +227,60 @@ export default function Observations() {
 
     persistEntries(updated);
     closeDetails();
+    showUploadSnackbar(t('observations.messages.saveSuccess'), 'success');
   };
 
   /* ---- delete ---- */
   const handleDelete = (id) => {
     const next = entries.filter(e => e.id !== id);
     persistEntries(next);
+
+    // Ensure deleted item is also removed from selection
+    setSelected(prev => {
+      const updated = new Set(prev);
+      updated.delete(id);
+      return updated;
+    });
+
+    // Show a toast confirming deletion
+    showUploadSnackbar(
+      t('observations.messages.deleteSuccess') || 'Observation deleted.',
+      'success'
+    );
   };
 
-  /* ---- upload placeholder ---- */
-  const performUpload = async (id) => {
-    // Preserve local mock upload logic from Sprint 7
-    const next = entries.map((e) =>
-      e.id === id ? { ...e, status: 'uploaded', uploadedAt: new Date().toISOString() } : e
-    );
-    persistEntries(next);
+  const doUpload = function (entriesToSend) {
+    return fetch(BACKENDURL, {
+      redirect: "follow",
+      method: "POST",
+      body: JSON.stringify(entriesToSend),
+      headers: {},
+    })
+    .then((r) => r.json())
+    .then((data) => {
+      if (data.success) {
+        return { success: true };
+      }
+      console.error("doUpload error ", data.error);
+      return { success: false, error: data.error || t('observations.messages.uploadErrorUnknown') || 'Upload failed' };
+    })
+    .catch((err) => {
+      console.error("doUpload fetch error", err);
+      return { success: false, error: t('observations.messages.uploadErrorNetwork') || 'Network or server error' };
+    });
+  };
 
-    // Show success message (using master's snackbar infrastructure)
-    setUploadSnackbarMessage(t('observations.messages.uploadSuccess') || 'Observation marked as uploaded (mock)');
-    setUploadSnackbarOpen(true);
-    return { ok: true };
+  /* ---- upload ---- */
+  const performUpload = async (id) => {
+    const result = await doUpload(entries.filter(e => e.id === id));
+    if (result.success) {
+      const next = entries.map((e) =>
+        e.id === id ? { ...e, status: 'uploaded', uploadedAt: new Date().toISOString() } : e
+      );
+      persistEntries(next);
+      return { ok: true };
+    }
+    return { ok: false, error: result.error };
   };
 
   /* ---- dialogs / snackbar ---- */
@@ -244,6 +289,16 @@ export default function Observations() {
   const [confirmBulkUploadOpen, setConfirmBulkUploadOpen] = React.useState(false);
   const [uploadSnackbarOpen, setUploadSnackbarOpen] = React.useState(false);
   const [uploadSnackbarMessage, setUploadSnackbarMessage] = React.useState('');
+  const [uploadSnackbarSeverity, setUploadSnackbarSeverity] = React.useState('success');
+  const [uploadSnackbarDuration, setUploadSnackbarDuration] = React.useState(6000);
+  const [isUploading, setIsUploading] = React.useState(false);
+
+  const showUploadSnackbar = (message, severity = 'success', durationMs = 6000) => {
+    setUploadSnackbarMessage(message);
+    setUploadSnackbarSeverity(severity);
+    setUploadSnackbarDuration(durationMs);
+    setUploadSnackbarOpen(true);
+  };
 
   /* ---- selection ---- */
   const toggleOne = (id) => {
@@ -318,6 +373,16 @@ export default function Observations() {
                   >
                     {/* Preserve 'Upload' label logic or use t() */}
                     {t('observations.labels.uploadButton') || 'Upload'}
+                  </Button>
+
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    startIcon={<DeleteIcon />}
+                    onClick={() => setConfirmDeleteId(obs.id)}
+                    fullWidth
+                  >
+                    {t('observations.table.deleteColumn') || 'Delete'}
                   </Button>
                 </Stack>
               </CardActions>
@@ -474,18 +539,49 @@ export default function Observations() {
 
         {/* dialogs and modals*/}
 
-        <Dialog open={!!confirmUploadId} onClose={() => setConfirmUploadId(null)}>
+        <Dialog open={!!confirmUploadId} onClose={() => !isUploading && setConfirmUploadId(null)}>
           <DialogTitle>{t('observations.dialogs.confirmUploadTitle')}</DialogTitle>
           <DialogContent dividers><Typography>{t('observations.dialogs.confirmUploadMessage')}</Typography></DialogContent>
           <DialogActions>
-            <Button onClick={() => setConfirmUploadId(null)}>Cancel</Button>
-            <Button variant="contained" onClick={() => { performUpload(confirmUploadId); setConfirmUploadId(null); }}>
+            <Button onClick={() => setConfirmUploadId(null)} disabled={isUploading}>Cancel</Button>
+            <Button
+              variant="contained"
+              disabled={isUploading}
+              onClick={async () => {
+                const id = confirmUploadId;
+                setConfirmUploadId(null);
+                setIsUploading(true);
+                const result = await performUpload(id);
+                setIsUploading(false);
+                if (result.ok) {
+                  showUploadSnackbar(t('observations.messages.uploadSuccess') || 'Observation uploaded successfully.', 'success');
+                } else {
+                  showUploadSnackbar(result.error || t('observations.messages.uploadFailed') || 'Upload failed.', 'error');
+                }
+              }}
+            >
               {t('observations.labels.uploadButton')}
             </Button>
           </DialogActions>
         </Dialog>
 
-        <Snackbar open={uploadSnackbarOpen} autoHideDuration={4000} onClose={() => setUploadSnackbarOpen(false)} message={uploadSnackbarMessage} />
+        <Snackbar open={uploadSnackbarOpen} autoHideDuration={uploadSnackbarDuration} onClose={() => setUploadSnackbarOpen(false)} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+          <Alert
+            onClose={() => setUploadSnackbarOpen(false)}
+            severity={uploadSnackbarSeverity}
+            variant="filled"
+            sx={{ width: '100%', maxWidth: { sm: 560 }, wordBreak: 'break-word' }}
+          >
+            {uploadSnackbarMessage}
+          </Alert>
+        </Snackbar>
+
+        <Backdrop open={isUploading} sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+            <CircularProgress color="inherit" size={56} />
+            <Typography variant="h6">{t('observations.labels.uploading') || 'Uploading observations…'}</Typography>
+          </Box>
+        </Backdrop>
 
         <Dialog open={!!confirmDeleteId} onClose={() => setConfirmDeleteId(null)}>
           <DialogTitle>{t('observations.dialogs.confirmDeleteTitle')}</DialogTitle>
@@ -498,18 +594,41 @@ export default function Observations() {
           </DialogActions>
         </Dialog>
 
-        <Dialog open={confirmBulkUploadOpen} onClose={() => setConfirmBulkUploadOpen(false)}>
+        <Dialog open={confirmBulkUploadOpen} onClose={() => !isUploading && setConfirmBulkUploadOpen(false)}>
           <DialogTitle>{t('observations.dialogs.bulkUploadTitle')}</DialogTitle>
           <DialogContent dividers>
             <Typography>{t('observations.dialogs.bulkUploadMessage').replace('{count}', selected.size)}</Typography>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setConfirmBulkUploadOpen(false)}>Cancel</Button>
-            <Button variant="contained" onClick={() => {
-              Array.from(selected).forEach(id => performUpload(id));
-              setSelected(new Set());
-              setConfirmBulkUploadOpen(false);
-            }}>
+            <Button onClick={() => setConfirmBulkUploadOpen(false)} disabled={isUploading}>Cancel</Button>
+            <Button
+              variant="contained"
+              disabled={isUploading}
+              onClick={async () => {
+                const ids = Array.from(selected);
+                setSelected(new Set());
+                setConfirmBulkUploadOpen(false);
+                setIsUploading(true);
+                const results = await Promise.all(ids.map((id) => performUpload(id)));
+                setIsUploading(false);
+                const succeeded = results.filter((r) => r.ok).length;
+                const failed = results.filter((r) => !r.ok);
+                const firstError = failed[0]?.error;
+                if (failed.length === 0) {
+                  showUploadSnackbar(
+                    t('observations.messages.uploadSuccessCount')?.replace('{count}', String(succeeded)) || `${succeeded} observation(s) uploaded successfully.`,
+                    'success'
+                  );
+                } else if (succeeded === 0) {
+                  showUploadSnackbar(firstError || t('observations.messages.uploadFailed') || 'Upload failed.', 'error');
+                } else {
+                  showUploadSnackbar(
+                    t('observations.messages.uploadPartialFailure')?.replace('{succeeded}', String(succeeded)).replace('{failed}', String(failed.length)).replace('{error}', firstError || '') || `${succeeded} uploaded, ${failed.length} failed: ${firstError || ''}`,
+                    'error'
+                  );
+                }
+              }}
+            >
               {t('observations.labels.uploadButton')}
             </Button>
           </DialogActions>
@@ -560,6 +679,22 @@ export default function Observations() {
                   {Array.isArray(frogCallDensities) && frogCallDensities.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
                 </Select>
               </FormControl>
+
+              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                {t('observations.frogAudioReference')}
+              </Typography>
+              <Box sx={{ maxHeight: 280, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 1.5, pr: 0.5 }}>
+                {(frogContent?.frogs || []).map(frog => (
+                  frog.audio ? (
+                    <Box key={frog.fieldName}>
+                      <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 0.5 }}>
+                        {t(`frogs.${frog.fieldName}.name`) || frog.name}
+                      </Typography>
+                      <AudioPlayer src={frog.audio} startTime={frog.startTime} />
+                    </Box>
+                  ) : null
+                ))}
+              </Box>
 
               <TextField label={t('survey.fields.comments')} fullWidth multiline rows={3} value={detailForm.comments ?? ''} onChange={e => handleDetailChange('comments', e.target.value)} />
             </Box>
@@ -614,16 +749,23 @@ export default function Observations() {
               <Typography variant="h6" sx={{ mt: 1 }}>{t('observations.speciesHeading')}</Typography>
 
               {(frogContent?.frogs || []).map(frog => (
-                <FormControl key={frog.fieldName} fullWidth variant="outlined">
-                  <InputLabel shrink={detailForm[frog.fieldName] !== undefined && detailForm[frog.fieldName] !== ''}>
-                    {t(`frogs.${frog.fieldName}.name`) || frog.name}
-                  </InputLabel>
-                  <Select value={detailForm[frog.fieldName] ?? '0'} onChange={e => handleDetailChange(frog.fieldName, e.target.value)} label={t(`frogs.${frog.fieldName}.name`) || frog.name}>
-                    {Array.isArray(speciesDensityOptions) && speciesDensityOptions.map((label, idx) => (
-                      <MenuItem key={label} value={String(idx)}>{label}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <Box key={frog.fieldName}>
+                  <FormControl fullWidth variant="outlined">
+                    <InputLabel shrink={detailForm[frog.fieldName] !== undefined && detailForm[frog.fieldName] !== ''}>
+                      {t(`frogs.${frog.fieldName}.name`) || frog.name}
+                    </InputLabel>
+                    <Select value={detailForm[frog.fieldName] ?? '0'} onChange={e => handleDetailChange(frog.fieldName, e.target.value)} label={t(`frogs.${frog.fieldName}.name`) || frog.name}>
+                      {Array.isArray(speciesDensityOptions) && speciesDensityOptions.map((label, idx) => (
+                        <MenuItem key={label} value={String(idx)}>{label}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  {frog.audio && (
+                    <Box sx={{ mt: 1.5 }}>
+                      <AudioPlayer src={frog.audio} startTime={frog.startTime} />
+                    </Box>
+                  )}
+                </Box>
               ))}
 
               <TextField label={t('survey.fields.comments')} fullWidth multiline rows={3} value={detailForm.comments ?? ''} onChange={e => handleDetailChange('comments', e.target.value)} />

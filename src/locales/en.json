@@ -2,6 +2,12 @@
     "app": {
         "title": "Croak Counter"
     },
+    "notfound": {
+        "title": "404",
+        "subtitle": "No Frogs Here...",
+        "message": "The page you are looking for does not exist.",
+        "button": "Go Home"
+    },
     "nav": {
         "home": "Home",
         "help": "Help",
@@ -94,6 +100,10 @@
             "description": "The survey is best taken in swampy environments where frogs are commonly found. However, surveying should not occur on evenings with lightning, heavy rain (though mist and light rain that does not affect hearing is fine), or when wind speeds are consistently greater than 12 mph (19 kmh). Surveying also should not occur when air temperatures are less than 42 degrees Fahrenheit (5.6 degrees Celsius)."
         },
         "procedure": {
+            "offlineInfo": {
+                "title": "Important Information About Offline Usage",
+                "description": "This app works offline, allowing you to conduct surveys in remote areas without internet access. When offline, you can fill out and save surveys. These surveys will be stored on your device and can be accessed on the observations page. When you reconnect to the internet, you can upload saved surveys on the observations page."
+            },
             "title": "Standard Procedure",
             "preSurvey": {
                 "title": "Pre-Survey",
@@ -207,7 +217,8 @@
             "time": "Time",
             "site": "Site",
             "status": "Status",
-            "uploadButton": "Upload"
+            "uploadButton": "Upload",
+            "uploading": "Uploading observations…"
         },
         "selectAllLabel": "Select All",
         "table": {
@@ -234,7 +245,18 @@
             "beginnerDetailsTitle": "Observation Details (Beginner)",
             "advancedDetailsTitle": "Observation Details (Advanced)"
         },
-        "speciesHeading": "Frog Species Observations"
+        "frogAudioReference": "Frog call samples (reference)",
+        "speciesHeading": "Frog Species Observations",
+        "messages": {
+            "uploadSuccess": "Observation uploaded successfully.",
+            "uploadSuccessCount": "{count} observation(s) uploaded successfully.",
+            "uploadFailed": "Upload failed.",
+            "uploadErrorUnknown": "Upload failed.",
+            "uploadErrorNetwork": "Network or server error.",
+            "uploadPartialFailure": "{succeeded} uploaded, {failed} failed: {error}",
+            "deleteSuccess": "Observation deleted.",
+            "saveSuccess": "Your observation was updated successfully."
+        }
     },
     "survey": {
         "beginnerTitle": "Call Index Survey",
@@ -243,6 +265,10 @@
         "savedAt": "Saved at",
         "clearForm": "Clear Form",
         "submit": "Submit Survey",
+        "species": {
+            "title": "Frog Species Observations",
+            "description": "Rate call density from 0-3 for each species observed. Listen to the audio to help with identification."
+        },
         "messages": {
             "validationWarning": "Please fill out all required fields before saving.",
             "success": "Survey submitted — saving to Observations",
@@ -288,28 +314,19 @@
         },
         "options": {
             "skyConditions": [
-                "Clear or only a few clouds",
-                "Partly cloudy or variable",
-                "Broken clouds or overcast",
-                "Fog",
-                "Drizzle or light rain (not affecting hearing)",
-                "Snow",
-                "Showers (is affecting hearing ability)"
+                "0 - Clear or only a few clouds",
+                "1 - Partly cloudy or variable",
+                "2 - Broken clouds or overcast",
+                "4 - Fog",
+                "5 - Drizzle or light rain (not affecting hearing)",
+                "6 - Showers (is affecting hearing ability)"
             ],
             "windSpeeds": [
-                "Calm (<1 mph)",
-                "Light Air (1-3 mph)",
-                "Light Breeze (4-7 mph)",
-                "Gentle Breeze (8-12 mph)",
-                "Moderate Breeze (13-18 mph)",
-                "Fresh Breeze (19-24 mph)",
-                "Strong Breeze (25-31 mph)",
-                "Moderate Gale (32-38 mph)",
-                "Fresh Gale (39-46 mph)",
-                "Strong Gale (47-54 mph)",
-                "Whole Gale (55-63 mph)",
-                "Storm (64-72 mph)",
-                "Hurricane (73+ mph)"
+                "0 - Calm (<1 mph)",
+                "1 - Light Air (1-3 mph)",
+                "2 - Light Breeze (4-7 mph)",
+                "3 - Gentle Breeze (8-12 mph)",
+                "4 - Moderate Breeze (13-18 mph)"
             ],
             "frogCallDensity": [
                 "0 - No frogs heard",

@@ -1,9 +1,9 @@
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createRoot } from 'react-dom/client'
 import { Box } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { CustomThemeProvider } from './contexts/ThemeContext.jsx';
-import './index.css'  
+import './index.css'
 // Pages
 import App from './pages/App.jsx'
 import Help from './pages/Help.jsx';
@@ -13,13 +13,14 @@ import Join from './pages/Join.jsx';
 import FrogIdentification from './pages/FrogIdentification.jsx';
 import Observations from './pages/Observations.jsx';
 import About from './pages/About';
+import NotFound from './pages/NotFound.jsx';
 
 // Components
 import AppNavbar from './components/Navbar.jsx';
 import AppFooter from './components/Footer.jsx';
 
-// Get base path from Vite config
-const basename = import.meta.env.MODE === 'gh-pages' ? '/SP-Croak-Counter' : '';
+// Keep router basename aligned with Vite's configured base URL.
+const basename = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 /*
   This is the main entry point for the application.
@@ -29,7 +30,7 @@ const basename = import.meta.env.MODE === 'gh-pages' ? '/SP-Croak-Counter' : '';
 createRoot(document.getElementById('root')).render(
   <CustomThemeProvider>
     <CssBaseline />
-    <HashRouter>
+    <BrowserRouter basename={basename}>
       <Box
         sx={{
           display: 'flex',
@@ -54,11 +55,12 @@ createRoot(document.getElementById('root')).render(
             <Route path="/join" element={<Join />} />
             <Route path="/frog-identification" element={<FrogIdentification />} />
             <Route path="/observations" element={<Observations />} />
-            <Route path="/about" element={<About/>} />
+            <Route path="/about" element={<About />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Box>
         <AppFooter />
       </Box>
-    </HashRouter>
+    </BrowserRouter>
   </CustomThemeProvider>
 );

@@ -33,6 +33,7 @@ jobs:
         run: |
           npm ci
           npm run build -- --mode gh-pages
+          cp dist/index.html dist/404.html
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4

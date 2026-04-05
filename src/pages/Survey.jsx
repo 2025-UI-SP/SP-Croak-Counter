@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Typography,
@@ -88,6 +88,21 @@ function AdvancedSurvey() {
   const navigate = useNavigate();
   const [showValidation, setShowValidation] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // Default time
+  const is24HourFormat = () => {
+    const locale = navigator.language;
+    const formatter = new Intl.DateTimeFormat(locale, { hour: 'numeric' });
+    return !formatter.resolvedOptions().hour12;
+  };
+  
+  const useAmPm = !is24HourFormat();
+
+  useEffect(() => {
+    if (!formData.startTime) {
+      updateField('startTime', dayjs().format('HH:mm'));
+    }
+  }, [formData.startTime, updateField]);
 
   // GPS state
   const [gpsLoading, setGpsLoading] = useState(false);

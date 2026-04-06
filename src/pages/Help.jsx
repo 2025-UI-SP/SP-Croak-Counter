@@ -66,15 +66,15 @@ function Help() {
             </Typography>
             <br />
             <Typography sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.35rem' } }}>
-              {t('help.procedure.preSurvey.step1')}
+              <strong>{t('help.procedure.preSurvey.step1')}</strong>
               <br /><br />
-              {t('help.procedure.preSurvey.step2')}
+              <strong>{t('help.procedure.preSurvey.step2')}</strong>
               <br /><br />
-              {t('help.procedure.preSurvey.step3')}
+              <strong>{t('help.procedure.preSurvey.step3')}</strong>
               <br /><br />
-              {t('help.procedure.preSurvey.step4')}
+              <strong>{t('help.procedure.preSurvey.step4')}</strong>
               <br /><br />
-              {t('help.procedure.preSurvey.step5')}
+              <strong>{t('help.procedure.preSurvey.step5')}</strong>
               <br /><br /><br />
             </Typography>
 
@@ -84,22 +84,22 @@ function Help() {
             <br />
             <Typography sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.35rem' } }}>
 
-              {t('help.procedure.surveyProcedure.step1')}
+              <strong>{t('help.procedure.surveyProcedure.step1')}</strong>
 
               <br /><br />
-              {t('help.procedure.surveyProcedure.step2')}
+              <strong>{t('help.procedure.surveyProcedure.step2')}</strong>
 
               <br /><br />
-              {t('help.procedure.surveyProcedure.step3')}
+              <strong>{t('help.procedure.surveyProcedure.step3')}</strong>
 
               <br /><br />
-              {t('help.procedure.surveyProcedure.step4')}
+              <strong>{t('help.procedure.surveyProcedure.step4')}</strong>
 
               <br /><br />
-              {t('help.procedure.surveyProcedure.step5')}
+              <strong>{t('help.procedure.surveyProcedure.step5')}</strong>
 
               <br /><br />
-              {t('help.procedure.surveyProcedure.step6')}
+              <strong>{t('help.procedure.surveyProcedure.step6')}</strong>
 
               <br /><br /><br />
             </Typography>
@@ -109,10 +109,10 @@ function Help() {
             </Typography>
             <br />
             <Typography sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.35rem' } }}>
-              {t('help.procedure.postSurvey.step1')}
+              <strong>{t('help.procedure.postSurvey.step1')}</strong>
 
               <br /><br />
-              {t('help.procedure.postSurvey.step2')}
+              <strong>{t('help.procedure.postSurvey.step2')}</strong>
             </Typography>
 
           </AccordionDetails>
@@ -148,6 +148,8 @@ function Help() {
           </AccordionDetails>
         </Accordion>
 
+
+
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="h5"><strong>{t('help.identification.title')}</strong></Typography>
@@ -158,21 +160,6 @@ function Help() {
             </Typography>
           </AccordionDetails>
         </Accordion>
-
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="h5"><strong>{t('help.install.title')}</strong></Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography
-              sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.35rem' } }}
-            >
-              {t('help.install.description')}
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-
-
       </Box>
     </Container>
   );

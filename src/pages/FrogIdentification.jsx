@@ -3,8 +3,7 @@ import {
   Container,
   Typography,
   Box,
-  TextField,
-  Link
+  TextField
 } from '@mui/material';
 import { usePageTitle } from '../hooks/usePageTitle.js';
 import { useTranslation } from '../hooks/useTranslation.js';
@@ -124,25 +123,6 @@ function FrogIdentification() {
           </Typography>
         )}
       </Box>
-      {/*Citation for all images*/}
-      <Typography
-        variant="body2"
-        color="text.primary"
-        sx={{
-          mt: 4,
-          textAlign: 'center',
-          fontStyle: 'italic'
-        }}
-      >
-        {frogContent.attribution.text}
-        <Link
-          href={frogContent.attribution.url}
-          target="_blank"
-        >
-          {frogContent.attribution.source}
-        </Link>
-       . Accessed {frogContent.attribution.accessDate}
-      </Typography>
     </Container>
   );
 }

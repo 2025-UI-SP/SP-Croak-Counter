@@ -15,9 +15,10 @@ export default defineConfig(({ mode }) => ({
       },
       workbox: {
         clientsClaim: true,
+        maximumFileSizeToCacheInBytes: 4000000,
         skipWaiting: true,
         globPatterns: ['**/*{png,svg,mp3,jpg,js,css,html}'],
-        runtimeCaching: [
+        runtimeCaching: [,
           {
             urlPattern: ({ url }) =>
           url.pathname.match(/\.(png|jpg|jpeg|svg)$/),
